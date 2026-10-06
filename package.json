@@ -1,0 +1,21 @@
+{
+  "name": "browser-agent-blueprint",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Original modular browser-agent prompts with reproducible checkpoint and risk-gate demos.",
+  "license": "MIT",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "test": "node --test tests/*.test.cjs",
+    "assemble": "node scripts/assemble.cjs",
+    "metrics": "node scripts/metrics.cjs",
+    "demo": "node demo/run.cjs",
+    "demo:prepare": "node demo/run.cjs --phase prepare",
+    "demo:resume": "node demo/run.cjs --phase resume"
+  },
+  "devDependencies": {
+    "playwright": "1.62.1"
+  }
+}

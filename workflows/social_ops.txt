@@ -1,0 +1,12 @@
+WORKFLOW / SOCIAL CONTENT OPERATIONS
+Profile: social.
+Goal: prepare, schedule or publish approved content for an exact authorized account.
+Inputs: platform; account; approved copy/media; destination; desired state;
+count; time/timezone; platform permissions; publication scope if applicable.
+Research and draft first when those are the authorized states.
+Use a concrete preview for missing publication authority.
+Apply per-call risk checks and cumulative batch bounds.
+After submission, verify ID, state and public URL when required.
+Persist unknown submissions before any restart. Reconcile before reattempt.
+Deliver verified publication state and source evidence. No fabricated metrics,
+automatic engagement, unsolicited mass DMs or rate-limit evasion.

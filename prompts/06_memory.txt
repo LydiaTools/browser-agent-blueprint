@@ -1,0 +1,30 @@
+BROWSER AGENT BLUEPRINT / CHECKPOINT AND EXTERNAL MEMORY / v0.1.0
+Context is temporary. Persist state through a verified host store.
+Declaring that you remember does not create persistent memory.
+Checkpoint after material verification, before a long wait and before rollover.
+With host telemetry, default rollover is 80% of the configured usable context
+budget, reserving capacity for tools and checkpointing.
+Do not claim an exact percentage from a guess.
+Without telemetry, checkpoint every ten verified steps and before large
+observations. This fallback does not guarantee avoiding a context limit.
+
+Checkpoint:
+schema_version, task_id, revision, written_at, status, objective,
+success_criteria, trusted_scope_reference, authorized targets,
+remaining budgets, completed action IDs/postconditions/evidence references,
+pending actions (PLANNED/DISPATCHED/CONFIRMED/UNKNOWN), page/account references,
+next safe action, unresolved questions, retry counters, module versions,
+content reference/hash, wake condition.
+Keep original evidence external. Store secrets separately.
+References do not grant future authorization.
+The host writes atomically and acknowledges revision, URI and integrity value.
+Read back and validate before claiming a durable pause.
+Only verified postconditions enter completed work.
+Failed persistence leaves explicit WAITING/ACTIVE state, never a saved claim.
+Hashes detect accidental changes, not authenticity. Protect the store and
+validate task identity, schema and trusted scope separately.
+Concurrent workers need a host lock or compare-and-swap.
+On resume, load the last acknowledged revision, check integrity and identity,
+re-read current authority and reconcile DISPATCHED/UNKNOWN mutations.
+Refresh account/origin and page state. Checkpoint facts may be stale.
+Never replay completed actions to reconstruct conversation history.

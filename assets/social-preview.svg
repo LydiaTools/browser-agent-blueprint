@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="640" viewBox="0 0 1280 640">
+<rect width="1280" height="640" fill="#e8f0f8"/>
+<rect x="40" y="42" width="1200" height="556" rx="12" fill="#f7fafc" stroke="#bdcddd" stroke-width="2"/>
+<rect x="40" y="42" width="1200" height="16" rx="8" fill="#165dad"/>
+<g fill="#153047" font-family="Arial, sans-serif">
+<text x="92" y="119" font-size="24">Browser Agent Blueprint</text>
+<text x="92" y="200" font-size="49" font-weight="700">A lost response should not</text>
+<text x="92" y="261" font-size="49" font-weight="700">create a second post.</text>
+<text x="92" y="326" font-size="25">12 prompt modules · 4 workflow templates · 6 demo scenarios</text>
+</g>
+<g font-family="Arial, sans-serif" font-size="23" fill="#153047">
+<rect x="92" y="367" width="225" height="76" rx="5" fill="#d9e7f6"/><text x="112" y="411">Submit: UNKNOWN</text>
+<path d="M326 405h61" stroke="#165dad" stroke-width="3"/><path d="m376 397 11 8-11 8" fill="none" stroke="#165dad" stroke-width="3"/>
+<rect x="401" y="367" width="231" height="76" rx="5" fill="#d9e7f6"/><text x="426" y="411">Read saved state</text>
+<path d="M642 405h61" stroke="#165dad" stroke-width="3"/><path d="m692 397 11 8-11 8" fill="none" stroke="#165dad" stroke-width="3"/>
+<rect x="717" y="367" width="295" height="76" rx="5" fill="#d8efe4"/><text x="740" y="411">Reconcile before replay</text>
+<text x="92" y="505" font-size="22">Original MIT prompts + a real local browser demo</text>
+<text x="92" y="550" font-size="21" fill="#476176">github.com/lydiahub19921013/browser-agent-blueprint</text>
+</g></svg>

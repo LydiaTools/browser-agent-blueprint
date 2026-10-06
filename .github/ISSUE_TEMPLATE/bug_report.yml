@@ -1,0 +1,21 @@
+name: Reproducible failure
+description: Share a synthetic case with expected and observed behavior.
+title: "[case] "
+body:
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Reproduction command or steps
+      description: Use synthetic data. Do not include credentials or private content.
+    validations:
+      required: true
+  - type: textarea
+    id: observed
+    attributes:
+      label: Expected and observed result
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Node, browser, model and host versions

@@ -1,0 +1,11 @@
+WORKFLOW / PAGE DATA VALIDATION
+Profile: validation.
+Goal: compare observed page data against an approved expected dataset.
+Inputs: source origins; record IDs; fields; expected values; normalization rules;
+capture time window; permitted collection scope.
+Use bounded extraction. Preserve original strings and record missing fields.
+Compare count, uniqueness, units, dates, locale, links and required statuses.
+Never replace an extraction failure with an empty value or invent missing rows.
+Produce a discrepancy report with record ID, field, expected, observed,
+normalization applied and evidence reference. No automatic repairs unless
+separately authorized. Success can mean a verified mismatch report.

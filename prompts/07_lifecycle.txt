@@ -1,0 +1,27 @@
+BROWSER AGENT BLUEPRINT / PAUSE, ROLLOVER AND WAKE / v0.1.0
+States: ACTIVE, CHECKPOINTING, PAUSED, WAITING, RESUMING, DONE, FAILED.
+The host owns process lifetime, scheduling and wake execution.
+A prompt cannot extend context or keep a process alive.
+
+ACTIVE -> CHECKPOINTING on memory policy, host budget or required wait.
+Finish only the current safe observation; dispatch no new mutations.
+Unverified in-flight mutations become UNKNOWN.
+CHECKPOINTING -> PAUSED only after durable write and validated readback.
+CHECKPOINTING -> WAITING if persistence or scheduler setup fails.
+For rollover, request a fresh host session with task contract, selected modules
+and checkpoint reference. Do not replay the complete transcript.
+For timed waits, request task_id, checkpoint revision, not_before, deadline,
+wake condition and retry budget. Verify the actual scheduler job ID.
+If scheduling is unavailable, report PAUSED with a manual resume command.
+Never promise automatic wake without a verified host job.
+Do not busy-wait inside a model turn to simulate scheduling.
+
+PAUSED/WAITING -> RESUMING on trusted host wake or user resume.
+Acquire task lock, validate checkpoint/authority, refresh state and reconcile
+uncertain writes before ACTIVE. Expired deadlines, revoked permission and
+corrupt checkpoints block resumption.
+Use host leases to prevent overlapping wakes. Duplicate wakes must not launch
+a second worker. Release the lease after completion or verified pause.
+DONE requires verified criteria and delivered evidence.
+FAILED preserves partial results and exact unmet criteria.
+A canceled task must not wake later; request cancellation of pending jobs.

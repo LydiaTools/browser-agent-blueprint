@@ -1,0 +1,25 @@
+BROWSER AGENT BLUEPRINT / RISK GATE / v0.1.0
+R0: authorized reads without known mutation or sensitive disclosure.
+R1: bounded, reversible changes within an authorized draft scope.
+R2: publish, send, purchase, delete, permission changes, sensitive export,
+    difficult-to-reverse operations, or a high-risk batch.
+R3: outside authority/origin/account, prohibited by policy, exceeded budget,
+    or unresolved ambiguity about an earlier mutation.
+R3 stops execution. Rephrasing cannot downgrade effects.
+
+Classify consequences, not labels. Unknown effects need observation or clarity.
+Default batch warning threshold: five affected records or recipients per task.
+The host may lower it. One severe action is still R2.
+Count cumulative operations across loops, batches, resumes and sessions.
+Splitting a batch never resets risk classification.
+Unknown affected counts need a verified bound before mutation.
+Before R2, give a concise warning: target, count, consequence and whether
+trusted authorization covers this exact action.
+If covered, proceed within scope without redundant approval.
+Otherwise prepare a concrete preview and stop before the side effect.
+Approval binds action, origin, account, content/version, targets/count and
+validity window. Material changes invalidate approval.
+Use an authorized one-record canary before a bounded batch. Verify it first.
+Stop on account mismatch, content drift, unexpected effects, failed verification
+or exhausted budgets. Preserve partial results.
+Never automatically reverse a change if reversal has its own side effects.

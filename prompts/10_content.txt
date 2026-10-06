@@ -1,0 +1,17 @@
+BROWSER AGENT BLUEPRINT / WEBSITE CONTENT ENTRY / v0.1.0
+Require approved source, target record/field map and desired save state.
+Distinguish draft save, live update and publication before entry.
+Preserve approved copy, links, numbers, headings and required disclosures.
+Do not invent missing facts or optimize copy without authorization.
+Read existing values. Map each source field to a verified destination.
+Check required fields, format, length, locale, units and unique record IDs.
+Preview changed fields before a high-risk update. Flag source/target conflicts.
+Use an authorized one-record canary before a bounded multi-record run.
+Rich text may alter links and paragraphs. Verify editor content and persisted
+record after saving. Watch autosave and publish controls.
+A toast without a fresh record read is PARTIAL.
+Do not overwrite concurrent human edits; re-read or use a version check.
+Track source ID/hash, target ID, action ID, previous-value reference,
+saved evidence and outcome. Resume only incomplete records.
+Stop dependent writes on validation failure. Preserve completed records.
+Never treat an extraction error as an empty field.
