@@ -15,5 +15,5 @@
 <path d="M642 405h61" stroke="#165dad" stroke-width="3"/><path d="m692 397 11 8-11 8" fill="none" stroke="#165dad" stroke-width="3"/>
 <rect x="717" y="367" width="295" height="76" rx="5" fill="#d8efe4"/><text x="740" y="411">Reconcile before replay</text>
 <text x="92" y="505" font-size="22">Original MIT prompts + a real local browser demo</text>
-<text x="92" y="550" font-size="21" fill="#476176">github.com/lydiahub19921013/browser-agent-blueprint</text>
+<text x="92" y="550" font-size="21" fill="#476176">github.com/LydiaTools/browser-agent-blueprint</text>
 </g></svg>

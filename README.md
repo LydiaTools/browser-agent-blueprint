@@ -7,12 +7,12 @@ and resumable tasks — with a real local browser demo.
 
 **12 prompt modules · 4 workflow templates · 6 reproducible demo scenarios**
 
-[![Checks](https://github.com/lydiahub19921013/browser-agent-blueprint/actions/workflows/ci.yml/badge.svg)](https://github.com/lydiahub19921013/browser-agent-blueprint/actions/workflows/ci.yml)
+[![Checks](https://github.com/LydiaTools/browser-agent-blueprint/actions/workflows/ci.yml/badge.svg)](https://github.com/LydiaTools/browser-agent-blueprint/actions/workflows/ci.yml)
 
 [Quick start](#quick-start) · [Copy a module](#copy-a-module) ·
 [See the boundaries](#limits-and-disclaimer) · [中文](README.zh-CN.md)
 
-Built and maintained by [@lydiahub19921013](https://github.com/lydiahub19921013).
+Built and maintained by [@LydiaTools](https://github.com/LydiaTools).
 Follow the account for small, reproducible Agent tools; star this repository
 if you want to keep the modules and recovery cases handy.
 
@@ -56,7 +56,7 @@ Start with [risk checks](prompts/04_risk.txt),
 For a complete task profile, install Node.js 20+ and run:
 
 ```sh
-git clone https://github.com/lydiahub19921013/browser-agent-blueprint.git
+git clone https://github.com/LydiaTools/browser-agent-blueprint.git
 cd browser-agent-blueprint
 npm run assemble -- content
 ```
@@ -192,7 +192,7 @@ token reduction, virality or Star growth. Those require their own evidence.
 
 A small failure case is more useful than a broad claim. Share a synthetic
 reproduction, expected/observed behavior and exact environment through
-[Issues](https://github.com/lydiahub19921013/browser-agent-blueprint/issues).
+[Issues](https://github.com/LydiaTools/browser-agent-blueprint/issues).
 
 See [contributing](CONTRIBUTING.md). Useful next contributions include
 crash-consistent dispatch, live-model evaluations and tested adapter mappings.
@@ -201,4 +201,4 @@ crash-consistent dispatch, live-model evaluations and tested adapter mappings.
 
 MIT for this repository's original work. Dependencies retain their licenses.
 See [LICENSE](LICENSE). Built by
-[@lydiahub19921013](https://github.com/lydiahub19921013).
+[@LydiaTools](https://github.com/LydiaTools).

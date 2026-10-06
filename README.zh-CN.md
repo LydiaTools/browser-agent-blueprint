@@ -6,7 +6,7 @@
 
 **12 个 txt 模块 · 4 类工作流 · 6 个演示场景**
 
-维护者：[@lydiahub19921013](https://github.com/lydiahub19921013)。
+维护者：[@LydiaTools](https://github.com/LydiaTools)。
 收藏本仓库复用模块，关注账号获取小而可验证的 Agent 工具。
 完整技术说明见 [English README](README.md)。
 
@@ -22,7 +22,7 @@
 ## 直接运行
 
 ```sh
-git clone https://github.com/lydiahub19921013/browser-agent-blueprint.git
+git clone https://github.com/LydiaTools/browser-agent-blueprint.git
 cd browser-agent-blueprint
 npm run assemble -- content
 npm install
@@ -56,4 +56,4 @@ Muse/Grok/Codex 仅提供接入约定，未做对应环境的模型实测。
 token 节省比例、传播效果或 Star 数量。MIT 许可覆盖本仓库原创内容。
 
 [完整模块](prompts/) · [工作流](workflows/) · [实测记录](docs/verification.md)
-· [报告可复现失败](https://github.com/lydiahub19921013/browser-agent-blueprint/issues)
+· [报告可复现失败](https://github.com/LydiaTools/browser-agent-blueprint/issues)

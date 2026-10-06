@@ -1,7 +1,7 @@
 # A first-week launch experiment
 
 Goal: earn relevant developer attention for the project and its maintainer
-[@lydiahub19921013](https://github.com/lydiahub19921013).
+[@LydiaTools](https://github.com/LydiaTools).
 This plan is not a scheduled automation or a promise of growth.
 
 ## Distribution mechanism

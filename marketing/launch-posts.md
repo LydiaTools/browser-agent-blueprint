@@ -10,7 +10,7 @@ Browser agent clicked Save. The response vanished. Would yours click again?
 Browser Agent Blueprint: 12 original prompt modules + a real local recovery demo.
 MIT. No model key needed for the demo.
 
-https://github.com/lydiahub19921013/browser-agent-blueprint
+https://github.com/LydiaTools/browser-agent-blueprint
 
 ## 2. X — reproducible invitation
 
@@ -18,7 +18,7 @@ Can your browser agent resume without repeating a write?
 
 I open-sourced copyable prompt modules + a local checkpoint demo. Try prepare/resume; inspect the save count.
 
-https://github.com/lydiahub19921013/browser-agent-blueprint
+https://github.com/LydiaTools/browser-agent-blueprint
 
 ## 3. 中文 AI 开发者社群
 
@@ -32,8 +32,8 @@ demo 不用模型 Key，MIT 许可，可直接运行。没有“泄露提示词�
 Muse/Grok/Codex 的接入说明如实标为未做模型实测。
 
 欢迎跑 prepare/resume，带可复现的失败来提 Issue。
-仓库：https://github.com/lydiahub19921013/browser-agent-blueprint
-后续小工具：https://github.com/lydiahub19921013
+仓库：https://github.com/LydiaTools/browser-agent-blueprint
+后续小工具：https://github.com/LydiaTools
 
 ## Posting rules
 

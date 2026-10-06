@@ -25,7 +25,7 @@ as a successful run. No model API or vendor browser integration was evaluated.
 
 ## Clean cloud installation
 
-[GitHub Actions run 37391838981](https://github.com/lydiahub19921013/browser-agent-blueprint/actions/runs/37391838981)
+[GitHub Actions run 37391838981](https://github.com/LydiaTools/browser-agent-blueprint/actions/runs/37391838981)
 completed successfully on 2026-10-06 against commit
 `83596980d52a7c81a2fdea4f9ffff7a3405c3ef1`.
 Both jobs passed in fresh Ubuntu environments with Node.js 22:

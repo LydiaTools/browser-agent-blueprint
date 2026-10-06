@@ -15,4 +15,4 @@ Known limits: no model invocation, no automatic scheduler, no production crash-c
 
 Which side effect does your browser adapter classify incorrectly — autosave, redirects or a timed-out submission? Share a synthetic reproducer.
 
-Maintainer: https://github.com/lydiahub19921013
+Maintainer: https://github.com/LydiaTools
