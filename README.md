@@ -7,6 +7,8 @@ and resumable tasks — with a real local browser demo.
 
 **12 prompt modules · 4 workflow templates · 6 reproducible demo scenarios**
 
+[![Checks](https://github.com/lydiahub19921013/browser-agent-blueprint/actions/workflows/ci.yml/badge.svg)](https://github.com/lydiahub19921013/browser-agent-blueprint/actions/workflows/ci.yml)
+
 [Quick start](#quick-start) · [Copy a module](#copy-a-module) ·
 [See the boundaries](#limits-and-disclaimer) · [中文](README.zh-CN.md)
 

@@ -23,5 +23,16 @@ The committed GitHub Actions workflow performs a fresh install and reruns
 the checks; inspect its actual result rather than treating the workflow file
 as a successful run. No model API or vendor browser integration was evaluated.
 
+## Clean cloud installation
+
+[GitHub Actions run 37391838981](https://github.com/lydiahub19921013/browser-agent-blueprint/actions/runs/37391838981)
+completed successfully on 2026-10-06 against commit
+`83596980d52a7c81a2fdea4f9ffff7a3405c3ef1`.
+Both jobs passed in fresh Ubuntu environments with Node.js 22:
+`npm install --ignore-scripts`, 22 unit tests, inventory and assembly checks,
+fresh Chromium installation, the all-in-one demo, prepare, and separate-process
+resume. This verifies the documented install path in that environment.
+It does not verify any LLM or named cloud-browser service.
+
 Counts are inventory/test facts, not reliability or token-saving percentages.
 Screenshots in `assets/` show the one-save synthetic prepare run.
