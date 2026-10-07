@@ -1,2 +1,444 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta http-equiv="refresh" content="0; url=demo/fixture.html"><title>Browser Agent Blueprint demo</title></head><body><p>Open the <a href="demo/fixture.html">synthetic browser fixture</a>.</p></body></html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#eef3f6">
+  <meta name="description" content="Original, copyable browser-agent prompts with a runnable Playwright demo for verified writes, bounded retries, and cross-process recovery.">
+  <meta property="og:title" content="Browser Agent Blueprint">
+  <meta property="og:description" content="Prove what changed before a browser agent tries again.">
+  <meta property="og:type" content="website">
+  <title>Browser Agent Blueprint — the click is not the proof</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --paper: #eef3f6;
+      --surface: #f8fafb;
+      --ink: #173247;
+      --muted: #526a7a;
+      --rule: #bdcbd4;
+      --blue: #1766a8;
+      --blue-dark: #124e7f;
+      --amber: #c78117;
+      --green: #2e6c55;
+      --night: #102432;
+      --night-muted: #bbccd6;
+      --max: 1160px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font: 17px/1.58 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: var(--blue-dark); text-underline-offset: 0.2em; }
+    a:hover { color: var(--blue); }
+    a:focus-visible {
+      outline: 3px solid var(--amber);
+      outline-offset: 4px;
+      border-radius: 2px;
+    }
+    .skip {
+      position: absolute;
+      top: -5rem;
+      left: 1rem;
+      z-index: 10;
+      padding: 0.65rem 0.9rem;
+      background: var(--surface);
+      color: var(--ink);
+    }
+    .skip:focus { top: 1rem; }
+    .wrap { width: min(calc(100% - 3rem), var(--max)); margin-inline: auto; }
+
+    .masthead {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1.5rem;
+      min-height: 76px;
+      border-bottom: 1px solid var(--rule);
+    }
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      color: var(--ink);
+      font-size: 0.96rem;
+      font-weight: 680;
+      letter-spacing: -0.02em;
+      text-decoration: none;
+    }
+    .mark {
+      display: grid;
+      width: 2rem;
+      height: 2rem;
+      place-items: center;
+      border: 1px solid var(--ink);
+      font: 650 0.72rem/1 ui-monospace, SFMono-Regular, Menlo, monospace;
+      letter-spacing: -0.08em;
+    }
+    nav { display: flex; align-items: center; gap: 1.45rem; }
+    nav a {
+      color: var(--muted);
+      font-size: 0.88rem;
+      text-decoration: none;
+    }
+    nav a:hover { color: var(--ink); }
+    nav .source-link { color: var(--ink); font-weight: 650; }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(365px, 0.88fr);
+      align-items: center;
+      gap: clamp(3rem, 7vw, 6.5rem);
+      padding-block: clamp(4.25rem, 9vw, 7.25rem) clamp(4rem, 7vw, 6.25rem);
+    }
+    .kicker {
+      margin: 0 0 1.1rem;
+      color: var(--blue-dark);
+      font-size: 0.84rem;
+      font-weight: 650;
+      letter-spacing: 0.015em;
+    }
+    h1 {
+      max-width: 10ch;
+      margin: 0;
+      font-size: clamp(3.1rem, 6.6vw, 5.8rem);
+      font-weight: 650;
+      letter-spacing: -0.065em;
+      line-height: 0.99;
+    }
+    .lead {
+      max-width: 38rem;
+      margin: 1.65rem 0 0;
+      color: var(--muted);
+      font-size: clamp(1.05rem, 1.65vw, 1.25rem);
+      line-height: 1.6;
+    }
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.8rem 1.15rem;
+      margin-top: 2rem;
+    }
+    .button {
+      display: inline-flex;
+      min-height: 46px;
+      align-items: center;
+      justify-content: center;
+      padding: 0.65rem 1rem;
+      border: 1px solid var(--ink);
+      background: var(--ink);
+      color: white;
+      font-size: 0.91rem;
+      font-weight: 650;
+      text-decoration: none;
+    }
+    .button:hover { background: var(--blue-dark); color: white; }
+    .text-link { font-size: 0.91rem; font-weight: 600; }
+    .boundary {
+      margin: 1.3rem 0 0;
+      color: var(--muted);
+      font-size: 0.82rem;
+    }
+
+    .trace {
+      position: relative;
+      padding: 1.6rem 1.6rem 1.45rem;
+      background: var(--night);
+      color: #f4f8fa;
+    }
+    .trace::before {
+      position: absolute;
+      top: 1.6rem;
+      bottom: 1.6rem;
+      left: 0;
+      width: 3px;
+      background: var(--amber);
+      content: "";
+    }
+    .trace-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: 1.2rem;
+      color: var(--night-muted);
+      font-size: 0.76rem;
+    }
+    .trace h2 {
+      margin: 0 0 1.3rem;
+      color: white;
+      font-size: 1.32rem;
+      font-weight: 620;
+      letter-spacing: -0.025em;
+      line-height: 1.25;
+    }
+    .trace ol { margin: 0; padding: 0; list-style: none; }
+    .trace li {
+      display: grid;
+      grid-template-columns: 7.4rem minmax(0, 1fr);
+      gap: 0.2rem 0.8rem;
+      padding: 0.85rem 0;
+      border-top: 1px solid #39505d;
+    }
+    .trace li span:first-child { color: var(--night-muted); font-size: 0.83rem; }
+    .trace code {
+      color: #fff;
+      font: 0.88rem/1.45 ui-monospace, SFMono-Regular, Menlo, monospace;
+    }
+    .trace .state {
+      grid-column: 2;
+      color: #fff;
+      font-size: 0.85rem;
+    }
+    .trace .amber { color: #f3c46d; }
+    .trace .green { color: #8ed2ae; }
+    .trace-note {
+      margin: 0.8rem 0 0;
+      color: var(--night-muted);
+      font-size: 0.78rem;
+      line-height: 1.5;
+    }
+
+    .inventory {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      border-top: 1px solid var(--rule);
+      border-bottom: 1px solid var(--rule);
+    }
+    .inventory p { margin: 0; padding: 1.05rem 1.25rem 1.1rem 0; color: var(--muted); font-size: 0.88rem; }
+    .inventory p + p { padding-left: 1.25rem; border-left: 1px solid var(--rule); }
+    .inventory strong { display: block; margin-bottom: 0.1rem; color: var(--ink); font-size: 1rem; }
+
+    section { padding-block: clamp(3.5rem, 7vw, 5.8rem); }
+    .section-head {
+      display: grid;
+      grid-template-columns: minmax(0, 0.8fr) minmax(260px, 1fr);
+      gap: 2rem;
+      align-items: end;
+      margin-bottom: 2.2rem;
+    }
+    .section-head h2 {
+      max-width: 12ch;
+      margin: 0;
+      font-size: clamp(2rem, 3.8vw, 3.3rem);
+      font-weight: 630;
+      letter-spacing: -0.055em;
+      line-height: 1.06;
+    }
+    .section-head p { max-width: 42rem; margin: 0; color: var(--muted); }
+    .capabilities {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      border-top: 1px solid var(--ink);
+      border-bottom: 1px solid var(--ink);
+    }
+    .capabilities article { padding: 1.45rem 1.35rem 1.7rem 0; }
+    .capabilities article + article { padding-left: 1.35rem; border-left: 1px solid var(--rule); }
+    .capabilities h3 { margin: 0 0 0.55rem; font-size: 1.12rem; letter-spacing: -0.02em; }
+    .capabilities p { margin: 0; color: var(--muted); font-size: 0.94rem; }
+
+    .start {
+      display: grid;
+      grid-template-columns: minmax(0, 0.82fr) minmax(360px, 1fr);
+      gap: clamp(2rem, 6vw, 5.5rem);
+      align-items: start;
+      border-top: 1px solid var(--rule);
+    }
+    .start h2 {
+      max-width: 12ch;
+      margin: 0;
+      font-size: clamp(2rem, 3.8vw, 3.1rem);
+      font-weight: 630;
+      letter-spacing: -0.055em;
+      line-height: 1.06;
+    }
+    .start p { color: var(--muted); }
+    .start pre {
+      overflow-x: auto;
+      margin: 0;
+      padding: 1.35rem 1.5rem;
+      background: var(--night);
+      color: #f1f6f8;
+      font: 0.86rem/1.8 ui-monospace, SFMono-Regular, Menlo, monospace;
+      tab-size: 2;
+    }
+    .start .run-note { margin: 0.75rem 0 0; font-size: 0.83rem; }
+    .start-links { display: flex; flex-wrap: wrap; gap: 0.9rem 1.2rem; margin-top: 1.25rem; }
+
+    .limits {
+      display: grid;
+      grid-template-columns: 1fr 1.4fr;
+      gap: 2rem;
+      padding-block: 1.55rem;
+      border-top: 1px solid var(--ink);
+    }
+    .limits h2 { margin: 0; font-size: 1rem; }
+    .limits p { margin: 0; color: var(--muted); font-size: 0.9rem; }
+
+    footer {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      padding-block: 1.3rem 2rem;
+      border-top: 1px solid var(--rule);
+      color: var(--muted);
+      font-size: 0.82rem;
+    }
+    footer p { margin: 0; }
+    footer a { color: var(--muted); }
+
+    @media (max-width: 860px) {
+      .hero { grid-template-columns: 1fr; gap: 3rem; }
+      .hero-copy { max-width: 680px; }
+      .trace { max-width: 680px; }
+      .section-head { grid-template-columns: 1fr; gap: 0.8rem; }
+      .start { grid-template-columns: 1fr; gap: 1.6rem; }
+    }
+    @media (max-width: 620px) {
+      .wrap { width: min(calc(100% - 2rem), var(--max)); }
+      .masthead { min-height: auto; align-items: flex-start; flex-direction: column; padding-block: 1rem; gap: 0.9rem; }
+      nav { width: 100%; justify-content: space-between; gap: 0.7rem; }
+      nav a { font-size: 0.82rem; }
+      .hero { padding-block: 3.4rem 3rem; }
+      h1 { max-width: 9ch; font-size: clamp(3rem, 15vw, 4.6rem); }
+      .trace { padding: 1.25rem 1.1rem 1.2rem; }
+      .trace li { grid-template-columns: 6.5rem minmax(0, 1fr); column-gap: 0.5rem; }
+      .inventory { grid-template-columns: 1fr; }
+      .inventory p { padding: 0.8rem 0; }
+      .inventory p + p { padding-left: 0; border-top: 1px solid var(--rule); border-left: 0; }
+      .capabilities { grid-template-columns: 1fr; }
+      .capabilities article { padding: 1.1rem 0 1.2rem; }
+      .capabilities article + article { padding-left: 0; border-top: 1px solid var(--rule); border-left: 0; }
+      .limits { grid-template-columns: 1fr; gap: 0.5rem; }
+      footer { flex-direction: column; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <header class="wrap masthead">
+    <a class="brand" href="./" aria-label="Browser Agent Blueprint home">
+      <span class="mark" aria-hidden="true">BA</span>
+      <span>Browser Agent Blueprint</span>
+    </a>
+    <nav aria-label="Main navigation">
+      <a href="https://github.com/LydiaTools/browser-agent-blueprint#modules">Prompt modules</a>
+      <a href="https://github.com/LydiaTools/browser-agent-blueprint#quick-start">Quick start</a>
+      <a class="source-link" href="https://github.com/LydiaTools/browser-agent-blueprint">Source code</a>
+    </nav>
+  </header>
+
+  <main id="main" class="wrap">
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="hero-copy">
+        <p class="kicker">Open-source patterns for browser-agent builders</p>
+        <h1 id="hero-title">The click is not the proof.</h1>
+        <p class="lead">A browser agent says it saved. The response disappears. Before it clicks again, read the state that actually persisted.</p>
+        <p class="lead">Browser Agent Blueprint pairs copyable prompt modules with a runnable Playwright demo for verified writes, bounded retries, and resumable tasks.</p>
+        <div class="actions">
+          <a class="button" href="https://github.com/LydiaTools/browser-agent-blueprint">Explore the project</a>
+          <a class="text-link" href="demo/fixture.html">Try the synthetic page</a>
+        </div>
+        <p class="boundary">Independently authored · MIT license · Scope and limits explained below</p>
+      </div>
+
+      <aside class="trace" aria-labelledby="trace-title">
+        <div class="trace-head">
+          <span>Local recovery demo</span>
+          <span>Action ledger</span>
+        </div>
+        <h2 id="trace-title">After a write response is lost</h2>
+        <ol>
+          <li>
+            <span>Write</span>
+            <code>uncertain-save</code>
+            <span class="state">Dispatched once</span>
+          </li>
+          <li>
+            <span>Acknowledgement</span>
+            <code>status = UNKNOWN</code>
+            <span class="state amber">Do not replay yet</span>
+          </li>
+          <li>
+            <span>Same action ID</span>
+            <code>duplicate-save</code>
+            <span class="state amber">Blocked by the ledger</span>
+          </li>
+          <li>
+            <span>Read back</span>
+            <code>save count = 2</code>
+            <span class="state green">Reconciled as confirmed</span>
+          </li>
+        </ol>
+        <p class="trace-note">This deterministic scenario runs on a synthetic local page. It is a host-side recovery check, not an LLM benchmark or a production browser log.</p>
+      </aside>
+    </section>
+
+    <div class="inventory" aria-label="Project contents">
+      <p><strong>12 prompt modules</strong>Plain-text files you can copy and adapt</p>
+      <p><strong>4 workflow templates</strong>Smaller task profiles assembled on demand</p>
+      <p><strong>6 demo scenarios</strong>Reproducible checks for recovery and risk gates</p>
+    </div>
+
+    <section aria-labelledby="capabilities-title">
+      <div class="section-head">
+        <h2 id="capabilities-title">Make the next action depend on evidence.</h2>
+        <p>The project focuses on failure points that can turn a normal browser task into a duplicate write, an unsafe batch, or a lost place.</p>
+      </div>
+      <div class="capabilities">
+        <article>
+          <h3>Read after a write</h3>
+          <p>Define the saved-state postcondition, then inspect it before claiming completion or attempting another mutation.</p>
+        </article>
+        <article>
+          <h3>Bound retries and batches</h3>
+          <p>Classify failures, retry only eligible reads, and count high-risk writes across resumed sessions.</p>
+        </article>
+        <article>
+          <h3>Resume from a checkpoint</h3>
+          <p>Carry verified progress into a new process and keep the completed action ID from being dispatched again.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="start" aria-labelledby="start-title">
+      <div>
+        <p class="kicker">Run the host-side demo</p>
+        <h2 id="start-title">See the recovery check in a fresh process.</h2>
+        <p>Install Node.js 20+, then use the included Playwright runner. The separate prepare and resume commands demonstrate that a saved draft survives process exit without replaying the completed write.</p>
+        <div class="start-links">
+          <a href="https://github.com/LydiaTools/browser-agent-blueprint#quick-start">Full setup instructions</a>
+          <a href="https://github.com/LydiaTools/browser-agent-blueprint/releases/download/v0.1.0/browser-agent-blueprint-v0.1.0.zip">Source ZIP v0.1.0</a>
+        </div>
+      </div>
+      <div>
+        <pre><code>npm install
+npx playwright install chromium
+npm test
+npm run demo:prepare
+npm run demo:resume</code></pre>
+        <p class="run-note">The online synthetic page only tests browser-local save and readback. The Playwright runner checks the host-side ledger and checkpoint.</p>
+      </div>
+    </section>
+
+    <section class="limits" aria-labelledby="limits-title">
+      <h2 id="limits-title">Know what this demonstrates</h2>
+      <p>The fixture and runner use synthetic content and deterministic rules. They do not connect to a live model, Muse, Grok, Codex, social account, or production site, and they do not establish model obedience. The prompt modules are original templates based on public model capabilities and engineering practice; they are not leaked vendor prompts. <a href="https://github.com/LydiaTools/browser-agent-blueprint#limits-and-disclaimer">Read the full scope and disclaimer.</a></p>
+    </section>
+  </main>
+
+  <footer class="wrap">
+    <p>Built and maintained by <a href="https://github.com/LydiaTools">LydiaTools</a>.</p>
+    <p><a href="https://github.com/LydiaTools/browser-agent-blueprint/blob/main/LICENSE">MIT License</a> · <a href="https://github.com/LydiaTools/browser-agent-blueprint/issues">Report an issue</a></p>
+  </footer>
+</body>
+</html>
