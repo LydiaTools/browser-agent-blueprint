@@ -21,6 +21,10 @@
 
 ## 直接运行
 
+[在线打开合成测试页](https://lydiatools.github.io/browser-agent-blueprint/demo/fixture.html)，
+可保存一条记录、刷新并核对保存次数。网页本身不运行 Agent；下面的本地命令
+才会验证宿主侧断点续作和未知提交恢复。
+
 ```sh
 git clone https://github.com/LydiaTools/browser-agent-blueprint.git
 cd browser-agent-blueprint
@@ -34,7 +38,7 @@ npm run demo:resume
 ```
 
 需要 Node.js 20+。Linux 必要时用 `npx playwright install --with-deps chromium`。
-demo 仅访问本地 127.0.0.1:4179，使用明确标注的合成记录，不读取已有账号。
+本地 runner 仅访问 127.0.0.1:4179，使用明确标注的合成记录，不读取已有账号。
 运行结果保存在忽略目录 `runs/`。
 prepare 退出后，resume 用第二个进程读取检查点、恢复合成页面，并验证
 保存次数仍为 1。全场景 demo 有意执行两次保存，不能直接当作该恢复样本。

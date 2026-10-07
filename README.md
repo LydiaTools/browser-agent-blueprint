@@ -10,6 +10,7 @@ and resumable tasks — with a real local browser demo.
 [![Checks](https://github.com/LydiaTools/browser-agent-blueprint/actions/workflows/ci.yml/badge.svg)](https://github.com/LydiaTools/browser-agent-blueprint/actions/workflows/ci.yml)
 
 [Quick start](#quick-start) · [Copy a module](#copy-a-module) ·
+[Try the synthetic page](https://lydiatools.github.io/browser-agent-blueprint/demo/fixture.html) ·
 [See the boundaries](#limits-and-disclaimer) · [中文](README.zh-CN.md)
 
 Built and maintained by [@LydiaTools](https://github.com/LydiaTools).
@@ -67,6 +68,12 @@ Assembly has no npm dependencies. It reports bytes and a hash, **not token savin
 
 ### Run the browser demo
 
+For a quick look at the page used by the tests, [open the synthetic fixture in
+your browser](https://lydiatools.github.io/browser-agent-blueprint/demo/fixture.html).
+Save a draft, reload, and inspect the persisted record and save count. This
+page alone does not run an agent or the recovery checks; run the commands below
+to exercise the host-side controls.
+
 ```sh
 npm install
 npx playwright install chromium
@@ -96,7 +103,7 @@ exports synthetic localStorage and exits. The second starts a new process,
 validates the checkpoint, restores the fixture and verifies that the save count
 is still **1**. It refuses to dispatch the completed action ID again.
 
-The demo uses loopback port 4179; an occupied port causes a visible error.
+The local runner uses loopback port 4179; an occupied port causes a visible error.
 Output goes to ignored `runs/`: checkpoint, synthetic browser state and screenshots.
 No existing browser profile is used. The all-in-one demo intentionally performs
 two saves to exercise lost-acknowledgement recovery; run `demo:prepare` before
