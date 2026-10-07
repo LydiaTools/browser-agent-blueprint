@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#eef3f6">
+  <meta name="description" content="Try the Browser Agent Blueprint synthetic browser fixture, then run its local cross-process recovery demo.">
+  <link rel="canonical" href="https://lydiatools.github.io/browser-agent-blueprint/demo/">
+  <meta property="og:title" content="Browser Agent Blueprint · Demo guide">
+  <meta property="og:description" content="Inspect a synthetic save in your browser or run the local recovery demo across two processes.">
+  <meta property="og:type" content="website">
+  <title>Demo guide · Browser Agent Blueprint</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --paper: #eef3f6;
+      --surface: #f8fafb;
+      --ink: #173247;
+      --muted: #526a7a;
+      --rule: #bdcbd4;
+      --blue: #1766a8;
+      --blue-dark: #124e7f;
+      --amber: #c78117;
+      --night: #102432;
+      --night-muted: #bbccd6;
+      --max: 1040px;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font: 17px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: var(--blue-dark); text-underline-offset: 0.2em; }
+    a:hover { color: var(--blue); }
+    a:focus-visible {
+      outline: 3px solid var(--amber);
+      outline-offset: 4px;
+      border-radius: 2px;
+    }
+    .skip {
+      position: absolute;
+      top: -5rem;
+      left: 1rem;
+      z-index: 2;
+      padding: 0.65rem 0.9rem;
+      background: var(--surface);
+      color: var(--ink);
+    }
+    .skip:focus { top: 1rem; }
+    .wrap { width: min(calc(100% - 3rem), var(--max)); margin-inline: auto; }
+
+    .masthead {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1.5rem;
+      min-height: 76px;
+      border-bottom: 1px solid var(--rule);
+    }
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      color: var(--ink);
+      font-size: 0.96rem;
+      font-weight: 680;
+      letter-spacing: -0.02em;
+      text-decoration: none;
+    }
+    .mark {
+      display: grid;
+      width: 2rem;
+      height: 2rem;
+      place-items: center;
+      border: 1px solid var(--ink);
+      font: 650 0.72rem/1 ui-monospace, SFMono-Regular, Menlo, monospace;
+      letter-spacing: -0.08em;
+    }
+    nav { display: flex; flex-wrap: wrap; gap: 0.55rem 1.35rem; }
+    nav a { color: var(--muted); font-size: 0.88rem; text-decoration: none; }
+    nav a:hover { color: var(--ink); }
+
+    main { padding-bottom: 3.5rem; }
+    .intro {
+      max-width: 790px;
+      padding-block: clamp(3.5rem, 8vw, 6.25rem) 3.25rem;
+    }
+    .eyebrow {
+      margin: 0 0 1rem;
+      color: var(--blue-dark);
+      font-size: 0.84rem;
+      font-weight: 650;
+      letter-spacing: 0.015em;
+    }
+    h1 {
+      max-width: 14ch;
+      margin: 0;
+      font-size: clamp(2.7rem, 6vw, 5rem);
+      font-weight: 650;
+      letter-spacing: -0.065em;
+      line-height: 1.02;
+    }
+    .lead {
+      max-width: 45rem;
+      margin: 1.5rem 0 0;
+      color: var(--muted);
+      font-size: clamp(1.05rem, 1.6vw, 1.22rem);
+    }
+
+    .methods {
+      display: grid;
+      grid-template-columns: minmax(0, 0.86fr) minmax(0, 1.14fr);
+      align-items: start;
+      gap: clamp(1.5rem, 4vw, 3.5rem);
+      border-top: 1px solid var(--ink);
+      padding-top: 1.5rem;
+    }
+    .method-label {
+      margin: 0 0 0.6rem;
+      color: var(--blue-dark);
+      font-size: 0.8rem;
+      font-weight: 650;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+    }
+    h2 {
+      max-width: 18ch;
+      margin: 0;
+      font-size: clamp(1.55rem, 2.6vw, 2rem);
+      font-weight: 630;
+      letter-spacing: -0.04em;
+      line-height: 1.15;
+    }
+    .method p { max-width: 46ch; color: var(--muted); }
+    .method .detail { margin: 0.8rem 0 0; font-size: 0.91rem; }
+    .action {
+      display: inline-flex;
+      min-height: 46px;
+      align-items: center;
+      padding: 0.65rem 1rem;
+      border: 1px solid var(--ink);
+      background: var(--ink);
+      color: #fff;
+      font-size: 0.91rem;
+      font-weight: 650;
+      text-decoration: none;
+    }
+    .action:hover { background: var(--blue-dark); color: #fff; }
+    .code-panel {
+      margin-top: 1.2rem;
+      padding: 1rem 1.2rem;
+      background: var(--night);
+      color: #f4f8fa;
+      overflow-x: auto;
+    }
+    .code-panel p {
+      margin: 0 0 0.65rem;
+      color: var(--night-muted);
+      font-size: 0.78rem;
+    }
+    pre { margin: 0; font: 0.87rem/1.7 ui-monospace, SFMono-Regular, Menlo, monospace; }
+
+    .proof {
+      display: grid;
+      grid-template-columns: minmax(150px, 0.52fr) minmax(0, 1.48fr);
+      gap: 1.4rem 2.5rem;
+      margin-top: clamp(3rem, 7vw, 5rem);
+      padding-block: 1.4rem;
+      border-top: 1px solid var(--rule);
+      border-bottom: 1px solid var(--rule);
+    }
+    .proof h2 { font-size: 1.25rem; }
+    .proof p { max-width: 70ch; margin: 0; color: var(--muted); }
+    .proof p + p { margin-top: 0.8rem; }
+    footer {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 0.75rem 2rem;
+      padding-block: 1.5rem 2.5rem;
+      border-top: 1px solid var(--rule);
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+    footer p { margin: 0; }
+
+    @media (max-width: 700px) {
+      .wrap { width: min(calc(100% - 2rem), var(--max)); }
+      .masthead { align-items: flex-start; flex-direction: column; justify-content: center; padding-block: 1rem; }
+      .methods, .proof { grid-template-columns: 1fr; }
+      .methods { gap: 2.5rem; }
+      .proof { gap: 0.6rem; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to the demo options</a>
+  <header class="wrap masthead">
+    <a class="brand" href="../" aria-label="Browser Agent Blueprint project guide">
+      <span class="mark" aria-hidden="true">BB</span>
+      <span>Browser Agent Blueprint</span>
+    </a>
+    <nav aria-label="Project links">
+      <a href="../">Project guide</a>
+      <a href="https://github.com/LydiaTools/browser-agent-blueprint">Source</a>
+      <a href="https://github.com/LydiaTools/browser-agent-blueprint/blob/main/README.zh-CN.md" lang="zh-CN">中文</a>
+    </nav>
+  </header>
+
+  <main id="main" class="wrap">
+    <section class="intro" aria-labelledby="page-title">
+      <p class="eyebrow">A reproducible browser-agent demo</p>
+      <h1 id="page-title">A saved click still needs a read-back.</h1>
+      <p class="lead">Choose the test that answers your question. The online fixture shows a synthetic record surviving a reload. The local runner checks recovery across two separate processes.</p>
+    </section>
+
+    <section class="methods" aria-label="Demo options">
+      <article class="method">
+        <p class="method-label">In this browser</p>
+        <h2>Inspect one synthetic save</h2>
+        <p>Save a sample draft, reload the page, and compare the stored title, body, and save count. The fixture keeps its record in this browser's local storage.</p>
+        <a class="action" href="fixture.html">Open the synthetic fixture</a>
+        <p class="detail">It tests page persistence and read-back. It does not run an agent or call a model.</p>
+      </article>
+
+      <article class="method">
+        <p class="method-label">On your machine · Node.js 20+</p>
+        <h2>Resume in a new process</h2>
+        <p>The first process saves and verifies one synthetic record, writes a checkpoint, and exits. The second process restores the fixture and confirms the save count remains <strong>1</strong> without dispatching the completed action again.</p>
+        <div class="code-panel" aria-label="Commands for the cross-process recovery demo">
+          <p>From the repository root:</p>
+          <pre><code>npm install
+npx playwright install chromium
+npm run demo:prepare
+npm run demo:resume</code></pre>
+        </div>
+        <p class="detail">The local runner uses loopback port 4179 and writes synthetic evidence to the ignored <code>runs/</code> directory.</p>
+        <p class="detail"><a href="https://github.com/LydiaTools/browser-agent-blueprint#prove-resume-happens-in-a-new-process">Read the full recovery steps and limits</a></p>
+      </article>
+    </section>
+
+    <section class="proof" aria-labelledby="evidence-title">
+      <h2 id="evidence-title">What this demonstrates</h2>
+      <div>
+        <p>The browser fixture and local runner use deterministic host code and synthetic data. They make no model calls and use no social or customer accounts.</p>
+        <p>These checks demonstrate the included persistence and recovery paths. They do not measure model behavior, production crash consistency, or compatibility with Muse, Grok, or Codex. See the <a href="https://github.com/LydiaTools/browser-agent-blueprint/blob/main/docs/verification.md">recorded verification</a> for test scope.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="wrap">
+    <p><a href="../">Back to the project guide</a> · <a href="https://github.com/LydiaTools/browser-agent-blueprint">Browse the source</a></p>
+    <p>Original templates · MIT license · <a href="https://github.com/LydiaTools/browser-agent-blueprint/blob/main/README.zh-CN.md" lang="zh-CN">中文说明</a></p>
+  </footer>
+</body>
+</html>

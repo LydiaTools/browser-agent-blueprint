@@ -21,7 +21,8 @@
 
 ## 直接运行
 
-[在线打开合成测试页](https://lydiatools.github.io/browser-agent-blueprint/demo/fixture.html)，
+先看[演示导览](https://lydiatools.github.io/browser-agent-blueprint/demo/)，
+选择在线合成测试页或本地恢复 demo。[直接打开合成测试页](https://lydiatools.github.io/browser-agent-blueprint/demo/fixture.html)，
 可保存一条记录、刷新并核对保存次数。网页本身不运行 Agent；下面的本地命令
 才会验证宿主侧断点续作和未知提交恢复。
 

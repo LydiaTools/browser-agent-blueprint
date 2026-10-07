@@ -10,7 +10,8 @@ and resumable tasks — with a real local browser demo.
 [![Checks](https://github.com/LydiaTools/browser-agent-blueprint/actions/workflows/ci.yml/badge.svg)](https://github.com/LydiaTools/browser-agent-blueprint/actions/workflows/ci.yml)
 
 [Quick start](#quick-start) · [Copy a module](#copy-a-module) ·
-[Project overview and demo guide](https://lydiatools.github.io/browser-agent-blueprint/) ·
+[Project overview](https://lydiatools.github.io/browser-agent-blueprint/) ·
+[Demo guide](https://lydiatools.github.io/browser-agent-blueprint/demo/) ·
 [Download the v0.1.0 source bundle](https://github.com/LydiaTools/browser-agent-blueprint/releases/download/v0.1.0/browser-agent-blueprint-v0.1.0.zip) ·
 [See the boundaries](#limits-and-disclaimer) · [中文](README.zh-CN.md)
 
@@ -74,11 +75,13 @@ repository version.
 
 ### Run the browser demo
 
-For a quick look at the page used by the tests, [open the browser-only synthetic
+Start with the [demo guide](https://lydiatools.github.io/browser-agent-blueprint/demo/)
+to choose between the online fixture and the local recovery runner. For a quick
+look at the page used by the tests, [open the browser-only synthetic
 fixture](https://lydiatools.github.io/browser-agent-blueprint/demo/fixture.html).
 Save a draft, reload, and inspect the persisted record and save count. The
-fixture is a test page, not an error screen; it does not run an agent or the
-recovery checks. Run the commands below to exercise the host-side controls.
+fixture is a synthetic test page; it does not run an agent or the recovery
+checks. Run the commands below to exercise the host-side controls.
 
 ```sh
 npm install
