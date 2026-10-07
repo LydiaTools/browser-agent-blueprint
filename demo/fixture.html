@@ -13,7 +13,7 @@ h2{font-size:24px;margin-top:0}label{display:block;margin-bottom:18px;font:16px/
 input,textarea{display:block;width:100%;padding:12px;border:1px solid var(--line);border-radius:3px;font:16px/1.5 system-ui;margin-top:5px;background:white;color:var(--ink)}
 textarea{min-height:130px}button{padding:11px 18px;border:0;border-radius:3px;background:var(--blue);color:white;font:600 16px/1.5 system-ui;cursor:pointer}
 button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid #dc9000;outline-offset:3px}
-.guide{max-width:1000px;margin:28px auto 0;padding:0 24px;font:16px/1.55 system-ui}.guide p{margin:0 0 8px;max-width:78ch}
+.guide{max-width:1000px;margin:28px auto 0;padding:0 24px;font:16px/1.55 system-ui}.guide p{margin:0 0 8px;max-width:78ch}.guide .next{margin-top:15px}.guide a{color:var(--blue);text-underline-offset:3px}
 .actions{display:flex;align-items:center;gap:12px;flex-wrap:wrap}.actions .secondary{background:transparent;color:var(--blue);border:1px solid var(--blue)}
 #status{font:600 16px/1.5 system-ui;color:var(--green);min-height:24px}
 dl{border-top:2px solid var(--ink);margin:0}dt{font:14px/1.5 system-ui;margin-top:18px;color:#476176}
@@ -23,7 +23,7 @@ footer{max-width:1000px;padding:0 24px;margin:25px auto;font:14px/1.5 system-ui;
 </style>
 </head><body>
 <header><p>Browser Agent Blueprint · synthetic fixture · no social account</p><h1>A save is a claim. Read it back.</h1></header>
-<div class="guide"><p>Save a synthetic draft, reload the page, then inspect the persisted record and save count before deciding whether to retry. The record stays in this browser's local storage.</p><p>This page is the test fixture. The repository's local runner performs the agent-side checkpoint and lost-response recovery checks.</p></div>
+<div class="guide"><p>Save a synthetic draft, reload the page, then inspect the persisted record and save count before deciding whether to retry. The record stays in this browser's local storage.</p><p>This page is the test fixture. The repository's local runner performs the agent-side checkpoint and lost-response recovery checks.</p><p class="next"><a href="https://github.com/LydiaTools/browser-agent-blueprint#quick-start">Explore the source and run the two-process recovery demo →</a></p></div>
 <main>
 <section><h2>Draft editor</h2>
 <label>Record title<input id="title" aria-label="Record title" maxlength="120"></label>
