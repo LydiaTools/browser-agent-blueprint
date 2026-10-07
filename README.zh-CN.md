@@ -25,6 +25,9 @@
 可保存一条记录、刷新并核对保存次数。网页本身不运行 Agent；下面的本地命令
 才会验证宿主侧断点续作和未知提交恢复。
 
+不使用 Git 也可下载 [v0.1.0 源码 ZIP](https://github.com/LydiaTools/browser-agent-blueprint/releases/download/v0.1.0/browser-agent-blueprint-v0.1.0.zip)，
+解压后进入 `browser-agent-blueprint` 目录运行命令。ZIP 是固定版本快照；在线合成页随仓库当前版本更新。
+
 ```sh
 git clone https://github.com/LydiaTools/browser-agent-blueprint.git
 cd browser-agent-blueprint

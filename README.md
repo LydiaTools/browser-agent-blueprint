@@ -11,6 +11,7 @@ and resumable tasks — with a real local browser demo.
 
 [Quick start](#quick-start) · [Copy a module](#copy-a-module) ·
 [Try the synthetic page](https://lydiatools.github.io/browser-agent-blueprint/demo/fixture.html) ·
+[Download the v0.1.0 source bundle](https://github.com/LydiaTools/browser-agent-blueprint/releases/download/v0.1.0/browser-agent-blueprint-v0.1.0.zip) ·
 [See the boundaries](#limits-and-disclaimer) · [中文](README.zh-CN.md)
 
 Built and maintained by [@LydiaTools](https://github.com/LydiaTools).
@@ -65,6 +66,11 @@ npm run assemble -- content
 The output is `dist/content.txt`. Review it, map conceptual tools to your actual
 host schemas, and place it in a supported trusted instruction surface.
 Assembly has no npm dependencies. It reports bytes and a hash, **not token savings**.
+
+Without Git, download the [v0.1.0 source bundle](https://github.com/LydiaTools/browser-agent-blueprint/releases/download/v0.1.0/browser-agent-blueprint-v0.1.0.zip),
+extract it, and run the commands from its `browser-agent-blueprint` folder. The
+ZIP is a fixed release snapshot; the online synthetic page follows the current
+repository version.
 
 ### Run the browser demo
 
