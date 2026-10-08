@@ -53,6 +53,10 @@ npm run demo:resume
 prepare 退出后，resume 用第二个进程读取检查点、恢复合成页面，并验证
 保存次数仍为 1。全场景 demo 有意执行两次保存，不能直接当作该恢复样本。
 
+跑通示例或把模块接入自己的浏览器宿主后，可[提交一条使用记录](https://github.com/LydiaTools/browser-agent-blueprint/issues/new?template=integration_observation.yml)：
+写明模块版本、合成示例还是真实宿主，以及预期与实际结果。请先去掉凭据和私人页面内容；
+单次记录只说明这次运行，不代表可靠性结论。
+
 ## 证据边界
 
 这是自研重构、AI 辅助编写的原创模板，不是任何厂商内部泄露提示词，

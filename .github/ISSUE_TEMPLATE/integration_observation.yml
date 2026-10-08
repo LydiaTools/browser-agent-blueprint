@@ -1,0 +1,60 @@
+name: Integration observation
+description: Share one observed run of a prompt module or workflow.
+title: "[integration] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        A single observed run helps improve the modules. Synthetic and live-host
+        runs are both welcome; please label which one you performed. Remove
+        credentials, cookies, private page data and personal content from evidence.
+  - type: input
+    id: module
+    attributes:
+      label: Module or workflow and version
+      placeholder: "prompts/05_retries.txt at v0.1.0 or commit SHA"
+    validations:
+      required: true
+  - type: dropdown
+    id: run-type
+    attributes:
+      label: What did you run?
+      options:
+        - Local synthetic demo
+        - Real host with synthetic data
+        - Real host with authorized data
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Host, browser and model versions, where applicable
+      placeholder: "Host/tool version, browser version, model if one was used"
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Reproduction steps
+      description: Use a small, redacted example that another developer can repeat.
+    validations:
+      required: true
+  - type: textarea
+    id: result
+    attributes:
+      label: Expected and observed result
+      description: Include the saved-state readback or failure point if available.
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Redacted logs, screenshot or public reproduction link
+      description: Optional. A screenshot or link is evidence for this run only.
+  - type: checkboxes
+    id: privacy
+    attributes:
+      label: Before submitting
+      options:
+        - label: I removed credentials, private page data and personal content.
+          required: true

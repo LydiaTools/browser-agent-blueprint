@@ -120,6 +120,11 @@ No existing browser profile is used. The all-in-one demo intentionally performs
 two saves to exercise lost-acknowledgement recovery; run `demo:prepare` before
 `demo:resume` for the one-save cross-process case.
 
+Ran the demo or mapped a module to your own browser host? [Share one integration
+observation](https://github.com/LydiaTools/browser-agent-blueprint/issues/new?template=integration_observation.yml)
+with the module version, synthetic or live-host scope, and expected versus
+observed result. One report is evidence for that run, not a reliability claim.
+
 ## Six executable scenarios
 
 | Scenario | What the example demonstrates |
