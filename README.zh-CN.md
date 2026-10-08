@@ -6,6 +6,12 @@
 
 **12 个 txt 模块 · 4 类工作流 · 6 个演示场景**
 
+![两个独立进程恢复同一条合成记录，并核对保存次数为 1](assets/recovery-proof.png)
+
+图中保留[合成测试页的原始截图](assets/recovery-fixture.png)，旁边展示本地运行的
+保存次数回读。它说明确定性恢复测试的过程，不代表真实模型或生产环境验收。
+[图片来源与制作说明](docs/recovery-proof.md)可核对；下方命令可在本机复现。
+
 维护者：[@LydiaTools](https://github.com/LydiaTools)。
 收藏本仓库复用模块，关注账号获取小而可验证的 Agent 工具。
 完整技术说明见 [English README](README.md)。

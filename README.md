@@ -43,10 +43,12 @@ The demo runs a **real browser against a synthetic local page**. Its decisions
 are deterministic: no model API key, social account or cloud-browser account is
 needed. It exercises host-side controls; it is not an LLM behavior benchmark.
 
-![Local synthetic draft, verified after reload](assets/demo-desktop.png)
+![Two separate local processes resume one synthetic draft and verify one saved record](assets/recovery-proof.png)
 
-This screenshot comes from the included fixture. It is not a screenshot of Muse,
-Grok, Codex, a customer system or a production deployment.
+The graphic combines the [unaltered fixture capture](assets/recovery-fixture.png)
+with the local run's save-count readback. It shows a deterministic recovery test,
+not a live model or production deployment. [See how it was made](docs/recovery-proof.md),
+then run the two commands below to check the result on your machine.
 
 ## Quick start
 
