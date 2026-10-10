@@ -27,8 +27,8 @@
 
 ## 直接运行
 
-先看[演示导览](https://lydiatools.github.io/browser-agent-blueprint/demo/)，
-选择在线合成测试页或本地恢复 demo。[直接打开合成测试页](https://lydiatools.github.io/browser-agent-blueprint/demo/fixture.html)，
+先看[演示导览](https://lydiatools.github.io/browser-agent-blueprint/demo/?utm_source=github&utm_medium=referral&utm_campaign=browser_agent_blueprint&utm_content=repository_readme_zh)，
+选择在线合成测试页或本地恢复 demo。[直接打开合成测试页](https://lydiatools.github.io/browser-agent-blueprint/demo/fixture.html?utm_source=github&utm_medium=referral&utm_campaign=browser_agent_blueprint&utm_content=repository_readme_zh_fixture)，
 可保存一条记录、刷新并核对保存次数。网页本身不运行 Agent；下面的本地命令
 才会验证宿主侧断点续作和未知提交恢复。
 
@@ -42,6 +42,7 @@ npm run assemble -- content
 npm install
 npx playwright install chromium
 npm test
+npm run test:browser
 npm run demo
 npm run demo:prepare
 npm run demo:resume
@@ -75,3 +76,7 @@ token 节省比例、传播效果或 Star 数量。MIT 许可覆盖本仓库原�
 
 [完整模块](prompts/) · [工作流](workflows/) · [实测记录](docs/verification.md)
 · [报告可复现失败](https://github.com/LydiaTools/browser-agent-blueprint/issues)
+
+## 网站访问统计
+
+项目介绍页、演示导览和合成测试页只有在你主动允许后，才会启用可选的 Google Analytics 4 统计。统计包含页面路径、限定的活动标记、来源域名、前往 LydiaTools GitHub 页面的路径，以及测试记录保存并回读成功这一通用事件；不会发送测试页中的标题、正文、已保存记录或保存次数。选择“拒绝”或“暂不选择”都不会加载统计代码；以后可以从页脚的“隐私设置”更改已保存的选择。

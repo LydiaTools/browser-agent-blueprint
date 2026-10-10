@@ -10,8 +10,8 @@ and resumable tasks — with a real local browser demo.
 [![Checks](https://github.com/LydiaTools/browser-agent-blueprint/actions/workflows/ci.yml/badge.svg)](https://github.com/LydiaTools/browser-agent-blueprint/actions/workflows/ci.yml)
 
 [Quick start](#quick-start) · [Copy a module](#copy-a-module) ·
-[Project overview](https://lydiatools.github.io/browser-agent-blueprint/) ·
-[Demo guide](https://lydiatools.github.io/browser-agent-blueprint/demo/) ·
+[Project overview](https://lydiatools.github.io/browser-agent-blueprint/?utm_source=github&utm_medium=referral&utm_campaign=browser_agent_blueprint&utm_content=repository_readme_overview) ·
+[Demo guide](https://lydiatools.github.io/browser-agent-blueprint/demo/?utm_source=github&utm_medium=referral&utm_campaign=browser_agent_blueprint&utm_content=repository_readme_en) ·
 [Download the v0.1.0 source bundle](https://github.com/LydiaTools/browser-agent-blueprint/releases/download/v0.1.0/browser-agent-blueprint-v0.1.0.zip) ·
 [See the boundaries](#limits-and-disclaimer) · [中文](README.zh-CN.md)
 
@@ -77,10 +77,10 @@ repository version.
 
 ### Run the browser demo
 
-Start with the [demo guide](https://lydiatools.github.io/browser-agent-blueprint/demo/)
+Start with the [demo guide](https://lydiatools.github.io/browser-agent-blueprint/demo/?utm_source=github&utm_medium=referral&utm_campaign=browser_agent_blueprint&utm_content=repository_readme_demo_section)
 to choose between the online fixture and the local recovery runner. For a quick
 look at the page used by the tests, [open the browser-only synthetic
-fixture](https://lydiatools.github.io/browser-agent-blueprint/demo/fixture.html).
+fixture](https://lydiatools.github.io/browser-agent-blueprint/demo/fixture.html?utm_source=github&utm_medium=referral&utm_campaign=browser_agent_blueprint&utm_content=repository_readme_fixture_en).
 Save a draft, reload, and inspect the persisted record and save count. The
 fixture is a synthetic test page; it does not run an agent or the recovery
 checks. Run the commands below to exercise the host-side controls.
@@ -89,6 +89,7 @@ checks. Run the commands below to exercise the host-side controls.
 npm install
 npx playwright install chromium
 npm test
+npm run test:browser
 npm run demo
 ```
 
@@ -139,6 +140,10 @@ observed result. One report is evidence for that run, not a reliability claim.
 See [evaluation scope](docs/evaluation.md), [architecture](docs/architecture.md)
 and [recorded local verification](docs/verification.md). Passing these examples
 does not establish model obedience or production safety.
+
+## Website analytics
+
+The project guide, demo guide, and synthetic fixture offer optional Google Analytics 4 measurement only after you allow it. It records page paths, allow-listed campaign tags, the referrer origin, LydiaTools GitHub destination paths, and a generic event after a fixture save is verified. It never sends the fixture title, body, saved record, or save count. Rejecting or postponing consent keeps analytics off; change a saved choice from **Privacy settings** in the footer.
 
 ## Modules
 

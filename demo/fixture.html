@@ -63,10 +63,14 @@ document.getElementById('save').addEventListener('click',()=>{
  const record={id:'fixture-001',title:document.getElementById('title').value,body:document.getElementById('body').value,saves:(previous?.saves||0)+1};
  localStorage.setItem(key,JSON.stringify(record));render();
  document.getElementById('status').textContent='Draft saved. Verify after reload.';
+ const verified=JSON.parse(localStorage.getItem(key)||'null');
+ if(verified?.id==='fixture-001'&&verified.saves===record.saves&&verified.title===record.title&&verified.body===record.body){
+  document.dispatchEvent(new Event('lydia-demo-save-verified'));
+ }
 });
 document.getElementById('reset').addEventListener('click',()=>{
  localStorage.removeItem(key);render();
  document.getElementById('status').textContent='Synthetic record cleared.';
 });
 render();
-</script></body></html>
+</script><script defer src="../analytics-consent.js"></script></body></html>
