@@ -1,0 +1,14 @@
+INTEGRATION CONTRACT / GROK / NOT LIVE-TESTED
+This is prompt and tool-loop guidance, not an xAI integration certification.
+Choose a currently supported tool-capable model through your own host.
+Supply the assembled modules at the host-supported trusted instruction layer.
+Use the host's actual function schemas and documented tool-result format.
+The application executes tools. A generated function call is not execution.
+Validate function names and parameters, origin/account, action effect and
+authority in the dispatcher. Never trust model-supplied approval or risk level.
+Persist the ledger before writes, redact results and retain only needed data.
+Implement memory, context telemetry, rollover and scheduling outside the model.
+No API keys belong in prompts, screenshots, checkpoints or issue reports.
+This repository does not invoke an xAI endpoint or validate a Grok model.
+Run the acceptance checklist and record model/version before claiming support.
+Official reference: https://docs.x.ai/developers/tools/function-calling

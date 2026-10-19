@@ -1,0 +1,10 @@
+WORKFLOW / WEBSITE CONTENT ENTRY
+Profile: content.
+Goal: enter approved content into named draft records and verify persisted data.
+Inputs: approved source; field map; exact targets; save state; bounded record count.
+Read existing values, detect conflicts, then perform an authorized one-record
+canary. Refresh and compare saved title, body, links and status.
+Continue only within the approved set and cumulative budget.
+Checkpoint completed record IDs and uncertain submissions.
+Success: each requested record has a fresh matching saved read; failed or
+unknown records are listed explicitly. Publication is a separate scoped action.

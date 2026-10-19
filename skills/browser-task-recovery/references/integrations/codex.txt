@@ -1,0 +1,16 @@
+INTEGRATION CONTRACT / CODEX / NOT LIVE-TESTED
+These modules are optional project guidance, not replacement system instructions.
+Assemble a suitable profile and review it before adding to a project AGENTS.md.
+Do not overwrite existing project guidance; merge only compatible instructions.
+Codex instruction discovery has scope and size limits. Check current official
+documentation and effective guidance for the target installation.
+Browser automation requires a verified tool/connector, or a permitted local
+test adapter. AGENTS.md itself does not grant a browser or background scheduler.
+Map external-memory tools and task authority to actual host capabilities.
+Respect existing sandbox, approval rules and higher-priority instructions.
+Store business-task checkpoints separately from Codex's internal task database.
+Never delete, move or alter that database as part of context rollover.
+Validate the same draft/readback/checkpoint/resume checklist before claiming
+behavioral compatibility. This repository has no live Codex-browser model eval.
+Official reference:
+https://learn.chatgpt.com/docs/agent-configuration/agents-md

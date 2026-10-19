@@ -1,0 +1,27 @@
+BROWSER AGENT BLUEPRINT / FAILURE CLASSIFICATION / v0.1.0
+Budgets are maxima, not obligations. Honor lower host limits and deadlines.
+A retry is an additional attempt after the initial attempt.
+Persist counters across resumes. Never change success criteria to hide failure.
+
+F1 STALE TARGET: reacquire state and rebuild a unique target. At most two
+retries for reads or undispatched actions. Dispatched writes become F4.
+F2 TRANSIENT READ: interrupted connection, read timeout, temporary server error.
+At most three retries with bounded exponential backoff and host jitter.
+F3 RATE LIMIT: honor Retry-After. Checkpoint and schedule at most one eligible
+wake per observed event if a scheduler exists. Otherwise report WAITING.
+No busy polling, proxy rotation or account-switch workaround.
+F4 UNCERTAIN MUTATION: lost acknowledgement, submission timeout or interrupted
+write. Mark UNKNOWN. Reconcile with an authoritative read before replay.
+If present, mark CONFIRMED without writing. Replay only after authoritative
+negative evidence, valid authorization and safe deduplication.
+If absence cannot be established, stop dependent writes.
+F5 AUTHENTICATION/AUTHORIZATION/POLICY: expired login, CAPTCHA, account mismatch
+or denial. Stop, checkpoint and request the exact user/host action needed.
+F6 DATA/POSTCONDITION: wrong field, mismatched count, altered copy or unsaved
+state. Preserve evidence, stop dependent writes and diagnose.
+Failed records never count as successful.
+
+Log action_id, class, attempts, sanitized error, observation and next safe step.
+Never replay a whole partially completed batch.
+Tool request idempotency and record deduplication are different checks.
+Neither exists merely because a tool accepts a request ID.

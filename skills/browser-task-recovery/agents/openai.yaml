@@ -1,0 +1,4 @@
+interface:
+  display_name: "Browser Task Recovery"
+  short_description: "Read back uncertain writes and resume browser tasks"
+  default_prompt: "Use $browser-task-recovery to resume this browser task and reconcile any uncertain submission before another write."

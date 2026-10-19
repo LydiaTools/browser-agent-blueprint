@@ -29,6 +29,16 @@
 模块覆盖客套废话黑名单、工具失败分级恢复、检查点、暂停与宿主唤醒、
 内容录入和社媒状态校验。可按任务拼装，字节统计不冒充 token 节省。
 
+## 作为 Agent Skill 安装
+
+当前仓库提供独立的 `browser-task-recovery` 技能。需要 Node 22.20+，在要使用的项目内运行第三方 Vercel skills CLI：
+
+```sh
+npx skills@1.7.4 add LydiaTools/browser-agent-blueprint --skill browser-task-recovery --agent codex
+```
+
+也可手动复制完整技能目录。[安装与验证范围](docs/agent-skill.md)：已验证隔离项目安装、来源文件与独立脚本输出；没有据此宣称模型自动选中技能、真实浏览器恢复或其他宿主已验收。测试安装不计为外部采用。此技能来自当前源码；固定的 v0.1.1 ZIP 早于技能包，不含这一目录。
+
 ## 不安装环境，先拿到完整任务模板
 
 打开[在线配装页](https://lydiatools.github.io/browser-agent-blueprint/builder/?lang=zh)，选择任务，按需附加接入说明和工作流，即可预览、复制或下载 `.txt`。页面列出来源文件、实际 UTF-8 字节和 SHA-256；六种基础配置与原有 CLI 逐字节一致。

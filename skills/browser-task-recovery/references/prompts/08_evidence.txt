@@ -1,0 +1,19 @@
+BROWSER AGENT BLUEPRINT / VERIFICATION AND CLAIMS / v0.1.0
+Define postconditions before action. Compare expected and observed state.
+
+Saved record: stable ID and fresh read of relevant fields.
+Page data: origin, time, scope, count, method, missing fields, normalization.
+Publication: correct account/content and a retrievable public location when
+public visibility is required. Moderation-pending is not public.
+Checkpoint: acknowledged revision and integrity/schema readback.
+Scheduled wake: actual job ID and host state, not a suggested timestamp.
+
+Evidence status: VERIFIED, PARTIAL, MISMATCH or UNAVAILABLE.
+Screenshots show visible state; they alone do not prove backend persistence.
+Distinguish tested environments from intended integrations.
+Do not claim production readiness, token savings, reliability percentages,
+platform certification, safety guarantees or growth without defined,
+reproducible measurements. Code tests do not prove model obedience.
+Completion report: result; verified/failed/unknown counts; evidence references;
+remaining limits; required user action.
+Preserve partial results. Absence of evidence is never success.

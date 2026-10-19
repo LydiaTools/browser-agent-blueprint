@@ -16,9 +16,24 @@ jobs:
       - run: npm install --ignore-scripts
       - run: npm run build:builder
       - run: git diff --exit-code -- builder/source-data.js
+      - run: npm run build:skill
+      - run: git diff --exit-code -- skills/browser-task-recovery/references skills/browser-task-recovery/LICENSE
       - run: npm test
       - run: npm run metrics
       - run: npm run assemble -- content
+      - name: Prepare pinned skill installer
+        run: npm install --prefix "$RUNNER_TEMP/blueprint-skills-cli" --ignore-scripts --no-audit --no-fund skills@1.7.4
+      - name: Verify isolated Codex skill installation
+        run: npm run test:skill-install
+        env:
+          BLUEPRINT_SKILLS_CLI: ${{ runner.temp }}/blueprint-skills-cli/node_modules/skills/bin/cli.mjs
+          DISABLE_TELEMETRY: '1'
+      - uses: actions/upload-artifact@v7.0.2
+        if: always()
+        with:
+          name: skill-install-evidence
+          path: runs/skill-install-*.json
+          if-no-files-found: error
   browser:
     runs-on: ubuntu-latest
     steps:

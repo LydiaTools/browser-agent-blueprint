@@ -1,0 +1,16 @@
+INTEGRATION CONTRACT / MUSE / NOT LIVE-TESTED
+This is an operator mapping guide, not a Muse plugin or an official API client.
+The name Muse does not identify a verified tool schema in this repository.
+Confirm the exact product, version and browser environment with your operator.
+Copy the selected assembled prompt into a supported instruction surface only.
+If a normal chat message is the only surface, describe it as task guidance,
+not a guaranteed system-level instruction or enforcement policy.
+Discover actual browser tools and map navigation, observe, locate, fill/click,
+saved-state reads, external memory and scheduling to advertised capabilities.
+Keep unavailable capabilities explicitly disabled. Do not invent endpoints.
+Bind account, exact origins and bounded action authority before starting.
+Use existing approval controls. Preserve current sessions and unrelated jobs.
+Checkpointing requires actual persistent storage; wake requires a real scheduler.
+Acceptance checklist: one authorized draft; fresh read; blocked out-of-scope
+action; checkpoint readback; resume without duplicate mutation.
+Until performed on the named Muse environment, integration remains NOT TESTED.

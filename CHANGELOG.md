@@ -1,5 +1,11 @@
 # Changelog
 
+## Current source — 2026-10-20
+
+- Self-contained `browser-task-recovery` Agent Skill with selective original references, Codex UI metadata, an isolated-install helper and the MIT notice.
+- Three resource/isolation/failure cases and a real project-scope skills@1.7.4 installer check. This verifies packaging and output, not model behavior, directory ranking or adoption.
+- Existing v0.1.1 tag/ZIP stays fixed; the skill is available through current repository source.
+
 ## 0.1.1 — 2026-10-20
 
 - English/Chinese task-profile builder: preview, copy and download original instructions without Node or a model API.
