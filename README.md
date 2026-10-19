@@ -19,6 +19,10 @@ Built and maintained by [@LydiaTools](https://github.com/LydiaTools).
 Follow the account for small, reproducible Agent tools; star this repository
 if you want to keep the modules and recovery cases handy.
 
+Listed in [Awesome-AI-Agents](https://github.com/Jenqyang/Awesome-AI-Agents) under Reference Repo.
+
+For standalone action/readback reports and a recorded-check CI gate, see the companion [StepReceipt](https://github.com/LydiaTools/stepreceipt). Its checks are supplied by the integration; it is a separate tool, not automatically connected to these demos.
+
 ## The problem
 
 Your browser agent clicks **Save**. The response times out. A new session starts.

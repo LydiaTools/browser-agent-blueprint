@@ -16,6 +16,10 @@
 收藏本仓库复用模块，关注账号获取小而可验证的 Agent 工具。
 完整技术说明见 [English README](README.md)。
 
+已收录于 [Awesome-AI-Agents](https://github.com/Jenqyang/Awesome-AI-Agents) 的 Reference Repo 分类。
+
+需要单独的动作/读回报告与 CI 检查入口，可使用配套个人工具 [StepReceipt](https://github.com/LydiaTools/stepreceipt)。检查由接入方提供；它与本仓库的 demo 分开使用，没有自动接入。
+
 ## 解决什么
 
 提交后超时，先核对结果；不能直接重发。点击保存，刷新读取字段后
