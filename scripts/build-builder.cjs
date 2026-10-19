@@ -1,0 +1,12 @@
+'use strict';
+const fs = require('node:fs');
+const path = require('node:path');
+const root = path.resolve(__dirname, '..');
+const manifest = require('../manifest.json');
+const names = [...manifest.modules, 'integrations/muse.txt', 'integrations/grok.txt', 'integrations/codex.txt', 'workflows/cloud_browser.txt', 'workflows/content_entry.txt', 'workflows/data_validation.txt', 'workflows/social_ops.txt'];
+if (names.length !== new Set(names).size || names.some(p => !/^(prompts|integrations|workflows)\/[a-z0-9_]+\.txt$/.test(p))) throw new Error('Unexpected source path.');
+const files = Object.fromEntries(names.map(p => [p, fs.readFileSync(path.join(root, p), 'utf8')]));
+const data = {version: manifest.version, modules: manifest.modules, profiles: manifest.profiles, files};
+fs.mkdirSync(path.join(root, 'builder'), {recursive: true});
+fs.writeFileSync(path.join(root, 'builder/source-data.js'), '/* Generated from the original tracked .txt files. Run node scripts/build-builder.cjs. */\nwindow.BlueprintSources = ' + JSON.stringify(data, null, 2) + ';\n');
+console.log(`Bundled ${names.length} original source files; no live data or credentials.`);

@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Choose a browser task profile. Preview, copy or download the original Browser Agent Blueprint prompt modules without installing Node or calling a model.">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self';script-src 'self';style-src 'self';connect-src 'none';img-src 'self' data:;font-src 'none';object-src 'none';base-uri 'none';form-action 'none'">
+  <title>Build a task profile · Browser Agent Blueprint</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="source-data.js" defer></script>
+  <script src="core.js" defer></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <header><a class="brand" href="../"><span aria-hidden="true">BA</span>Browser Agent Blueprint</a><nav><a href="https://github.com/LydiaTools/browser-agent-blueprint" target="_blank" rel="noopener">GitHub</a><button id="language" type="button">中文</button></nav></header>
+  <main>
+    <div class="intro"><h1 data-i18n="title">Give your browser task a clear contract.</h1><p data-i18n="intro">Choose the instructions you need. Read the assembled text, then copy or download it.</p></div>
+    <div class="workbench">
+      <section class="choices" aria-labelledby="choose-title">
+        <h2 id="choose-title" data-i18n="choose">Choose your task</h2>
+        <label for="profile" data-i18n="profile">Task profile</label>
+        <select id="profile"><option value="minimal"></option><option value="long"></option><option value="content"></option><option value="validation"></option><option value="social"></option><option value="full"></option></select>
+        <p id="profileHint" class="hint"></p>
+        <label for="integration" data-i18n="integration">Add an integration contract</label>
+        <select id="integration"><option value="none"></option><option value="muse">Muse</option><option value="grok">Grok</option><option value="codex">Codex</option></select>
+        <p class="hint" data-i18n="integrationHint">Optional guidance to review and map to your host. These are not installed connectors or live-tested integrations.</p>
+        <label for="workflow" data-i18n="workflow">Add a workflow template</label>
+        <select id="workflow"><option value="none"></option><option value="cloud_browser"></option><option value="content_entry"></option><option value="data_validation"></option><option value="social_ops"></option></select>
+        <details open><summary data-i18n="included">Included source files</summary><ul id="files"></ul></details>
+      </section>
+      <section class="output" aria-labelledby="output-title">
+        <div class="output-heading"><div><h2 id="output-title" data-i18n="preview">Your assembled instructions</h2><p id="counts" class="hint"></p></div><div class="actions"><button id="copy" type="button" data-i18n="copy">Copy text</button><button id="download" type="button" class="primary" data-i18n="download">Download .txt</button></div></div>
+        <p class="source-note" data-i18n="sourceNote">The original instructions are in English. Changing the interface language keeps the source text unchanged.</p>
+        <label class="sr-only" for="text" data-i18n="preview">Your assembled instructions</label><textarea id="text" readonly spellcheck="false"></textarea>
+        <p id="status" class="status" role="status" aria-live="polite"></p>
+        <details class="fingerprint"><summary data-i18n="checksum">Check the exact output</summary><p id="hash"></p><p data-i18n="checksumHint">UTF-8 byte count and SHA-256 describe this text. They do not measure tokens or model reliability.</p></details>
+      </section>
+    </div>
+    <section class="use"><div><h2 data-i18n="next">Use it in your own host</h2><p data-i18n="review">Read the text, map tool names and checkpoint storage to your actual environment, and merge only compatible guidance. Preserve your existing instructions.</p><p data-i18n="boundary">A prompt does not install a browser, keep a process alive, grant permissions or schedule a wake-up. Runtime checks and durable storage belong to your host.</p></div><div><h2 data-i18n="try">Try the write/readback boundary</h2><p data-i18n="demoHint">The online fixture lets you save a synthetic draft, reload and inspect the saved result. It does not run an AI agent.</p><a class="demo-link" href="../demo/fixture.html" data-i18n="fixture">Open the synthetic fixture</a><p><a href="../demo/" data-i18n="runner">See the full local recovery runner</a></p></div></section>
+    <footer><span data-i18n="footer">Original MIT templates. No model calls, uploads or analytics on this page.</span><a href="https://github.com/LydiaTools/browser-agent-blueprint/issues/new?template=integration_observation.yml" target="_blank" rel="noopener" data-i18n="feedback">Share an integration observation</a></footer>
+  </main>
+</body>
+</html>

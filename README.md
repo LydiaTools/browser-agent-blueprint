@@ -9,10 +9,10 @@ and resumable tasks — with a real local browser demo.
 
 [![Checks](https://github.com/LydiaTools/browser-agent-blueprint/actions/workflows/ci.yml/badge.svg)](https://github.com/LydiaTools/browser-agent-blueprint/actions/workflows/ci.yml)
 
-[Quick start](#quick-start) · [Copy a module](#copy-a-module) ·
+[Build a task profile online](https://lydiatools.github.io/browser-agent-blueprint/builder/) · [Quick start](#quick-start) · [Copy a module](#copy-a-module) ·
 [Project overview](https://lydiatools.github.io/browser-agent-blueprint/?utm_source=github&utm_medium=referral&utm_campaign=browser_agent_blueprint&utm_content=repository_readme_overview) ·
 [Demo guide](https://lydiatools.github.io/browser-agent-blueprint/demo/?utm_source=github&utm_medium=referral&utm_campaign=browser_agent_blueprint&utm_content=repository_readme_en) ·
-[Download the v0.1.0 source bundle](https://github.com/LydiaTools/browser-agent-blueprint/releases/download/v0.1.0/browser-agent-blueprint-v0.1.0.zip) ·
+[Download the v0.1.1 source bundle](https://github.com/LydiaTools/browser-agent-blueprint/releases/download/v0.1.1/browser-agent-blueprint-v0.1.1.zip) ·
 [See the boundaries](#limits-and-disclaimer) · [中文](README.zh-CN.md)
 
 Built and maintained by [@LydiaTools](https://github.com/LydiaTools).
@@ -56,6 +56,16 @@ then run the two commands below to check the result on your machine.
 
 ## Quick start
 
+### Assemble a profile without installing anything
+
+[Open the task-profile builder](https://lydiatools.github.io/browser-agent-blueprint/builder/). Choose a task, optionally add an integration contract and a workflow, then **copy or download the exact text**. Included files, UTF-8 bytes and SHA-256 are shown. The six base profiles match the CLI byte for byte. [中文界面](https://lydiatools.github.io/browser-agent-blueprint/builder/?lang=zh).
+
+The builder uses the original English source text; changing its interface language does not translate the prompts. Review the output, map it to your actual tools and merge compatible guidance. It does not install a connector or run an agent. No model calls, uploads or analytics run on this page.
+
+![Actual task-profile builder: website content entry, optional Codex contract and workflow, included files and the original assembled text.](assets/profile-builder.png)
+
+For an offline copy, extract the v0.1.1 source bundle and open `builder/index.html` inside its `browser-agent-blueprint` folder. Node is not needed for this page. The original v0.1.0 ZIP remains a fixed older snapshot without the builder. The prompt modules themselves remain v0.1.0.
+
 ### Copy a module
 
 Start with [risk checks](prompts/04_risk.txt),
@@ -74,7 +84,7 @@ The output is `dist/content.txt`. Review it, map conceptual tools to your actual
 host schemas, and place it in a supported trusted instruction surface.
 Assembly has no npm dependencies. It reports bytes and a hash, **not token savings**.
 
-Without Git, download the [v0.1.0 source bundle](https://github.com/LydiaTools/browser-agent-blueprint/releases/download/v0.1.0/browser-agent-blueprint-v0.1.0.zip),
+Without Git, download the [v0.1.1 source bundle](https://github.com/LydiaTools/browser-agent-blueprint/releases/download/v0.1.1/browser-agent-blueprint-v0.1.1.zip),
 extract it, and run the commands from its `browser-agent-blueprint` folder. The
 ZIP is a fixed release snapshot; the online synthetic page follows the current
 repository version.

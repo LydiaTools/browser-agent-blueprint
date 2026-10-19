@@ -29,6 +29,16 @@
 模块覆盖客套废话黑名单、工具失败分级恢复、检查点、暂停与宿主唤醒、
 内容录入和社媒状态校验。可按任务拼装，字节统计不冒充 token 节省。
 
+## 不安装环境，先拿到完整任务模板
+
+打开[在线配装页](https://lydiatools.github.io/browser-agent-blueprint/builder/?lang=zh)，选择任务，按需附加接入说明和工作流，即可预览、复制或下载 `.txt`。页面列出来源文件、实际 UTF-8 字节和 SHA-256；六种基础配置与原有 CLI 逐字节一致。
+
+界面支持中英文，指令保留原始英文，不会自动翻译。放入实际环境前需要阅读并映射工具、存储与权限；配装页不会安装连接器或运行 Agent，也不调用模型、上传内容或加载统计代码。
+
+![真实中文配装页：任务、接入说明、工作流和可下载的指令原文。](assets/profile-builder-zh.png)
+
+离线使用：解压 v0.1.1 源码包，在 `browser-agent-blueprint` 目录内打开 `builder/index.html`，不需要 Node。旧 v0.1.0 ZIP 保持原样，不含配装页；提示词模块本身仍为 v0.1.0。
+
 ## 直接运行
 
 先看[演示导览](https://lydiatools.github.io/browser-agent-blueprint/demo/?utm_source=github&utm_medium=referral&utm_campaign=browser_agent_blueprint&utm_content=repository_readme_zh)，
@@ -36,7 +46,7 @@
 可保存一条记录、刷新并核对保存次数。网页本身不运行 Agent；下面的本地命令
 才会验证宿主侧断点续作和未知提交恢复。
 
-不使用 Git 也可下载 [v0.1.0 源码 ZIP](https://github.com/LydiaTools/browser-agent-blueprint/releases/download/v0.1.0/browser-agent-blueprint-v0.1.0.zip)，
+不使用 Git 也可下载 [v0.1.1 源码 ZIP](https://github.com/LydiaTools/browser-agent-blueprint/releases/download/v0.1.1/browser-agent-blueprint-v0.1.1.zip)，
 解压后进入 `browser-agent-blueprint` 目录运行命令。ZIP 是固定版本快照；在线合成页随仓库当前版本更新。
 
 ```sh
