@@ -145,6 +145,18 @@ No existing browser profile is used. The all-in-one demo intentionally performs
 two saves to exercise lost-acknowledgement recovery; run `demo:prepare` before
 `demo:resume` for the one-save cross-process case.
 
+### Kill the worker around snapshot export
+
+```sh
+npm run demo:crash-boundaries
+```
+
+Two actual `SIGKILL` cases: the fresh process restores **0** records before
+the export, and **1** after it, without replaying Save. This macOS/Linux
+experiment tests explicit snapshot recovery; it does not kill the browser or
+prove disk-flush durability. [Method, actual report and limits](docs/crash-boundaries.md).
+Use current source; the fixed v0.1.1 ZIP predates this experiment.
+
 Ran the demo or mapped a module to your own browser host? [Share one integration
 observation](https://github.com/LydiaTools/browser-agent-blueprint/issues/new?template=integration_observation.yml)
 with the module version, synthetic or live-host scope, and expected versus

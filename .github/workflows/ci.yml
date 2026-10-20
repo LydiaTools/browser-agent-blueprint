@@ -49,6 +49,7 @@ jobs:
       - run: npm run demo
       - run: npm run demo:prepare
       - run: npm run demo:resume
+      - run: npm run demo:crash-boundaries
       - uses: actions/upload-artifact@v7.0.2
         if: always()
         with:

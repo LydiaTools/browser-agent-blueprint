@@ -78,6 +78,11 @@ npm run demo:resume
 prepare 退出后，resume 用第二个进程读取检查点、恢复合成页面，并验证
 保存次数仍为 1。全场景 demo 有意执行两次保存，不能直接当作该恢复样本。
 
+另可在 macOS/Linux 运行 `npm run demo:crash-boundaries`：真实 `SIGKILL`
+终止工作进程，分别观察导出浏览器快照前、后的恢复结果。新进程分别读到 **0 / 1**
+条记录，两次都不重新保存。它测的是显式快照恢复，不是浏览器磁盘刷写或断电持久性。
+[实验方法与真实报告](docs/crash-boundaries.md)；使用当前仓库源码，固定 v0.1.1 ZIP 尚不含此实验。
+
 跑通示例或把模块接入自己的浏览器宿主后，可[提交一条使用记录](https://github.com/LydiaTools/browser-agent-blueprint/issues/new?template=integration_observation.yml)：
 写明模块版本、合成示例还是真实宿主，以及预期与实际结果。请先去掉凭据和私人页面内容；
 单次记录只说明这次运行，不代表可靠性结论。

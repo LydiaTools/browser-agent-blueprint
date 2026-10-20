@@ -36,3 +36,12 @@ It does not verify any LLM or named cloud-browser service.
 
 Counts are inventory/test facts, not reliability or token-saving percentages.
 Screenshots in `assets/` show the one-save synthetic prepare run.
+
+## Worker-kill boundaries, 2026-10-20
+
+`BLUEPRINT_BROWSER_CHANNEL=chrome npm run demo:crash-boundaries` passed on
+macOS arm64 / Node 22.23.0 / Chrome 155.0.8059.85. Actual worker exits were
+SIGKILL; distinct fresh-process readbacks were 0 before export and 1 after
+export, with 0 replayed saves in both. [Method and raw report](crash-boundaries.md).
+This checks explicit synthetic snapshot restoration, not the original runner's
+checkpoint transaction, browser disk flush, browser death or power-loss durability.

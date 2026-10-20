@@ -1,0 +1,73 @@
+{
+  "started_at": "2026-10-20T15:41:26.958Z",
+  "completed_at": "2026-10-20T15:41:29.546Z",
+  "platform": "darwin",
+  "node": "v22.23.0",
+  "browser": "155.0.8059.85",
+  "status": "passed",
+  "cases": [
+    {
+      "boundary": "before-export",
+      "first_process": {
+        "phase": "ready-for-kill",
+        "pid": 54994,
+        "record": {
+          "id": "fixture-001",
+          "title": "Boundary: before-export",
+          "body": "Synthetic crash-boundary record.",
+          "saves": 1
+        },
+        "snapshot_exists": false,
+        "save_calls": 1
+      },
+      "first_exit": {
+        "code": null,
+        "signal": "SIGKILL"
+      },
+      "fresh_process": {
+        "phase": "read-back",
+        "pid": 54999,
+        "record": null,
+        "displayed_save_count": 0,
+        "save_calls": 0
+      },
+      "expected_restored_records": 0,
+      "passed": true
+    },
+    {
+      "boundary": "after-export",
+      "first_process": {
+        "phase": "ready-for-kill",
+        "pid": 55005,
+        "record": {
+          "id": "fixture-001",
+          "title": "Boundary: after-export",
+          "body": "Synthetic crash-boundary record.",
+          "saves": 1
+        },
+        "snapshot_exists": true,
+        "save_calls": 1
+      },
+      "first_exit": {
+        "code": null,
+        "signal": "SIGKILL"
+      },
+      "fresh_process": {
+        "phase": "read-back",
+        "pid": 55011,
+        "record": {
+          "id": "fixture-001",
+          "title": "Boundary: after-export",
+          "body": "Synthetic crash-boundary record.",
+          "saves": 1
+        },
+        "displayed_save_count": 1,
+        "save_calls": 0
+      },
+      "expected_restored_records": 1,
+      "passed": true
+    }
+  ],
+  "temporary_profiles_and_snapshots_cleaned": true,
+  "scope": "SIGKILL of the Node worker around explicit synthetic localStorage export; fresh isolated context restoration. Not browser disk-flush, browser-process death, power loss, checkpoint-ledger consistency, or live-model testing."
+}

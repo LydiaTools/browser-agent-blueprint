@@ -15,6 +15,7 @@
     "demo": "node demo/run.cjs",
     "demo:prepare": "node demo/run.cjs --phase prepare",
     "demo:resume": "node demo/run.cjs --phase resume",
+    "demo:crash-boundaries": "node demo/crash-boundaries.cjs",
     "build:builder": "node scripts/build-builder.cjs",
     "test:builder": "node tests/builder-browser.cjs",
     "build:skill": "node scripts/build-skill.cjs",
