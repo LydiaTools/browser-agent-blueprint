@@ -44,7 +44,8 @@ function bindOperation(action, ledger) {
     throw new PolicyError('Operation ID and payload SHA-256 must be supplied together');
   for (const entry of Object.values(ledger)) {
     if (entry.action?.kind === 'read' || entry.action?.operation_id !== action.operation_id) continue;
-    if (entry.action.payload_sha256 !== action.payload_sha256 || entry.action.origin !== action.origin || entry.action.account !== action.account)
+    if (entry.action.payload_sha256 !== action.payload_sha256 || entry.action.origin !== action.origin || entry.action.account !== action.account ||
+        entry.action.kind !== action.kind || entry.action.count !== action.count)
       throw new PolicyError('Operation binding changed');
     if (entry.status !== 'ABSENT') throw new PolicyError('Operation already recorded; reconcile before a new attempt');
   }

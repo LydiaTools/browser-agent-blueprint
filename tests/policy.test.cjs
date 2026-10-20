@@ -188,6 +188,16 @@ test('incomplete or malformed operation bindings stop before dispatch',async()=>
  }
  assert.equal(writes,0);
 });
+test('an ABSENT operation cannot be repurposed for another action or count',async()=>{
+ let writes=0;
+ const bound={...action(),operation_id:'stable-operation',payload_sha256:'a'.repeat(64)};
+ const ledger={prior:{action:bound,reservedWrites:1,status:'ABSENT'}};
+ for(const changed of [{...bound,kind:'fill'},{...bound,count:2}]){
+  const c=new Controller({...scope(),maxWrites:10},ledger);
+  await assert.rejects(c.run('repurposed',changed,async()=>++writes,async()=>true),/Operation binding changed/);
+ }
+ assert.equal(writes,0);
+});
 test('write-ahead intent is bound to the trusted payload and task context',()=>{
  const {validateIntent}=require('../demo/write-ahead.cjs');
  const {digest}=require('../runtime/policy.cjs');

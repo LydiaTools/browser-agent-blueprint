@@ -41,11 +41,14 @@ terminate the first process and restore the synthetic record in a second one.
 
 No model is called. No scheduler, context telemetry, distributed lease, full
 failure-classification engine, production database, arbitrary browser adapter,
-login/session manager or vendor connector is implemented. The controller keeps
-its ledger in memory until explicit checkpointing; it is **not crash-safe between
-a write and the next checkpoint**. A production dispatcher must durably record
-DISPATCHED before the request, handle crash windows, use scoped idempotency,
-check actual browser account/origin and enforce locks. The digest detects
+login/session manager or vendor connector is implemented. Without a persistence
+callback, the controller keeps its ledger in memory until explicit checkpointing;
+the original snapshot runner has a pre-checkpoint crash gap. The optional
+[write-ahead runner](write-ahead.md) awaits persisted DISPATCHED before execution,
+binds operation/payload metadata and reconciles through a fresh destination read.
+It tests one task owner and sequential workers, not a distributed transaction.
+A production dispatcher still needs destination-supported idempotency, real
+account/origin checks and host locks. The digest detects
 accidental corruption; someone who can rewrite the file can recompute it.
 
 This small demo cannot prove prompt injection resistance or model compliance.

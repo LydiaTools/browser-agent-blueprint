@@ -55,7 +55,16 @@ async function worker(config){
    },()=>page.locator('#count').innerText().then(n=>n==='1'));
   };
   let readback;
-  if(phase==='resume' || phase==='resume-confirmed'){
+  if(phase==='unguarded-control'){
+   const initial=await read('control-read');assert.equal(initial.count,0);
+   // Deliberate negative control: these two Save clicks bypass the controller.
+   await page.getByLabel('Draft title').fill(approved.payload.title);
+   for(const count of [1,2]){
+    await page.getByRole('button',{name:'Save draft',exact:true}).click();
+    await page.waitForFunction(n=>document.querySelector('#count').textContent===String(n),count);
+   }
+   readback=await read('control-verify');assert.equal(readback.count,2);
+  }else if(phase==='resume' || phase==='resume-confirmed'){
    let dispatched=false;
    await assert.rejects(controller.run('blocked-replay',{...action('save_draft'),operation_id:approved.operationId,payload_sha256:digest(approved.payload)},async()=>{dispatched=true;},async()=>true),PolicyError);
    assert.equal(dispatched,false);
@@ -80,7 +89,7 @@ async function worker(config){
   }
   const final=readCheckpoint(file,config.taskId);validateIntent(final,approved);
   return {pid:process.pid,phase,readback,operationId:final.intent.operation_id,payloadSha256:final.intent.payload_sha256,
-   actionStatus:final.ledger['save-1'].status,retryActionStatus:final.ledger['save-2']?.status,
+   actionStatus:final.ledger['save-1']?.status,retryActionStatus:final.ledger['save-2']?.status,
    reservedWrites:Object.values(final.ledger).reduce((sum,e)=>sum+e.reservedWrites,0)};
  }finally{await browser.close();}
 }
@@ -132,7 +141,7 @@ async function main(){
  await new Promise((resolve,reject)=>{server.once('error',reject);server.listen(0,'127.0.0.1',resolve);});
  const origin='http://127.0.0.1:'+server.address().port;const results=[];
  try{
-  for(const phase of ['before-write','after-write','completed']){
+  for(const phase of ['before-write','after-write','completed','unguarded-control']){
    const artifacts=path.join(runDir,phase);fs.mkdirSync(artifacts);
    const file=path.join(artifacts,'checkpoint.json');const taskId='write-ahead-'+phase;
    const approved={origin,operationId:randomUUID(),reference:phase+'-'+randomUUID(),payload:{title:'Original synthetic draft: '+phase}};
@@ -141,16 +150,24 @@ async function main(){
     bound_origin:origin,bound_account:'synthetic-account',intent:{operation_id:approved.operationId,record_reference:approved.reference,payload_sha256:digest(approved.payload)}};
    // The parent owns this task and launches only one worker at a time.
    const fd=fs.openSync(file,'wx',0o600);fs.closeSync(fd);writeCheckpoint(file,state);
+   fs.copyFileSync(file,path.join(artifacts,'initial-checkpoint.json'));
    const config={file,taskId,approved,phase,artifacts};
+   const saveTarget=label=>fs.writeFileSync(path.join(artifacts,label+'-target.json'),JSON.stringify(rows.filter(r=>r.reference===approved.reference),null,2)+'\n');
+   if(phase==='unguarded-control'){
+    const control=await runWorker(config);assert.equal(control.readback.count,2);
+    const count=rows.filter(r=>r.reference===approved.reference).length;assert.equal(count,2);
+    saveTarget('after-control');results.push({case:phase,worker:control,targetRows:count});continue;
+   }
    if(phase==='completed'){
     const done=await runWorker(config);assert.equal(done.readback.count,1);assert.equal(done.actionStatus,'CONFIRMED');
     const resumed=await runWorker({...config,phase:'resume-confirmed'});assert.notEqual(done.pid,resumed.pid);
     assert.equal(resumed.actionStatus,'CONFIRMED');assert.equal(resumed.operationId,approved.operationId);
     const count=rows.filter(r=>r.reference===approved.reference).length;assert.equal(count,1);
-    results.push({case:phase,worker:done,resumed,targetRows:count});continue;
+    saveTarget('after-resume');results.push({case:phase,worker:done,resumed,targetRows:count});continue;
    }
    const killed=await runWorker(config,phase==='before-write'?'dispatched_flushed':'target_write_observed');
    const disk=readCheckpoint(file,taskId);validateIntent(disk,approved);assert.equal(disk.ledger['save-1'].status,'DISPATCHED');
+   fs.copyFileSync(file,path.join(artifacts,'after-kill-checkpoint.json'));saveTarget('after-kill');
    const expected=phase==='before-write'?0:1;const beforeRecovery=rows.filter(r=>r.reference===approved.reference).length;assert.equal(beforeRecovery,expected);
    let failedReadRejected=false;
    if(expected){
@@ -158,19 +175,21 @@ async function main(){
     await assert.rejects(runWorker({...config,phase:'resume'}),/Postcondition mismatch/);
     failedReads.delete(approved.reference);
     assert.equal(readCheckpoint(file,taskId).ledger['save-1'].status,'DISPATCHED');
+    fs.copyFileSync(file,path.join(artifacts,'after-failed-read-checkpoint.json'));saveTarget('after-failed-read');
     assert.equal(rows.filter(r=>r.reference===approved.reference).length,1);failedReadRejected=true;
    }
    const resumed=await runWorker({...config,phase:'resume'});assert.notEqual(killed.pid,resumed.pid);
    assert.equal(resumed.operationId,approved.operationId);assert.equal(resumed.payloadSha256,digest(approved.payload));
    assert.equal(resumed.readback.count,expected);assert.equal(resumed.actionStatus,expected?'CONFIRMED':'ABSENT');
    assert.equal(rows.filter(r=>r.reference===approved.reference).length,expected);
+   fs.copyFileSync(file,path.join(artifacts,'after-resume-checkpoint.json'));saveTarget('after-resume');
    const result={case:phase,killed,beforeRecovery,resumed,targetRowsAfterRecovery:expected,failedReadRejected};
    if(!expected){
     // A distinct explicit retry phase, never an automatic consequence of ABSENT.
     const retry=await runWorker({...config,phase:'retry-absent'});assert.equal(retry.operationId,approved.operationId);
     assert.equal(retry.payloadSha256,digest(approved.payload));assert.equal(retry.readback.count,1);
     assert.equal(retry.retryActionStatus,'CONFIRMED');assert.equal(rows.filter(r=>r.reference===approved.reference).length,1);
-    assert.ok(retry.reservedWrites>resumed.reservedWrites);result.explicitRetry=retry;
+    assert.ok(retry.reservedWrites>resumed.reservedWrites);result.explicitRetry=retry;saveTarget('after-explicit-retry');
    }
    results.push(result);
   }

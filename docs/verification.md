@@ -45,3 +45,22 @@ SIGKILL; distinct fresh-process readbacks were 0 before export and 1 after
 export, with 0 replayed saves in both. [Method and raw report](crash-boundaries.md).
 This checks explicit synthetic snapshot restoration, not the original runner's
 checkpoint transaction, browser disk flush, browser death or power-loss durability.
+
+## Write-ahead destination experiment, 2026-10-21
+
+[CI 39502435888](https://github.com/LydiaTools/browser-agent-blueprint/actions/runs/39502435888)
+passed both contracts and real-browser jobs at
+`ada2f4d461538e0ccd8cc51b9975da780f0d0aca`, Ubuntu / Node 22 / Playwright 1.62.1.
+It passed 40 unit/contract checks and the three protected write-ahead cases:
+worker SIGKILL before dispatch read back 0; SIGKILL after the target saved read
+back 1; confirmed recovery kept 1. Read-failure injection stayed unresolved.
+A distinct explicit ABSENT retry produced 1 with the same operation/hash and
+another reservation. Actual desktop/mobile captures were inspected, with no
+pointer overlays. [Method and integration contract](write-ahead.md).
+
+Subsequent source adds an unguarded two-Save control, intermediate checkpoint
+and target snapshots, and an action-kind/count binding check (41 local tests
+passed). Check the corresponding current CI result for those additions rather
+than attributing them to the earlier run. Source-bundle release notes retain
+the final run URL and raw report when published. These tests use synthetic data
+and one task owner; no model, real account, concurrent host or power loss is tested.

@@ -4,7 +4,7 @@
 
 原创浏览器 Agent 提示词模块，配可复现的本地浏览器恢复 demo。
 
-**12 个 txt 模块 · 4 类工作流 · 6 个演示场景**
+**12 个 txt 模块 · 4 类工作流 · 可复现的恢复实验**
 
 ![两个独立进程恢复同一条合成记录，并核对保存次数为 1](assets/recovery-proof.png)
 
@@ -37,7 +37,7 @@
 npx skills@1.7.4 add LydiaTools/browser-agent-blueprint --skill browser-task-recovery --agent codex
 ```
 
-也可手动复制完整技能目录。[安装与验证范围](docs/agent-skill.md)：已验证隔离项目安装、来源文件与独立脚本输出；没有据此宣称模型自动选中技能、真实浏览器恢复或其他宿主已验收。测试安装不计为外部采用。此技能来自当前源码；固定的 v0.1.1 ZIP 早于技能包，不含这一目录。
+也可手动复制完整技能目录。[安装与验证范围](docs/agent-skill.md)：已验证隔离项目安装、来源文件与独立脚本输出；没有据此宣称模型自动选中技能、真实浏览器恢复或其他宿主已验收。测试安装不计为外部采用。当前源码与 v0.2.0 包含此技能；旧 v0.1.1 ZIP 早于技能包，不含这一目录。
 
 ## 不安装环境，先拿到完整任务模板
 
@@ -47,7 +47,7 @@ npx skills@1.7.4 add LydiaTools/browser-agent-blueprint --skill browser-task-rec
 
 ![真实中文配装页：任务、接入说明、工作流和可下载的指令原文。](assets/profile-builder-zh.png)
 
-离线使用：解压 v0.1.1 源码包，在 `browser-agent-blueprint` 目录内打开 `builder/index.html`，不需要 Node。旧 v0.1.0 ZIP 保持原样，不含配装页；提示词模块本身仍为 v0.1.0。
+离线使用：解压 v0.2.0 源码包，在 `browser-agent-blueprint` 目录内打开 `builder/index.html`，不需要 Node。旧 v0.1.0 ZIP 保持原样，不含配装页；提示词模块本身仍为 v0.1.0。
 
 ## 直接运行
 
@@ -56,7 +56,7 @@ npx skills@1.7.4 add LydiaTools/browser-agent-blueprint --skill browser-task-rec
 可保存一条记录、刷新并核对保存次数。网页本身不运行 Agent；下面的本地命令
 才会验证宿主侧断点续作和未知提交恢复。
 
-不使用 Git 也可下载 [v0.1.1 源码 ZIP](https://github.com/LydiaTools/browser-agent-blueprint/releases/download/v0.1.1/browser-agent-blueprint-v0.1.1.zip)，
+不使用 Git 也可下载 [v0.2.0 源码 ZIP](https://github.com/LydiaTools/browser-agent-blueprint/releases/download/v0.2.0/browser-agent-blueprint-v0.2.0.zip)，
 解压后进入 `browser-agent-blueprint` 目录运行命令。ZIP 是固定版本快照；在线合成页随仓库当前版本更新。
 
 ```sh
@@ -81,7 +81,19 @@ prepare 退出后，resume 用第二个进程读取检查点、恢复合成页�
 另可在 macOS/Linux 运行 `npm run demo:crash-boundaries`：真实 `SIGKILL`
 终止工作进程，分别观察导出浏览器快照前、后的恢复结果。新进程分别读到 **0 / 1**
 条记录，两次都不重新保存。它测的是显式快照恢复，不是浏览器磁盘刷写或断电持久性。
-[实验方法与真实报告](docs/crash-boundaries.md)；使用当前仓库源码，固定 v0.1.1 ZIP 尚不含此实验。
+[实验方法与真实报告](docs/crash-boundaries.md)；使用当前源码或 v0.2.0，旧 v0.1.1 ZIP 尚不含此实验。
+
+### 写入前后真实终止进程
+
+运行 `npm run demo:write-ahead`：目标服务保持运行，工作进程被真实终止。
+新进程在写入前读回 **0** 条、写入后读回 **1** 条，分别持久化 ABSENT / CONFIRMED；
+恢复读取失败不会被误判为不存在。故意绕过控制器连续保存两次的对照得到 **2** 条。
+宿主将操作 ID 与载荷哈希绑定，换尝试 ID 也不能重放已确认操作。
+
+![进程终止后，新浏览器读回一条已保存记录。](assets/write-ahead-desktop.png)
+
+[方法、接入与证据](docs/write-ahead.zh-CN.md)。使用当前源码或 v0.2.0，
+macOS/Linux；这是合成宿主测试，没有目标端去重，也不构成生产环境恰好执行一次保证。
 
 跑通示例或把模块接入自己的浏览器宿主后，可[提交一条使用记录](https://github.com/LydiaTools/browser-agent-blueprint/issues/new?template=integration_observation.yml)：
 写明模块版本、合成示例还是真实宿主，以及预期与实际结果。请先去掉凭据和私人页面内容；
@@ -96,8 +108,10 @@ prepare 退出后，resume 用第二个进程读取检查点、恢复合成页�
 它验证宿主控制逻辑，不证明模型服从提示词或能抵抗所有页面注入。
 Muse/Grok/Codex 仅提供接入约定，未做对应环境的模型实测。
 自动唤醒需要宿主调度器；本项目实现的是手动跨进程恢复。
-示例尚不具备写入与检查点之间的崩溃一致性，生产使用须补持久化
-提交账本、锁、幂等和真实权限校验。提示词不能扩大上下文或授予工具。
+不配置持久化回调时，原快照 runner 仍有写入与检查点之间的崩溃窗口。
+新增写前记录 runner 在执行前刷写 DISPATCHED，终止后核对目标结果；它不提供
+目标端幂等或恰好执行一次保证。生产使用仍须补锁、幂等和真实权限校验。
+提示词不能扩大上下文或授予工具。
 
 仅操作授权账号与数据，遵守平台自动化规则。不提供验证码绕过、
 限流规避、伪造互动或未经授权的批量私信。不承诺工业级可靠性、

@@ -5,14 +5,14 @@
 Original, copyable browser-agent prompts for verified writes, bounded retries
 and resumable tasks — with a real local browser demo.
 
-**12 prompt modules · 4 workflow templates · 6 reproducible demo scenarios**
+**12 prompt modules · 4 workflow templates · reproducible recovery demos**
 
 [![Checks](https://github.com/LydiaTools/browser-agent-blueprint/actions/workflows/ci.yml/badge.svg)](https://github.com/LydiaTools/browser-agent-blueprint/actions/workflows/ci.yml)
 
 [Install the Agent Skill](docs/agent-skill.md) · [Build a task profile online](https://lydiatools.github.io/browser-agent-blueprint/builder/) · [Quick start](#quick-start) · [Copy a module](#copy-a-module) ·
 [Project overview](https://lydiatools.github.io/browser-agent-blueprint/?utm_source=github&utm_medium=referral&utm_campaign=browser_agent_blueprint&utm_content=repository_readme_overview) ·
 [Demo guide](https://lydiatools.github.io/browser-agent-blueprint/demo/?utm_source=github&utm_medium=referral&utm_campaign=browser_agent_blueprint&utm_content=repository_readme_en) ·
-[Download the v0.1.1 source bundle](https://github.com/LydiaTools/browser-agent-blueprint/releases/download/v0.1.1/browser-agent-blueprint-v0.1.1.zip) ·
+[Download the v0.2.0 source bundle](https://github.com/LydiaTools/browser-agent-blueprint/releases/download/v0.2.0/browser-agent-blueprint-v0.2.0.zip) ·
 [See the boundaries](#limits-and-disclaimer) · [中文](README.zh-CN.md)
 
 Built and maintained by [@LydiaTools](https://github.com/LydiaTools).
@@ -64,7 +64,7 @@ For a project using Codex, the current repository includes a self-contained `bro
 npx skills@1.7.4 add LydiaTools/browser-agent-blueprint --skill browser-task-recovery --agent codex
 ```
 
-This optional third-party installer needs Node 22.20+. The skill routes uncertain writes and resumed tasks to the relevant original references; its bundled helper can export all six profiles after installation. [Installation, manual copy and validation scope](docs/agent-skill.md). Project-scope installation and exact resource/helper output are tested; live agent selection and other hosts are not. Test installs are excluded from adoption claims. The fixed v0.1.1 ZIP predates the skill; use current repository source for this option.
+This optional third-party installer needs Node 22.20+. The skill routes uncertain writes and resumed tasks to the relevant original references; its bundled helper can export all six profiles after installation. [Installation, manual copy and validation scope](docs/agent-skill.md). Project-scope installation and exact resource/helper output are tested; live agent selection and other hosts are not. Test installs are excluded from adoption claims. The v0.2.0 bundle includes the skill; the fixed older v0.1.1 ZIP predates it.
 
 ### Assemble a profile without installing anything
 
@@ -74,7 +74,7 @@ The builder uses the original English source text; changing its interface langua
 
 ![Actual task-profile builder: website content entry, optional Codex contract and workflow, included files and the original assembled text.](assets/profile-builder.png)
 
-For an offline copy, extract the v0.1.1 source bundle and open `builder/index.html` inside its `browser-agent-blueprint` folder. Node is not needed for this page. The original v0.1.0 ZIP remains a fixed older snapshot without the builder. The prompt modules themselves remain v0.1.0.
+For an offline copy, extract the v0.2.0 source bundle and open `builder/index.html` inside its `browser-agent-blueprint` folder. Node is not needed for this page. The original v0.1.0 ZIP remains a fixed older snapshot without the builder. The prompt modules themselves remain v0.1.0.
 
 ### Copy a module
 
@@ -94,7 +94,7 @@ The output is `dist/content.txt`. Review it, map conceptual tools to your actual
 host schemas, and place it in a supported trusted instruction surface.
 Assembly has no npm dependencies. It reports bytes and a hash, **not token savings**.
 
-Without Git, download the [v0.1.1 source bundle](https://github.com/LydiaTools/browser-agent-blueprint/releases/download/v0.1.1/browser-agent-blueprint-v0.1.1.zip),
+Without Git, download the [v0.2.0 source bundle](https://github.com/LydiaTools/browser-agent-blueprint/releases/download/v0.2.0/browser-agent-blueprint-v0.2.0.zip),
 extract it, and run the commands from its `browser-agent-blueprint` folder. The
 ZIP is a fixed release snapshot; the online synthetic page follows the current
 repository version.
@@ -155,14 +155,33 @@ Two actual `SIGKILL` cases: the fresh process restores **0** records before
 the export, and **1** after it, without replaying Save. This macOS/Linux
 experiment tests explicit snapshot recovery; it does not kill the browser or
 prove disk-flush durability. [Method, actual report and limits](docs/crash-boundaries.md).
-Use current source; the fixed v0.1.1 ZIP predates this experiment.
+Use current source or v0.2.0; the fixed v0.1.1 ZIP predates this experiment.
+
+### Kill a worker before or after a destination write
+
+```sh
+npm run demo:write-ahead
+```
+
+The destination stays running while the worker is killed. A fresh process reads
+**0** before the write or **1** after it, then persists ABSENT or CONFIRMED.
+A failed recovery read stays unresolved. A deliberate unguarded two-click
+control produces **2** records on the same target. The host also binds the stable
+operation ID to its payload hash; changing the attempt ID cannot replay a
+confirmed operation. [Run it and inspect the evidence](docs/write-ahead.md).
+
+![Actual recovery browser reads one saved record after the worker was killed.](assets/write-ahead-desktop.png)
+
+Use current source or v0.2.0, macOS/Linux. This is a synthetic host-control test;
+the destination has no server-side deduplication. It is not a production
+exactly-once guarantee.
 
 Ran the demo or mapped a module to your own browser host? [Share one integration
 observation](https://github.com/LydiaTools/browser-agent-blueprint/issues/new?template=integration_observation.yml)
 with the module version, synthetic or live-host scope, and expected versus
 observed result. One report is evidence for that run, not a reliability claim.
 
-## Six executable scenarios
+## Six original scenarios
 
 | Scenario | What the example demonstrates |
 |---|---|
@@ -233,10 +252,12 @@ system prompt.** No CL4R1T4S prompt text is reused. See [provenance](docs/proven
 
 These templates guide behavior; they are not a security sandbox or a substitute
 for runtime checks. The local controller is intentionally small and fixture-specific.
-It keeps action state in memory until explicit checkpointing and is **not
-crash-safe between a dispatched write and its next checkpoint**. Production
-hosts need durable pre-dispatch logging, schema validation, scoped authority,
-locks, idempotency and protected secret storage.
+Without a persistence callback, action state stays in memory until explicit
+checkpointing; the original snapshot runner has a pre-checkpoint crash gap.
+The optional [write-ahead runner](docs/write-ahead.md) flushes DISPATCHED before
+execution and reads the destination after worker death. It does not provide
+server-side idempotency or exactly-once delivery. Production hosts still need
+schema validation, scoped authority, locking and protected secret storage.
 
 The repository provides manual cross-process resume, not an automatic scheduler.
 Context-threshold handling and the full failure taxonomy are prompt contracts,
@@ -259,7 +280,7 @@ reproduction, expected/observed behavior and exact environment through
 [Issues](https://github.com/LydiaTools/browser-agent-blueprint/issues).
 
 See [contributing](CONTRIBUTING.md). Useful next contributions include
-crash-consistent dispatch, live-model evaluations and tested adapter mappings.
+concurrent-host locking, live-model evaluations and tested adapter mappings.
 
 ## License
 

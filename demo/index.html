@@ -252,6 +252,7 @@ npm run demo:resume</code></pre>
         </div>
         <p class="detail">The local runner uses loopback port 4179 and writes synthetic evidence to the ignored <code>runs/</code> directory.</p>
         <p class="detail"><a href="https://github.com/LydiaTools/browser-agent-blueprint#prove-resume-happens-in-a-new-process">Read the full recovery steps and limits</a></p>
+        <p class="detail">Testing a lost response after a real worker kill? Run <code>npm run demo:write-ahead</code> on macOS/Linux. The destination keeps running; a fresh worker reads it before another write. <a href="https://github.com/LydiaTools/browser-agent-blueprint/blob/main/docs/write-ahead.md">Method, negative control and evidence</a>.</p>
       </article>
     </section>
 
