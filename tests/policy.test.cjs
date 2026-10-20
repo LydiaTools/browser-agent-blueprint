@@ -91,6 +91,112 @@ test('schema errors cannot be checkpointed',()=>{
 test('unsafe action IDs are rejected',async()=>{
  const c=new Controller(scope());await assert.rejects(c.run('__proto__',action(),async()=>true,async()=>true),PolicyError);
 });
+test('awaits persisted DISPATCHED before executing and rejects overlapping calls',async()=>{
+ let release; const ready=new Promise(resolve=>{release=resolve;}); let writes=0;
+ const snapshots=[];
+ const c=new Controller(scope(),{}, {persist:async ledger=>{
+  snapshots.push(ledger); if(ledger.once.status==='DISPATCHED') await ready;
+ }});
+ const pending=c.run('once',action(),async()=>++writes,async()=>true);
+ assert.equal(writes,0); assert.equal(snapshots[0].once.status,'DISPATCHED');
+ await assert.rejects(c.run('overlap',action(),async()=>++writes,async()=>true),PolicyError);
+ release(); await pending; assert.equal(writes,1);
+ assert.equal(snapshots[0].once.status,'DISPATCHED');
+ assert.equal(snapshots[1].once.status,'CONFIRMED');
+});
+test('checkpoint failure before dispatch prevents the write and freezes the instance',async()=>{
+ let writes=0;
+ const c=new Controller(scope(),{}, {persist:()=>{throw new Error('private-storage-detail');}});
+ await assert.rejects(c.run('blocked',action(),async()=>++writes,async()=>true),PolicyError);
+ await assert.rejects(c.run('later',action(),async()=>++writes,async()=>true),PolicyError);
+ assert.equal(writes,0); assert.equal(c.ledger.blocked.status,'DISPATCHED');
+ assert.ok(!JSON.stringify(c.ledger).includes('private-storage-detail'));
+});
+test('actual checkpoint contains intent and reservation before the effect',async()=>{
+ const dir=fs.mkdtempSync(path.join(os.tmpdir(),'blueprint-persist-'));
+ try {
+  const file=path.join(dir,'checkpoint.json'); let writes=0;
+  const c=new Controller(scope(),{}, {persist:ledger=>writeCheckpoint(file,state(ledger))});
+  await c.run('stable-action', {...action(),operation_id:'original-operation',payload_sha256:'a'.repeat(64)}, async()=>{
+   const saved=readCheckpoint(file,'task-1').ledger['stable-action'];
+   assert.equal(saved.status,'DISPATCHED'); assert.equal(saved.reservedWrites,1);
+   assert.equal(saved.action.operation_id,'original-operation'); assert.equal(saved.action.payload_sha256,'a'.repeat(64));
+   return ++writes;
+  },async()=>true);
+  const disk=readCheckpoint(file,'task-1');assert.equal(disk.ledger['stable-action'].status,'CONFIRMED');
+  const resumed=new Controller(scope(),disk.ledger,{persist:ledger=>writeCheckpoint(file,state(ledger))});
+  await assert.rejects(resumed.run('stable-action',action(),async()=>++writes,async()=>true),PolicyError);
+  assert.equal(writes,1);
+ } finally {fs.rmSync(dir,{recursive:true,force:true});}
+});
+test('lost acknowledgement persists UNKNOWN without raw error content',async()=>{
+ let disk;
+ const c=new Controller(scope(),{}, {persist:ledger=>{disk=ledger;}});
+ await assert.rejects(c.run('unknown',action(),async()=>{throw new Error('secret-tool-error');},async()=>true));
+ assert.equal(disk.unknown.status,'UNKNOWN'); assert.ok(!JSON.stringify(disk).includes('secret-tool-error'));
+});
+test('failed confirmation flush freezes writes even when the effect completed',async()=>{
+ let disk;let writes=0;
+ const c=new Controller(scope(),{}, {persist:ledger=>{
+  if(ledger.once.status==='CONFIRMED') throw new Error('full');
+  disk=ledger;
+ }});
+ await assert.rejects(c.run('once',action(),async()=>++writes,async()=>true),PolicyError);
+ assert.equal(writes,1); assert.equal(disk.once.status,'DISPATCHED');
+ await assert.rejects(c.run('later',action(),async()=>++writes,async()=>true),PolicyError);
+ const recovered=new Controller(scope(),disk,{persist:ledger=>{disk=ledger;}});
+ assert.throws(()=>recovered.reconcile('once',true),PolicyError);
+ assert.equal(recovered.ledger.once.status,'DISPATCHED');
+ await recovered.reconcileAndPersist('once',true);
+ assert.equal(disk.once.status,'CONFIRMED'); assert.equal(writes,1);
+});
+test('failed reconciliation persistence does not permit a new mutation',async()=>{
+ let writes=0;
+ const ledger={pending:{action:action(),reservedWrites:1,status:'UNKNOWN'}};
+ const c=new Controller(scope(),ledger,{persist:()=>{throw new Error('full');}});
+ await assert.rejects(c.reconcileAndPersist('pending',false),PolicyError);
+ await assert.rejects(c.run('retry',action(),async()=>++writes,async()=>true),PolicyError);
+ assert.equal(writes,0);
+});
+test('invalid persistence callback is rejected',()=>{
+ assert.throws(()=>new Controller(scope(),{}, {persist:true}),PolicyError);
+});
+test('operation identity cannot bypass a confirmed write with a new action ID',async()=>{
+ let writes=0;let disk;
+ const bound={...action(),operation_id:'stable-operation',payload_sha256:'a'.repeat(64)};
+ const c=new Controller(scope(),{}, {persist:ledger=>{disk=ledger;}});
+ await c.run('attempt-1',bound,async()=>++writes,async()=>true);
+ const recovered=new Controller(scope(),disk,{persist:()=>{}});
+ await assert.rejects(recovered.run('attempt-2',bound,async()=>++writes,async()=>true),PolicyError);
+ assert.equal(writes,1);
+});
+test('ABSENT retry keeps the operation payload binding and consumes another reservation',async()=>{
+ let disk;let writes=0;
+ const bound={...action(),operation_id:'stable-operation',payload_sha256:'a'.repeat(64)};
+ const c=new Controller({...scope(),maxWrites:2},{},{persist:ledger=>{disk=ledger;}});
+ await assert.rejects(c.run('attempt-1',bound,async()=>{throw new Error('before target');},async()=>true));
+ await c.reconcileAndPersist('attempt-1',false);
+ const recovered=new Controller({...scope(),maxWrites:2},disk,{persist:ledger=>{disk=ledger;}});
+ await assert.rejects(recovered.run('changed-payload',{...bound,payload_sha256:'b'.repeat(64)},async()=>++writes,async()=>true),PolicyError);
+ await recovered.run('attempt-2',bound,async()=>++writes,async()=>true);
+ assert.equal(writes,1);assert.equal(Object.values(disk).reduce((sum,e)=>sum+e.reservedWrites,0),2);
+});
+test('incomplete or malformed operation bindings stop before dispatch',async()=>{
+ let writes=0;
+ for(const extra of [{operation_id:'stable'}, {payload_sha256:'a'.repeat(64)}, {operation_id:'bad\nid',payload_sha256:'a'.repeat(64)}, {operation_id:'stable',payload_sha256:'not-a-hash'}]){
+  const c=new Controller(scope());await assert.rejects(c.run('bad',{...action(),...extra},async()=>++writes,async()=>true),PolicyError);
+ }
+ assert.equal(writes,0);
+});
+test('write-ahead intent is bound to the trusted payload and task context',()=>{
+ const {validateIntent}=require('../demo/write-ahead.cjs');
+ const {digest}=require('../runtime/policy.cjs');
+ const approved={operationId:'original',reference:'draft-1',origin:'http://127.0.0.1:4179',payload:{title:'approved'}};
+ const saved={bound_origin:approved.origin,bound_account:'synthetic-account',intent:{operation_id:approved.operationId,record_reference:approved.reference,payload_sha256:digest(approved.payload)}};
+ assert.doesNotThrow(()=>validateIntent(saved,approved));
+ for(const changed of [{...approved,payload:{title:'changed'}},{...approved,operationId:'new'},{...approved,reference:'other'},{...approved,origin:'https://other.example'}])
+  assert.throws(()=>validateIntent(saved,changed),PolicyError);
+});
 test('all profiles include mandatory policies and have no duplicate IDs',()=>{
  const manifest=require('../manifest.json');
  for(const ids of Object.values(manifest.profiles)){

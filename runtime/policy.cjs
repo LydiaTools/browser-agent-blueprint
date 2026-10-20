@@ -35,30 +35,82 @@ function gate(action, scope, ledger) {
     warning: high ? 'Bounded high-risk action: ' + action.kind + ', count=' + action.count : null };
 }
 
+function bindOperation(action, ledger) {
+  const hasId = Object.hasOwn(action, 'operation_id');
+  const hasHash = Object.hasOwn(action, 'payload_sha256');
+  if (!hasId && !hasHash) return;
+  if (typeof action.operation_id !== 'string' || !/^[A-Za-z0-9._:-]{1,128}$/.test(action.operation_id) ||
+      typeof action.payload_sha256 !== 'string' || !/^[a-f0-9]{64}$/.test(action.payload_sha256))
+    throw new PolicyError('Operation ID and payload SHA-256 must be supplied together');
+  for (const entry of Object.values(ledger)) {
+    if (entry.action?.kind === 'read' || entry.action?.operation_id !== action.operation_id) continue;
+    if (entry.action.payload_sha256 !== action.payload_sha256 || entry.action.origin !== action.origin || entry.action.account !== action.account)
+      throw new PolicyError('Operation binding changed');
+    if (entry.status !== 'ABSENT') throw new PolicyError('Operation already recorded; reconcile before a new attempt');
+  }
+}
+
 class Controller {
-  constructor(scope, ledger = {}) { this.scope = scope; this.ledger = structuredClone(ledger); }
+  constructor(scope, ledger = {}, { persist } = {}) {
+    if (persist !== undefined && typeof persist !== 'function') throw new PolicyError('Invalid persistence callback');
+    this.scope = scope; this.ledger = structuredClone(ledger); this.persist = persist;
+    this.busy = false; this.persistenceFailed = false;
+  }
+  async #checkpoint() {
+    if (!this.persist) return;
+    try { await this.persist(structuredClone(this.ledger)); }
+    catch {
+      this.persistenceFailed = true;
+      throw new PolicyError('Checkpoint persistence failed; stop and reload verified task state');
+    }
+  }
+  #enter() {
+    if (!this.persist) return;
+    if (this.persistenceFailed) throw new PolicyError('Persistence failed; reload verified task state');
+    if (this.busy) throw new PolicyError('Persisted controller calls must be sequential');
+    this.busy = true;
+  }
   async run(id, action, execute, verify) {
+    this.#enter();
+    try { return await this.#runAction(id, action, execute, verify); }
+    finally { this.busy = false; }
+  }
+  async #runAction(id, action, execute, verify) {
     if (typeof id !== 'string' || !id || ['__proto__','constructor','prototype'].includes(id))
       throw new PolicyError('Invalid action ID');
     if (Object.hasOwn(this.ledger, id)) throw new PolicyError('Action ID already used; reconcile or choose a new ID');
     const decision = gate(action, this.scope, this.ledger);
+    if (action.kind !== 'read') bindOperation(action, this.ledger);
     const entry = { action: structuredClone(action), status: 'PLANNED',
       reservedWrites: action.kind === 'read' ? 0 : action.count, decision };
     this.ledger[id] = entry;
-    // The production host must durably flush DISPATCHED before sending a write.
+    // The configured host callback must flush before execute can reach the target.
     entry.status = 'DISPATCHED';
+    await this.#checkpoint();
     try {
       const result = await execute();
       if (!(await verify(result))) throw new Error('Postcondition mismatch');
       entry.status = 'CONFIRMED';
+      await this.#checkpoint();
       return result;
     } catch (error) {
+      if (this.persistenceFailed) throw error;
       entry.status = action.kind === 'read' ? 'FAILED' : 'UNKNOWN';
       entry.error = 'Execution or verification failed'; // Do not persist raw tool errors.
+      await this.#checkpoint();
       throw error;
     }
   }
   reconcile(id, present) {
+    if (this.persist) throw new PolicyError('Use await reconcileAndPersist for a persisted controller');
+    this.#markReconciled(id, present);
+  }
+  async reconcileAndPersist(id, present) {
+    this.#enter();
+    try { this.#markReconciled(id, present); await this.#checkpoint(); }
+    finally { this.busy = false; }
+  }
+  #markReconciled(id, present) {
     const entry = this.ledger[id];
     if (!entry || !['UNKNOWN','DISPATCHED'].includes(entry.status) || typeof present !== 'boolean')
       throw new PolicyError('Invalid reconciliation');

@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Blueprint write-ahead fixture</title>
+<style>
+:root{color-scheme:light;--ink:#153047;--blue:#165dad;--paper:#f7fafc;--line:#bdcddd;--green:#0e684b}
+*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:17px/1.55 system-ui,sans-serif}
+header{padding:26px max(24px,5vw);background:#e8f0f8;border-bottom:3px solid var(--blue)}header p{margin:0 0 6px;font-size:15px}h1{font:700 clamp(28px,4vw,43px)/1.2 Georgia,serif;margin:0}
+main{max-width:1060px;margin:34px auto;padding:0 24px;display:grid;grid-template-columns:1fr 1fr;gap:40px}h2{font:700 25px/1.3 Georgia,serif;margin:0 0 20px}
+label{display:block;margin:18px 0}input{display:block;margin-top:6px;width:100%;border:1px solid var(--line);border-radius:3px;background:white;color:var(--ink);font:inherit;padding:11px;min-width:0}input[readonly]{background:#edf2f6;font-size:14px}
+button{font:600 16px/1.5 system-ui;padding:10px 17px;border:1px solid var(--blue);border-radius:3px;background:var(--blue);color:white;cursor:pointer}.secondary{background:transparent;color:var(--blue);margin-left:8px}button:focus-visible,input:focus-visible{outline:3px solid #986600;outline-offset:3px}
+.note{max-width:74ch;margin:22px auto 0;padding:0 24px}.reading{border-top:2px solid var(--ink);padding-top:16px}.reading p{margin:8px 0}.count{font:700 44px/1.15 Georgia,serif;margin-right:10px}.caption{color:#476176}.status{min-height:27px;color:var(--green);margin:16px 0;overflow-wrap:anywhere}ul{padding-left:23px}li{margin:10px 0;overflow-wrap:anywhere}footer{max-width:1060px;margin:28px auto;padding:0 24px;color:#476176;font-size:14px}
+@media(max-width:650px){main{grid-template-columns:1fr;gap:28px;margin-top:25px}header{padding:22px 24px}.secondary{margin:10px 0 0}}
+</style></head><body>
+<header><p>Browser Agent Blueprint · local synthetic destination</p><h1>Read the saved record before writing again.</h1></header>
+<p class="note">The target runs separately from the browser worker. Every Save adds a row. This fixture has no server-side idempotency or model connection.</p>
+<main><section><h2>Approved draft</h2>
+<label>Record reference<input id="reference" readonly></label>
+<label>Draft title<input id="title" maxlength="120"></label>
+<button id="save" type="button">Save draft</button><button id="read" type="button" class="secondary">Read back</button>
+<p id="status" class="status" role="status" data-read-state="pending">Reading the destination…</p>
+</section><section><h2>Destination readback</h2><div class="reading"><p><span id="count" class="count">0</span><span>matching rows</span></p><p class="caption">For this record reference</p><ul id="records"></ul></div></section></main>
+<footer>The host checkpoint stays outside this page. Run <code>npm run demo:write-ahead</code> to test a killed worker and a fresh recovery process.</footer>
+<script>
+const reference=new URLSearchParams(location.search).get('reference')||'';
+document.querySelector('#reference').value=reference;
+async function read(){
+ const response=await fetch('/api/records?reference='+encodeURIComponent(reference));
+ if(!response.ok)throw new Error('Read failed');
+ const rows=await response.json();if(!Array.isArray(rows))throw new Error('Invalid readback');
+ document.querySelector('#count').textContent=String(rows.length);
+ const list=document.querySelector('#records');list.replaceChildren();
+ for(const row of rows){const li=document.createElement('li');li.textContent=row.title;list.append(li);}
+ document.querySelector('#status').textContent=rows.length?'Destination readback complete.':'No matching record at the destination.';
+ document.querySelector('#status').dataset.readState='ready';
+}
+function readFailed(){document.querySelector('#status').textContent='Read failed; stop before another write.';document.querySelector('#status').dataset.readState='failed';}
+document.querySelector('#read').addEventListener('click',()=>read().catch(readFailed));
+document.querySelector('#save').addEventListener('click',async()=>{
+ try{const response=await fetch('/api/records',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({reference,title:document.querySelector('#title').value})});
+ if(!response.ok)throw new Error('Save failed');await read();}
+ catch{document.querySelector('#status').textContent='Save outcome unclear; read back before another write.';document.querySelector('#status').dataset.readState='failed';}
+});
+read().catch(readFailed);
+</script></body></html>
