@@ -45,4 +45,4 @@ node /path/to/browser-task-recovery/scripts/assemble.cjs --list
 node /path/to/browser-task-recovery/scripts/assemble.cjs content --integration codex --workflow content_entry
 ```
 
-Profiles: `minimal`, `long`, `content`, `validation`, `social`, `full`. Integration and workflow additions are optional and explicit. Base profiles match the repository CLI exactly; the modules remain v0.1.0. Review and map the output before merging compatible guidance into a host.
+Profiles: `minimal`, `long`, `content`, `validation`, `social`, `full`. Integration and workflow additions are optional and explicit. Base profiles match the repository CLI exactly; the current risk module is v0.1.1. Review and map the output before merging compatible guidance into a host.

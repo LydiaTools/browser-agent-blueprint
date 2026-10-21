@@ -8,7 +8,7 @@
 
 ## 运行
 
-当前源码或 v0.2.0 源码包，Node 20+，macOS/Linux：
+当前源码或 v0.2.1 源码包，Node 20+，macOS/Linux：
 
 ```sh
 npm install

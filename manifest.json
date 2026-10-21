@@ -1,5 +1,5 @@
 {
-  "version": "0.1.0",
+  "version": "0.1.1",
   "modules": [
     "prompts/00_core.txt",
     "prompts/01_output.txt",

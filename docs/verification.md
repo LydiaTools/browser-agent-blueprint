@@ -64,3 +64,30 @@ passed). Check the corresponding current CI result for those additions rather
 than attributing them to the earlier run. Source-bundle release notes retain
 the final run URL and raw report when published. These tests use synthetic data
 and one task owner; no model, real account, concurrent host or power loss is tested.
+
+## Disabled-control boundary, 2026-10-21
+
+The [Browser Use issue #6068](https://github.com/browser-use/browser-use/issues/6068)
+reports an agent using `evaluate` to remove a disabled-control constraint. Its
+author scoped the reported 8/8 prompt-rule result to one model and a rule added
+through `extend_system_message`; it is not evidence about all prompts or models.
+The issue also reports that a warning reached the agent in 10/10 runs while the
+agent still placed the order in all 10, reinforcing that a prompt or warning is
+not enforcement. Related [PR #6106](https://github.com/browser-use/browser-use/pull/6106)
+and [PR #6110](https://github.com/browser-use/browser-use/pull/6110) remain open
+at the time of this check.
+
+This repository adds a prompt contract for disabled/read-only controls and a
+regression test that its local controller rejects an `evaluate` action before
+the executor callback. `npm test` passed 42 tests; the new test confirms that
+the executor was not called and no action was recorded. The first default
+`npm run test:browser` attempt could not find this Mac's Playwright Chromium
+headless shell; rerunning with `BLUEPRINT_BROWSER_CHANNEL=chrome` passed both
+browser tests. `BLUEPRINT_BROWSER_CHANNEL=chrome npm run test:builder` passed
+six browser workflow checks on Chrome 155.0.8059.85, with no page errors or
+external HTTP requests. Generated builder and skill-source parity is included
+in the passing test suite.
+
+No Browser Use runtime, model, production page or account was tested. The
+prompt language cannot block a tool that the host exposes outside the local
+allowlist, and this change does not claim to fix the upstream behavior.

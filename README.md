@@ -12,7 +12,7 @@ and resumable tasks — with a real local browser demo.
 [Install the Agent Skill](docs/agent-skill.md) · [Build a task profile online](https://lydiatools.github.io/browser-agent-blueprint/builder/) · [Quick start](#quick-start) · [Copy a module](#copy-a-module) ·
 [Project overview](https://lydiatools.github.io/browser-agent-blueprint/?utm_source=github&utm_medium=referral&utm_campaign=browser_agent_blueprint&utm_content=repository_readme_overview) ·
 [Demo guide](https://lydiatools.github.io/browser-agent-blueprint/demo/?utm_source=github&utm_medium=referral&utm_campaign=browser_agent_blueprint&utm_content=repository_readme_en) ·
-[Download the v0.2.0 source bundle](https://github.com/LydiaTools/browser-agent-blueprint/releases/download/v0.2.0/browser-agent-blueprint-v0.2.0.zip) ·
+[Download the v0.2.1 source bundle](https://github.com/LydiaTools/browser-agent-blueprint/releases/download/v0.2.1/browser-agent-blueprint-v0.2.1.zip) ·
 [See the boundaries](#limits-and-disclaimer) · [中文](README.zh-CN.md)
 
 Built and maintained by [@LydiaTools](https://github.com/LydiaTools).
@@ -38,6 +38,7 @@ This project makes that distinction explicit in prompts and executable examples.
 | A long task loses its place | Checkpoint verified work; resume from state |
 | A small loop becomes a large batch | Count cumulative writes across resumes |
 | A webpage tells the agent to change its task | Keep observations outside trusted authority |
+| A disabled control is bypassed through script | Use visible prerequisites or stop; do not alter page state |
 | Every task loads a giant instruction dump | Assemble only the necessary modules |
 | Status messages fill with boilerplate | Apply a narration blacklist without altering user copy |
 
@@ -46,6 +47,9 @@ This project makes that distinction explicit in prompts and executable examples.
 The demo runs a **real browser against a synthetic local page**. Its decisions
 are deterministic: no model API key, social account or cloud-browser account is
 needed. It exercises host-side controls; it is not an LLM behavior benchmark.
+The local allowlist rejects an `evaluate` action before its executor runs. That
+test covers this example controller only; a real host must also withhold
+unapproved browser tools and other direct action paths.
 
 ![Two separate local processes resume one synthetic draft and verify one saved record](assets/recovery-proof.png)
 
@@ -64,7 +68,7 @@ For a project using Codex, the current repository includes a self-contained `bro
 npx skills@1.7.4 add LydiaTools/browser-agent-blueprint --skill browser-task-recovery --agent codex
 ```
 
-This optional third-party installer needs Node 22.20+. The skill routes uncertain writes and resumed tasks to the relevant original references; its bundled helper can export all six profiles after installation. [Installation, manual copy and validation scope](docs/agent-skill.md). Project-scope installation and exact resource/helper output are tested; live agent selection and other hosts are not. Test installs are excluded from adoption claims. The v0.2.0 bundle includes the skill; the fixed older v0.1.1 ZIP predates it.
+This optional third-party installer needs Node 22.20+. The skill routes uncertain writes and resumed tasks to the relevant original references; its bundled helper can export all six profiles after installation. [Installation, manual copy and validation scope](docs/agent-skill.md). Project-scope installation and exact resource/helper output are tested; live agent selection and other hosts are not. Test installs are excluded from adoption claims. The v0.2.1 bundle includes the skill; fixed older ZIPs remain unchanged.
 
 ### Assemble a profile without installing anything
 
@@ -74,7 +78,7 @@ The builder uses the original English source text; changing its interface langua
 
 ![Actual task-profile builder: website content entry, optional Codex contract and workflow, included files and the original assembled text.](assets/profile-builder.png)
 
-For an offline copy, extract the v0.2.0 source bundle and open `builder/index.html` inside its `browser-agent-blueprint` folder. Node is not needed for this page. The original v0.1.0 ZIP remains a fixed older snapshot without the builder. The prompt modules themselves remain v0.1.0.
+For an offline copy, extract the v0.2.1 source bundle and open `builder/index.html` inside its `browser-agent-blueprint` folder. Node is not needed for this page. The original v0.1.0 ZIP remains a fixed older snapshot without the builder. The current prompt modules are v0.1.1.
 
 ### Copy a module
 
@@ -94,7 +98,7 @@ The output is `dist/content.txt`. Review it, map conceptual tools to your actual
 host schemas, and place it in a supported trusted instruction surface.
 Assembly has no npm dependencies. It reports bytes and a hash, **not token savings**.
 
-Without Git, download the [v0.2.0 source bundle](https://github.com/LydiaTools/browser-agent-blueprint/releases/download/v0.2.0/browser-agent-blueprint-v0.2.0.zip),
+Without Git, download the [v0.2.1 source bundle](https://github.com/LydiaTools/browser-agent-blueprint/releases/download/v0.2.1/browser-agent-blueprint-v0.2.1.zip),
 extract it, and run the commands from its `browser-agent-blueprint` folder. The
 ZIP is a fixed release snapshot; the online synthetic page follows the current
 repository version.
@@ -155,7 +159,7 @@ Two actual `SIGKILL` cases: the fresh process restores **0** records before
 the export, and **1** after it, without replaying Save. This macOS/Linux
 experiment tests explicit snapshot recovery; it does not kill the browser or
 prove disk-flush durability. [Method, actual report and limits](docs/crash-boundaries.md).
-Use current source or v0.2.0; the fixed v0.1.1 ZIP predates this experiment.
+Use current source or v0.2.1; the fixed v0.1.1 ZIP predates this experiment.
 
 ### Kill a worker before or after a destination write
 
@@ -172,7 +176,7 @@ confirmed operation. [Run it and inspect the evidence](docs/write-ahead.md).
 
 ![Actual recovery browser reads one saved record after the worker was killed.](assets/write-ahead-desktop.png)
 
-Use current source or v0.2.0, macOS/Linux. This is a synthetic host-control test;
+Use current source or v0.2.1, macOS/Linux. This is a synthetic host-control test;
 the destination has no server-side deduplication. It is not a production
 exactly-once guarantee.
 
@@ -208,7 +212,7 @@ The project guide, demo guide, and synthetic fixture offer optional Google Analy
 | [01_output.txt](prompts/01_output.txt) | Narration blacklist and compact status |
 | [02_authority.txt](prompts/02_authority.txt) | Trusted authorization and page-content boundary |
 | [03_browser.txt](prompts/03_browser.txt) | Pre-call checks, fresh targets and saved-state reads |
-| [04_risk.txt](prompts/04_risk.txt) | Four risk levels and cumulative batch bounds |
+| [04_risk.txt](prompts/04_risk.txt) | Four risk levels, batch bounds and page-enforced control state |
 | [05_retries.txt](prompts/05_retries.txt) | Six failure classes; reconcile uncertain writes |
 | [06_memory.txt](prompts/06_memory.txt) | External checkpoint and readback requirements |
 | [07_lifecycle.txt](prompts/07_lifecycle.txt) | Pause, rollover, host wake and manual resume |
@@ -252,6 +256,11 @@ system prompt.** No CL4R1T4S prompt text is reused. See [provenance](docs/proven
 
 These templates guide behavior; they are not a security sandbox or a substitute
 for runtime checks. The local controller is intentionally small and fixture-specific.
+The disabled-control rule is prompt guidance, not a fix for a vendor agent: the
+upstream [Browser Use reproduction](docs/verification.md#disabled-control-boundary-2026-10-21)
+reported one model bypassing a rule added through `extend_system_message`.
+This repository's `evaluate` check applies only to actions routed through its
+example allowlist.
 Without a persistence callback, action state stays in memory until explicit
 checkpointing; the original snapshot runner has a pre-checkpoint crash gap.
 The optional [write-ahead runner](docs/write-ahead.md) flushes DISPATCHED before

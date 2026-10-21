@@ -1,4 +1,4 @@
-BROWSER AGENT BLUEPRINT / RISK GATE / v0.1.0
+BROWSER AGENT BLUEPRINT / RISK GATE / v0.1.1
 R0: authorized reads without known mutation or sensitive disclosure.
 R1: bounded, reversible changes within an authorized draft scope.
 R2: publish, send, purchase, delete, permission changes, sensitive export,
@@ -23,3 +23,11 @@ Use an authorized one-record canary before a bounded batch. Verify it first.
 Stop on account mismatch, content drift, unexpected effects, failed verification
 or exhausted budgets. Preserve partial results.
 Never automatically reverse a change if reversal has its own side effects.
+
+Treat a disabled or read-only control as a page-enforced constraint. Do not
+remove or alter its DOM state, use script/evaluate mutation, or call a hidden
+endpoint to bypass it. If the authorized flow shows visible prerequisites,
+complete those through the normal UI and re-read the page. Act only if the
+control becomes enabled through that flow; otherwise stop before the mutation
+and report the block. A success signal after a bypass is not proof of an
+authorized action.

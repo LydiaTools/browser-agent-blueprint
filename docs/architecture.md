@@ -55,3 +55,10 @@ This small demo cannot prove prompt injection resistance or model compliance.
 It proves that fixed host controls do not accept page text as authorization.
 All browser state exported by this demo is synthetic localStorage. Real cookies
 and authenticated state need separate protected host storage, never public files.
+
+The risk prompt treats a disabled or read-only page control as a page-enforced
+constraint and directs the agent to use only visible prerequisites or stop.
+The local controller rejects the action kind `evaluate` before dispatch, but
+that check applies only when actions pass through this controller. A real host
+must withhold direct browser tools or alternate action paths that could bypass
+the controller. Neither rule is a model-behavior guarantee.

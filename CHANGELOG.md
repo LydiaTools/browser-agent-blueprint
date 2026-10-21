@@ -1,10 +1,18 @@
 # Changelog
 
-## Current source — 2026-10-20
+## Current source — 2026-10-21
 
 - Self-contained `browser-task-recovery` Agent Skill with selective original references, Codex UI metadata, an isolated-install helper and the MIT notice.
 - Three resource/isolation/failure cases and a real project-scope skills@1.7.4 installer check. This verifies packaging and output, not model behavior, directory ranking or adoption.
-- Existing v0.1.1 tag/ZIP stays fixed; the skill is available through current repository source.
+- Risk module v0.1.1 treats disabled/read-only page controls as constraints and documents the normal-UI prerequisite path and stop condition, prompted by [Browser Use #6068](https://github.com/browser-use/browser-use/issues/6068).
+- The example controller now has an explicit pre-dispatch test rejecting an `evaluate` action; this does not prove another host withholds direct browser tools or that a model follows the prompt.
+- Existing release snapshots remain fixed; see v0.2.1 for the updated source bundle.
+
+## 0.2.1 — 2026-10-21
+
+- Updated the risk prompt with a concrete disabled/read-only control boundary, visible-prerequisite path and stop condition.
+- Added a regression test that the local host allowlist rejects `evaluate` before the executor is called.
+- Regenerated the browser builder and portable Agent Skill from the tracked prompt source. No LLM or live browser-agent behavior benchmark was run.
 
 ## 0.1.1 — 2026-10-20
 

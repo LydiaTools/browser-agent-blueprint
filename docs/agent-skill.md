@@ -20,7 +20,7 @@ npx skills@1.7.4 add LydiaTools/browser-agent-blueprint --list
 
 Manual alternative: copy the **whole** `skills/browser-task-recovery` folder into the project's `.agents/skills/` directory. Keep its scripts, references and MIT notice together. Copying `SKILL.md` alone loses the supporting files. [Official OpenAI skill guidance](https://learn.chatgpt.com/docs/customization/overview#skills) describes project skill folders and progressive discovery; the Vercel CLI is a separate third-party installer, not an OpenAI endorsement.
 
-The skill is distributed from the **current repository source** and the v0.2.0 bundle. The fixed v0.1.1 ZIP predates it and contains the online/offline profile builder; that ZIP is not silently replaced.
+The skill is distributed from the **current repository source** and the v0.2.1 bundle. Older fixed ZIPs remain unchanged.
 
 ## Ask for the workflow
 
@@ -40,7 +40,7 @@ node .agents/skills/browser-task-recovery/scripts/assemble.cjs --list
 node .agents/skills/browser-task-recovery/scripts/assemble.cjs content --integration codex --workflow content_entry
 ```
 
-It does not modify an `AGENTS.md`, call a model or perform browser actions. Its six base profiles match the repository CLI exactly; original module text remains v0.1.0. The interface metadata leaves normal implicit discovery enabled, but discovery or model behavior in a host is not proved by a file-format check.
+It does not modify an `AGENTS.md`, call a model or perform browser actions. Its six base profiles match the repository CLI exactly; the current risk module is v0.1.1. The interface metadata leaves normal implicit discovery enabled, but discovery or model behavior in a host is not proved by a file-format check.
 
 ## Validation and maintenance
 

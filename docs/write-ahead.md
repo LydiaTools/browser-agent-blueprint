@@ -9,7 +9,7 @@ worker. **Every Save adds a row**: the destination has no deduplication.
 
 ## Run it
 
-Current source or the v0.2.0 bundle, Node 20+, macOS/Linux:
+Current source or the v0.2.1 bundle, Node 20+, macOS/Linux:
 
 ```sh
 npm install

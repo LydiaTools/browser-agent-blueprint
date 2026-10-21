@@ -14,6 +14,11 @@ test('allows a scoped read',()=>assert.equal(gate(action('read'),scope(),{}).lev
 test('blocks mismatched origin',()=>assert.throws(()=>gate({...action(),origin:'https://other.example'},scope(),{}),PolicyError));
 test('blocks wrong account',()=>assert.throws(()=>gate({...action(),account:'other'},scope(),{}),PolicyError));
 test('rejects unknown action instead of guessing',()=>assert.throws(()=>gate(action('arbitrary_eval'),scope(),{}),PolicyError));
+test('rejects evaluate before an action can reach the host executor',async()=>{
+ const c=new Controller(scope());let calls=0;
+ await assert.rejects(c.run('evaluate',action('evaluate'),async()=>++calls,async()=>true),PolicyError);
+ assert.equal(calls,0);assert.deepEqual(c.ledger,{});
+});
 test('rejects unknown count',()=>assert.throws(()=>gate(action('save_draft',NaN),scope(),{}),PolicyError));
 test('blocks expired scope',()=>assert.throws(()=>gate(action(),{...scope(),expiresAt:0},{}),PolicyError));
 test('incomplete trusted scope fails closed',()=>{
