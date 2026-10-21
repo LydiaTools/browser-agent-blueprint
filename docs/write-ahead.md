@@ -9,7 +9,7 @@ worker. **Every Save adds a row**: the destination has no deduplication.
 
 ## Run it
 
-Current source or the v0.2.1 bundle, Node 20+, macOS/Linux:
+Current source or the v0.2.2 bundle, Node 20+, macOS/Linux:
 
 ```sh
 npm install
@@ -27,9 +27,9 @@ profile. Windows SIGKILL execution is not supported by this runner.
 
 | Case | Intervention | Expected readback |
 |---|---|---|
-| `before-write` | Kill after DISPATCHED is flushed, before Save | 0; reconcile ABSENT without retrying |
+| `before-write` | Kill after DISPATCHED is flushed, before Save | Fresh read records `absent`; a reviewer marks `not_landed` before a separate retry |
 | Explicit ABSENT retry | Separate worker, same operation/hash, new attempt ID | 1; another reservation is consumed |
-| `after-write` | Kill after target saved, before confirmation | 1; reconcile CONFIRMED without saving again |
+| `after-write` | Kill after target saved, before confirmation | Fresh read records `present`; a reviewer marks `landed`, without saving again |
 | Failed recovery read | Target returns HTTP 503 | Remain DISPATCHED; failure is not absence |
 | `completed` | Fresh worker from confirmed state | Still 1; a new action ID cannot replay the operation |
 | `unguarded-control` | Deliberately bypass controller for two Save clicks | 2; the target does not deduplicate |
@@ -38,7 +38,9 @@ Read `runs/write-ahead-report.json`. The corresponding
 `runs/write-ahead-<time>-<id>/` directory retains initial, after-kill and
 after-resume checkpoints, destination snapshots and screenshots. The after-write
 case also preserves state after its failed recovery read. ABSENT does not
-automatically trigger a retry: that is a separate caller-selected phase.
+automatically trigger a retry: that is a separate caller-selected phase. The
+recovery runner writes the readback as `PENDING_REVIEW` before applying a
+fixture-supplied review decision; its reviewer label is synthetic, not authenticated.
 
 ![Fresh recovery browser reads one saved synthetic record.](../assets/write-ahead-desktop.png)
 
@@ -51,16 +53,20 @@ they are not results from the earlier capture. No model or social account was us
 
 ## Host contract
 
-`new Controller(scope, savedLedger, { persist })` accepts an optional callback.
+`new Controller(scope, savedLedger, { persist, requireHumanReview: true })` enables strict recovery.
+It requires durable persistence and an operation ID, payload SHA-256 and durable payload reference on each write.
 The controller awaits `persist(clonedLedger)` with **DISPATCHED before execute**,
 then awaits persistence of CONFIRMED, UNKNOWN or FAILED. The callback must
 complete storage before resolving. The demo uses `writeCheckpoint`: file fsync,
 atomic rename and checksum readback. Without the callback, behavior stays in memory.
 
-Supply both `operation_id` and `payload_sha256` on every write attempt. Generate
-the operation ID before the first attempt; reload it on recovery. Hash the exact
-trusted payload with the same serialization each time. The demo's trusted intent
-also binds a business record reference and is checked against approved input.
+Supply `operation_id`, `payload_sha256` and `payload_ref` on every write attempt.
+Generate the operation ID before the first attempt; reload it on recovery. Hash
+the exact trusted payload with the same serialization each time. The reference
+must resolve to the same immutable approved payload after restart. The demo stores
+its non-sensitive synthetic payload snapshot in the checkpoint and binds a
+business record reference. Keep production secrets out of checkpoints; use a
+protected host store and persist only its opaque payload reference and hash.
 
 The ledger binds payload hash, origin, account, action kind and affected count.
 Changed bindings are rejected. A new action ID cannot bypass a recorded
@@ -69,18 +75,39 @@ Reservations remain consumed. Legacy actions without the metadata do not gain
 operation-level replay protection. This depends on the host consistently reusing
 the same operation and ledger; a new unrelated journal cannot provide this protection.
 
-After an independent successful destination read, use
-`await controller.reconcileAndPersist(actionId, present)`. Synchronous `reconcile`
-is rejected in persistence mode. Failed reads, incomplete pagination, ambiguous
-identity or mismatched content are not evidence of absence. The demo checks
-successful reads, counts and exact synthetic titles.
+In strict mode, save the independent read before deciding:
+
+```js
+await controller.recordRecoveryObservation(actionId, {
+  outcome: 'present', // or 'absent' / 'inconclusive'
+  source: 'destination-read',
+  reference: '/records?reference=draft-1',
+  observed_at: new Date().toISOString(),
+  evidence_sha256: sha256OfTheReadback,
+});
+await controller.reviewAndReconcile(actionId, {
+  decision: 'landed', // or 'not_landed' / 'unresolved'
+  reviewer: authenticatedReviewerId,
+  reason: 'Matched the destination record to the approved draft.',
+  reviewed_at: new Date().toISOString(),
+});
+```
+
+Writes remain blocked in `PENDING_REVIEW`. `landed` must match a `present` read;
+`not_landed` must match `absent`; `unresolved` stays blocked. Strict mode rejects
+the older boolean reconciliation methods. Failed reads, incomplete pagination,
+ambiguous identity or mismatched content are not evidence of absence. The host
+must authenticate the reviewer and call the method only from its human-review
+flow; this library records the supplied reviewer value but cannot authenticate
+a person by itself. The demo checks successful reads, counts and exact synthetic
+titles.
 
 Persistence failure freezes the instance: inspect storage and reload verified
 state before further dispatch. Persisted calls must be sequential; overlap is rejected.
 
 ## Boundaries
 
-This is host logging and reconciliation, **not server-side idempotency or
+This is host logging and human-review gating, **not server-side idempotency or
 exactly-once delivery**. One parent owns the task and starts sequential workers.
 The destination lives in that parent: it survives worker death, not its own death.
 There is no concurrent-host lock, lease, real account check, production adapter,

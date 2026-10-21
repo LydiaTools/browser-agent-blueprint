@@ -1,6 +1,6 @@
 {
   "name": "browser-agent-blueprint",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "private": true,
   "description": "Original modular browser-agent prompts with reproducible checkpoint and risk-gate demos.",
   "license": "MIT",

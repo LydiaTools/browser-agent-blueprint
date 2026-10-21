@@ -1,4 +1,4 @@
-BROWSER AGENT BLUEPRINT / FAILURE CLASSIFICATION / v0.1.0
+BROWSER AGENT BLUEPRINT / FAILURE CLASSIFICATION / v0.1.1
 Budgets are maxima, not obligations. Honor lower host limits and deadlines.
 A retry is an additional attempt after the initial attempt.
 Persist counters across resumes. Never change success criteria to hide failure.
@@ -15,6 +15,12 @@ write. Mark UNKNOWN. Reconcile with an authoritative read before replay.
 If present, mark CONFIRMED without writing. Replay only after authoritative
 negative evidence, valid authorization and safe deduplication.
 If absence cannot be established, stop dependent writes.
+When the host requires human-reviewed recovery, persist the independent read's
+outcome, evidence reference and evidence hash as PENDING_REVIEW. A named,
+authorized human must record landed, not_landed or unresolved against that exact
+observation. Do not dispatch another write while review is pending. The host,
+not the model, must authenticate the reviewer. An unresolved decision stays
+blocked; negative evidence is not automatically a retry instruction.
 F5 AUTHENTICATION/AUTHORIZATION/POLICY: expired login, CAPTCHA, account mismatch
 or denial. Stop, checkpoint and request the exact user/host action needed.
 F6 DATA/POSTCONDITION: wrong field, mismatched count, altered copy or unsaved

@@ -10,6 +10,10 @@ const scope=()=>({origin:'http://127.0.0.1:4179',account:'fixture-account',
 const action=(kind='save_draft',count=1)=>({kind,count,origin:'http://127.0.0.1:4179',account:'fixture-account'});
 function state(ledger={}) {return {schema_version:1,task_id:'task-1',revision:1,objective:'test',status:'PAUSED',
  ledger,module_ids:['00'],retry_count:0,next_safe_action:'read'};}
+function observation(outcome='present') {return {outcome,source:'synthetic-target-read',reference:'/records?reference=draft-1',
+ observed_at:'2026-10-21T00:00:00.000Z',evidence_sha256:'b'.repeat(64)};}
+function review(decision='landed') {return {decision,reviewer:'synthetic-reviewer-1',reason:'Compared the independent destination record with the approved draft.',
+ reviewed_at:'2026-10-21T00:01:00.000Z'};}
 test('allows a scoped read',()=>assert.equal(gate(action('read'),scope(),{}).level,'R0'));
 test('blocks mismatched origin',()=>assert.throws(()=>gate({...action(),origin:'https://other.example'},scope(),{}),PolicyError));
 test('blocks wrong account',()=>assert.throws(()=>gate({...action(),account:'other'},scope(),{}),PolicyError));
@@ -163,6 +167,73 @@ test('failed reconciliation persistence does not permit a new mutation',async()=
  await assert.rejects(c.run('retry',action(),async()=>++writes,async()=>true),PolicyError);
  assert.equal(writes,0);
 });
+test('human-reviewed recovery requires persistence, exact write binding, and a recorded observation',async()=>{
+ assert.throws(()=>new Controller(scope(),{}, {requireHumanReview:true}),PolicyError);
+ let disk={};let writes=0;
+ const persist=ledger=>{disk=structuredClone(ledger);};
+ const c=new Controller(scope(),{}, {persist,requireHumanReview:true});
+ await assert.rejects(c.run('missing-binding',action(),async()=>++writes,async()=>true),PolicyError);
+ await assert.rejects(c.run('missing-payload-reference',{...action(),operation_id:'stable-operation',payload_sha256:'a'.repeat(64)},
+  async()=>++writes,async()=>true),/durable payload reference/);
+ assert.equal(writes,0);
+ const bound={...action(),operation_id:'stable-operation',payload_sha256:'a'.repeat(64),payload_ref:'approved-input.json'};
+ await assert.rejects(c.run('uncertain',bound,async()=>{writes++;throw new Error('synthetic lost acknowledgement');},async()=>true),/synthetic lost acknowledgement/);
+ assert.equal(disk.uncertain.status,'UNKNOWN');
+ await assert.rejects(c.reconcileAndPersist('uncertain',false),PolicyError);
+ await c.recordRecoveryObservation('uncertain',observation('present'));
+ assert.equal(disk.uncertain.status,'PENDING_REVIEW');
+ const recovered=new Controller(scope(),disk,{persist,requireHumanReview:true});
+ assert.throws(()=>new Controller(scope(),disk,{persist}),PolicyError);
+ await assert.rejects(recovered.reconcileAndPersist('uncertain',true),PolicyError);
+ await assert.rejects(recovered.reviewAndReconcile('uncertain',review('not_landed')),/conflicts/);
+ let replayed=false;
+ await assert.rejects(recovered.run('new-attempt',bound,async()=>{replayed=true;},async()=>true),PolicyError);
+ assert.equal(replayed,false);
+ await recovered.reviewAndReconcile('uncertain',review('landed'));
+ assert.equal(disk.uncertain.status,'CONFIRMED');
+ assert.deepEqual(disk.uncertain.human_reviews.map(x=>x.reviewer),['synthetic-reviewer-1']);
+ assert.equal(writes,1);
+});
+test('not-landed requires a matching absent read and an explicit reviewer decision',async()=>{
+ let disk={};let writes=0;
+ const persist=ledger=>{disk=structuredClone(ledger);};
+ const bound={...action(),operation_id:'stable-operation',payload_sha256:'a'.repeat(64),payload_ref:'approved-input.json'};
+ const c=new Controller({...scope(),maxWrites:2},{},{persist,requireHumanReview:true});
+ await assert.rejects(c.run('attempt-1',bound,async()=>{writes++;throw new Error('interrupted before target');},async()=>true));
+ await c.recordRecoveryObservation('attempt-1',observation('absent'));
+ const recovered=new Controller({...scope(),maxWrites:2},disk,{persist,requireHumanReview:true});
+ await recovered.reviewAndReconcile('attempt-1',review('not_landed'));
+ assert.equal(disk['attempt-1'].status,'ABSENT');
+ await assert.rejects(recovered.run('changed-reference',{...bound,payload_ref:'changed-input.json'},async()=>++writes,async()=>true),/Operation binding changed/);
+ await recovered.run('attempt-2',bound,async()=>++writes,async()=>true);
+ assert.equal(writes,2);
+ assert.equal(disk['attempt-2'].reservedWrites,1);
+});
+test('inconclusive observation stays pending and prevents a write after unresolved review',async()=>{
+ let disk={};let writes=0;
+ const persist=ledger=>{disk=structuredClone(ledger);};
+ const c=new Controller(scope(),{pending:{action:action(),reservedWrites:1,status:'DISPATCHED',requireHumanReview:true}},
+   {persist,requireHumanReview:true});
+ await c.recordRecoveryObservation('pending',observation('inconclusive'));
+ await c.reviewAndReconcile('pending',review('unresolved'));
+ assert.equal(disk.pending.status,'PENDING_REVIEW');
+ await assert.rejects(c.run('blocked',action(),async()=>++writes,async()=>true),PolicyError);
+ assert.equal(writes,0);
+});
+test('strict checkpoints require a bound write and matching human recovery review',()=>{
+ const dir=fs.mkdtempSync(path.join(os.tmpdir(),'blueprint-strict-ledger-'));
+ try {
+ const file=path.join(dir,'checkpoint.json');
+ const bound={...action(),operation_id:'stable-operation',payload_sha256:'a'.repeat(64),payload_ref:'approved-input.json'};
+ const entry=(status,extra={})=>({action:bound,reservedWrites:1,status,requireHumanReview:true,...extra});
+ assert.throws(()=>writeCheckpoint(file,{...state({bad:entry('DISPATCHED',{action:action()})})}),/strict write binding/);
+ assert.throws(()=>writeCheckpoint(file,{...state({bad:entry('PENDING_REVIEW')})}),/pending review checkpoint/);
+ assert.throws(()=>writeCheckpoint(file,{...state({bad:entry('ABSENT')})}),/matching not_landed review/);
+ const observed=observation('absent');
+ assert.doesNotThrow(()=>writeCheckpoint(file,{...state({good:entry('ABSENT',{recovery_observations:[{id:'observation-1',...observed}],
+  human_reviews:[{id:'review-1',observation_id:'observation-1',...review('not_landed')} ]})})}));
+ } finally { fs.rmSync(dir,{recursive:true,force:true}); }
+});
 test('invalid persistence callback is rejected',()=>{
  assert.throws(()=>new Controller(scope(),{}, {persist:true}),PolicyError);
 });
@@ -206,8 +277,9 @@ test('an ABSENT operation cannot be repurposed for another action or count',asyn
 test('write-ahead intent is bound to the trusted payload and task context',()=>{
  const {validateIntent}=require('../demo/write-ahead.cjs');
  const {digest}=require('../runtime/policy.cjs');
- const approved={operationId:'original',reference:'draft-1',origin:'http://127.0.0.1:4179',payload:{title:'approved'}};
- const saved={bound_origin:approved.origin,bound_account:'synthetic-account',intent:{operation_id:approved.operationId,record_reference:approved.reference,payload_sha256:digest(approved.payload)}};
+ const approved={operationId:'original',reference:'draft-1',origin:'http://127.0.0.1:4179',payloadRef:'approved-input.json',payload:{title:'approved'}};
+ const saved={bound_origin:approved.origin,bound_account:'synthetic-account',intent:{operation_id:approved.operationId,record_reference:approved.reference,
+  payload_ref:'approved-input.json',payload_snapshot:approved.payload,payload_sha256:digest(approved.payload)}};
  assert.doesNotThrow(()=>validateIntent(saved,approved));
  for(const changed of [{...approved,payload:{title:'changed'}},{...approved,operationId:'new'},{...approved,reference:'other'},{...approved,origin:'https://other.example'}])
   assert.throws(()=>validateIntent(saved,changed),PolicyError);

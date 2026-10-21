@@ -10,6 +10,7 @@ const {Controller,PolicyError,readCheckpoint,writeCheckpoint,digest}=require('..
 function validateIntent(state,approved){
  if(!state.intent || state.intent.operation_id!==approved.operationId ||
     state.intent.record_reference!==approved.reference || state.intent.payload_sha256!==digest(approved.payload) ||
+    state.intent.payload_ref!==approved.payloadRef || digest(state.intent.payload_snapshot)!==digest(approved.payload) ||
     state.bound_origin!==approved.origin || state.bound_account!=='synthetic-account')
   throw new PolicyError('Saved intent does not match trusted operation, payload, origin or account');
 }
@@ -24,7 +25,7 @@ async function worker(config){
  const scope={origin:approved.origin,account:'synthetic-account',allowed:['read','fill','save_draft'],
   highRisk:[],maxWrites:8,batchThreshold:7,expiresAt:Date.now()+60000};
  const action=kind=>({kind,count:1,origin:scope.origin,account:scope.account});
- const controller=new Controller(scope,state.ledger,{persist:async ledger=>{
+ const controller=new Controller(scope,state.ledger,{requireHumanReview:true,persist:async ledger=>{
   validateIntent(state,approved);
   state={...state,revision:state.revision+1,ledger,written_at:new Date().toISOString()};
   writeCheckpoint(file,state);
@@ -33,7 +34,7 @@ async function worker(config){
   }
  }});
  const {chromium}=require('playwright');
- const browser=await chromium.launch({headless:true});
+ const browser=await chromium.launch({headless:true,...(process.env.BLUEPRINT_BROWSER_CHANNEL?{channel:process.env.BLUEPRINT_BROWSER_CHANNEL}:{})});
  try{
   const context=await browser.newContext({viewport:{width:1200,height:760}});
   await context.route('**/*',route=>new URL(route.request().url()).origin===approved.origin?route.continue():route.abort());
@@ -44,8 +45,10 @@ async function worker(config){
    return {state:await page.locator('#status').getAttribute('data-read-state'),count:Number(await page.locator('#count').innerText()),titles:await page.locator('#records li').allTextContents()};
   },row=>row.state==='ready' && Number.isInteger(row.count) && row.titles.length===row.count && row.titles.every(t=>t===approved.payload.title));
   const save=async id=>{
-   await controller.run(id+'-fill',action('fill'),()=>page.getByLabel('Draft title').fill(approved.payload.title),()=>page.getByLabel('Draft title').inputValue().then(t=>t===approved.payload.title));
-   await controller.run(id,{...action('save_draft'),operation_id:approved.operationId,payload_sha256:digest(approved.payload)},async()=>{
+   const fillPayload={field:'Draft title',value:approved.payload.title};
+   await controller.run(id+'-fill',{...action('fill'),operation_id:approved.operationId+':'+id+':fill',payload_sha256:digest(fillPayload),payload_ref:approved.payloadRef+'#/title'},
+    ()=>page.getByLabel('Draft title').fill(approved.payload.title),()=>page.getByLabel('Draft title').inputValue().then(t=>t===approved.payload.title));
+   await controller.run(id,{...action('save_draft'),operation_id:approved.operationId,payload_sha256:digest(approved.payload),payload_ref:approved.payloadRef},async()=>{
     validateIntent(readCheckpoint(file,config.taskId),approved);
     await page.getByRole('button',{name:'Save draft',exact:true}).click();
     await page.waitForFunction(()=>document.querySelector('#count').textContent==='1');
@@ -54,7 +57,7 @@ async function worker(config){
     }
    },()=>page.locator('#count').innerText().then(n=>n==='1'));
   };
-  let readback;
+ let readback,pendingReviewBlocked=null;
   if(phase==='unguarded-control'){
    const initial=await read('control-read');assert.equal(initial.count,0);
    // Deliberate negative control: these two Save clicks bypass the controller.
@@ -66,11 +69,23 @@ async function worker(config){
    readback=await read('control-verify');assert.equal(readback.count,2);
   }else if(phase==='resume' || phase==='resume-confirmed'){
    let dispatched=false;
-   await assert.rejects(controller.run('blocked-replay',{...action('save_draft'),operation_id:approved.operationId,payload_sha256:digest(approved.payload)},async()=>{dispatched=true;},async()=>true),PolicyError);
+   await assert.rejects(controller.run('blocked-replay',{...action('save_draft'),operation_id:approved.operationId,payload_sha256:digest(approved.payload),payload_ref:approved.payloadRef},async()=>{dispatched=true;},async()=>true),PolicyError);
    assert.equal(dispatched,false);
    readback=await read('resume-read');
    assert.ok([0,1].includes(readback.count));
-   if(phase==='resume')await controller.reconcileAndPersist('save-1',readback.count===1);
+   if(phase==='resume'){
+    const outcome=readback.count===1?'present':'absent';
+    const reference='/api/records?reference='+encodeURIComponent(approved.reference);
+    await controller.recordRecoveryObservation('save-1',{outcome,source:'synthetic-target-read',reference,
+     observed_at:new Date().toISOString(),evidence_sha256:digest(readback)});
+    let dispatchedBeforeReview=false;
+    await assert.rejects(controller.run('pending-review-retry',{...action('save_draft'),operation_id:approved.operationId,
+     payload_sha256:digest(approved.payload),payload_ref:approved.payloadRef},async()=>{dispatchedBeforeReview=true;},async()=>true),PolicyError);
+    pendingReviewBlocked=!dispatchedBeforeReview;assert.equal(pendingReviewBlocked,true);
+    await controller.reviewAndReconcile('save-1',{decision:outcome==='present'?'landed':'not_landed',
+     reviewer:'fixture-reviewer-1',reason:'The independent target read was compared with the approved synthetic draft.',
+     reviewed_at:new Date().toISOString()});
+   }
    else assert.equal(readback.count,1);
   }else if(phase==='retry-absent'){
    assert.equal(state.ledger['save-1'].status,'ABSENT');
@@ -90,6 +105,8 @@ async function worker(config){
   const final=readCheckpoint(file,config.taskId);validateIntent(final,approved);
   return {pid:process.pid,phase,readback,operationId:final.intent.operation_id,payloadSha256:final.intent.payload_sha256,
    actionStatus:final.ledger['save-1']?.status,retryActionStatus:final.ledger['save-2']?.status,
+   recoveryObservation:final.ledger['save-1']?.recovery_observations?.at(-1),
+   humanReview:final.ledger['save-1']?.human_reviews?.at(-1),pendingReviewBlocked,
    reservedWrites:Object.values(final.ledger).reduce((sum,e)=>sum+e.reservedWrites,0)};
  }finally{await browser.close();}
 }
@@ -144,10 +161,11 @@ async function main(){
   for(const phase of ['before-write','after-write','completed','unguarded-control']){
    const artifacts=path.join(runDir,phase);fs.mkdirSync(artifacts);
    const file=path.join(artifacts,'checkpoint.json');const taskId='write-ahead-'+phase;
-   const approved={origin,operationId:randomUUID(),reference:phase+'-'+randomUUID(),payload:{title:'Original synthetic draft: '+phase}};
+   const approved={origin,operationId:randomUUID(),reference:phase+'-'+randomUUID(),payloadRef:'approved-input.json',payload:{title:'Original synthetic draft: '+phase}};
    const state={schema_version:1,task_id:taskId,revision:1,status:'PAUSED',objective:'Save and reconcile one synthetic draft',
     ledger:{},module_ids:['00','05','06'],retry_count:0,next_safe_action:'read destination before another write',
-    bound_origin:origin,bound_account:'synthetic-account',intent:{operation_id:approved.operationId,record_reference:approved.reference,payload_sha256:digest(approved.payload)}};
+    bound_origin:origin,bound_account:'synthetic-account',intent:{operation_id:approved.operationId,record_reference:approved.reference,
+     payload_ref:approved.payloadRef,payload_snapshot:approved.payload,payload_sha256:digest(approved.payload)}};
    // The parent owns this task and launches only one worker at a time.
    const fd=fs.openSync(file,'wx',0o600);fs.closeSync(fd);writeCheckpoint(file,state);
    fs.copyFileSync(file,path.join(artifacts,'initial-checkpoint.json'));
@@ -181,6 +199,9 @@ async function main(){
    const resumed=await runWorker({...config,phase:'resume'});assert.notEqual(killed.pid,resumed.pid);
    assert.equal(resumed.operationId,approved.operationId);assert.equal(resumed.payloadSha256,digest(approved.payload));
    assert.equal(resumed.readback.count,expected);assert.equal(resumed.actionStatus,expected?'CONFIRMED':'ABSENT');
+   assert.equal(resumed.recoveryObservation.outcome,expected?'present':'absent');
+   assert.equal(resumed.humanReview.decision,expected?'landed':'not_landed');
+   assert.equal(resumed.pendingReviewBlocked,true);
    assert.equal(rows.filter(r=>r.reference===approved.reference).length,expected);
    fs.copyFileSync(file,path.join(artifacts,'after-resume-checkpoint.json'));saveTarget('after-resume');
    const result={case:phase,killed,beforeRecovery,resumed,targetRowsAfterRecovery:expected,failedReadRejected};
@@ -194,9 +215,9 @@ async function main(){
    results.push(result);
   }
   const report={schema_version:1,captured_at:new Date().toISOString(),results,targetRows:rows,
-   scope:'Actual POSIX worker SIGKILL and fresh Playwright browsers against one independently running synthetic local HTTP target. Single task owner, sequential workers; no server-side deduplication, model, social account, power-loss or concurrent-host guarantee.'};
+   scope:'Actual POSIX worker SIGKILL and fresh Playwright browsers against one independently running synthetic local HTTP target. Recovery records a separately-read observation and a fixture-supplied reviewer decision; reviewer identity is not authenticated. Single task owner, sequential workers; no server-side deduplication, model, social account, power-loss or concurrent-host guarantee.'};
   fs.writeFileSync(path.join(root,'runs','write-ahead-report.json'),JSON.stringify(report,null,2)+'\n');
-  console.log(JSON.stringify({report:'runs/write-ahead-report.json',cases:results.map(r=>({case:r.case,targetRows:r.targetRowsAfterRecovery??r.targetRows,explicitRetryRows:r.explicitRetry?.readback.count})),artifacts:runDir},null,2));
+  console.log(JSON.stringify({report:'runs/write-ahead-report.json',cases:results.map(r=>({case:r.case,targetRows:r.targetRowsAfterRecovery??r.targetRows,explicitRetryRows:r.explicitRetry?.readback.count,pendingReviewBlocked:r.resumed?.pendingReviewBlocked,reviewDecision:r.resumed?.humanReview?.decision})),artifacts:runDir},null,2));
  }finally{await new Promise(resolve=>server.close(resolve));}
 }
 

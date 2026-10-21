@@ -12,7 +12,7 @@ and resumable tasks — with a real local browser demo.
 [Install the Agent Skill](docs/agent-skill.md) · [Build a task profile online](https://lydiatools.github.io/browser-agent-blueprint/builder/) · [Quick start](#quick-start) · [Copy a module](#copy-a-module) ·
 [Project overview](https://lydiatools.github.io/browser-agent-blueprint/?utm_source=github&utm_medium=referral&utm_campaign=browser_agent_blueprint&utm_content=repository_readme_overview) ·
 [Demo guide](https://lydiatools.github.io/browser-agent-blueprint/demo/?utm_source=github&utm_medium=referral&utm_campaign=browser_agent_blueprint&utm_content=repository_readme_en) ·
-[Download the v0.2.1 source bundle](https://github.com/LydiaTools/browser-agent-blueprint/releases/download/v0.2.1/browser-agent-blueprint-v0.2.1.zip) ·
+[Download the v0.2.2 source bundle](https://github.com/LydiaTools/browser-agent-blueprint/releases/download/v0.2.2/browser-agent-blueprint-v0.2.2.zip) ·
 [See the boundaries](#limits-and-disclaimer) · [中文](README.zh-CN.md)
 
 Built and maintained by [@LydiaTools](https://github.com/LydiaTools).
@@ -34,7 +34,7 @@ This project makes that distinction explicit in prompts and executable examples.
 | Failure | Included contract |
 |---|---|
 | The agent says “done” after a click | Define and read the actual postcondition |
-| A timeout causes a duplicate submission | Mark UNKNOWN, reconcile, then decide |
+| A timeout causes a duplicate submission | Persist the readback as PENDING_REVIEW; require a recorded review before replay |
 | A long task loses its place | Checkpoint verified work; resume from state |
 | A small loop becomes a large batch | Count cumulative writes across resumes |
 | A webpage tells the agent to change its task | Keep observations outside trusted authority |
@@ -68,7 +68,7 @@ For a project using Codex, the current repository includes a self-contained `bro
 npx skills@1.7.4 add LydiaTools/browser-agent-blueprint --skill browser-task-recovery --agent codex
 ```
 
-This optional third-party installer needs Node 22.20+. The skill routes uncertain writes and resumed tasks to the relevant original references; its bundled helper can export all six profiles after installation. [Installation, manual copy and validation scope](docs/agent-skill.md). Project-scope installation and exact resource/helper output are tested; live agent selection and other hosts are not. Test installs are excluded from adoption claims. The v0.2.1 bundle includes the skill; fixed older ZIPs remain unchanged.
+This optional third-party installer needs Node 22.20+. The skill routes uncertain writes and resumed tasks to the relevant original references; its bundled helper can export all six profiles after installation. [Installation, manual copy and validation scope](docs/agent-skill.md). Project-scope installation and exact resource/helper output are tested; live agent selection and other hosts are not. Test installs are excluded from adoption claims. The v0.2.2 bundle includes the skill; fixed older ZIPs remain unchanged.
 
 ### Assemble a profile without installing anything
 
@@ -78,7 +78,7 @@ The builder uses the original English source text; changing its interface langua
 
 ![Actual task-profile builder: website content entry, optional Codex contract and workflow, included files and the original assembled text.](assets/profile-builder.png)
 
-For an offline copy, extract the v0.2.1 source bundle and open `builder/index.html` inside its `browser-agent-blueprint` folder. Node is not needed for this page. The original v0.1.0 ZIP remains a fixed older snapshot without the builder. The current prompt modules are v0.1.1.
+For an offline copy, extract the v0.2.2 source bundle and open `builder/index.html` inside its `browser-agent-blueprint` folder. Node is not needed for this page. The original v0.1.0 ZIP remains a fixed older snapshot without the builder. The current prompt modules are v0.1.1.
 
 ### Copy a module
 
@@ -98,7 +98,7 @@ The output is `dist/content.txt`. Review it, map conceptual tools to your actual
 host schemas, and place it in a supported trusted instruction surface.
 Assembly has no npm dependencies. It reports bytes and a hash, **not token savings**.
 
-Without Git, download the [v0.2.1 source bundle](https://github.com/LydiaTools/browser-agent-blueprint/releases/download/v0.2.1/browser-agent-blueprint-v0.2.1.zip),
+Without Git, download the [v0.2.2 source bundle](https://github.com/LydiaTools/browser-agent-blueprint/releases/download/v0.2.2/browser-agent-blueprint-v0.2.2.zip),
 extract it, and run the commands from its `browser-agent-blueprint` folder. The
 ZIP is a fixed release snapshot; the online synthetic page follows the current
 repository version.
@@ -159,7 +159,7 @@ Two actual `SIGKILL` cases: the fresh process restores **0** records before
 the export, and **1** after it, without replaying Save. This macOS/Linux
 experiment tests explicit snapshot recovery; it does not kill the browser or
 prove disk-flush durability. [Method, actual report and limits](docs/crash-boundaries.md).
-Use current source or v0.2.1; the fixed v0.1.1 ZIP predates this experiment.
+Use current source or v0.2.2; the fixed v0.1.1 ZIP predates this experiment.
 
 ### Kill a worker before or after a destination write
 
@@ -168,15 +168,16 @@ npm run demo:write-ahead
 ```
 
 The destination stays running while the worker is killed. A fresh process reads
-**0** before the write or **1** after it, then persists ABSENT or CONFIRMED.
-A failed recovery read stays unresolved. A deliberate unguarded two-click
-control produces **2** records on the same target. The host also binds the stable
-operation ID to its payload hash; changing the attempt ID cannot replay a
-confirmed operation. [Run it and inspect the evidence](docs/write-ahead.md).
+**0** before the write or **1** after it, then persists the observation as
+`PENDING_REVIEW`. Strict mode blocks new writes until a review decision records
+whether it landed; a failed recovery read stays unresolved. An unguarded two-click
+control produces **2** records on the same target. The host binds a stable
+operation ID, payload reference and hash; changing the attempt ID cannot replay
+an unresolved or confirmed operation. [Run it and inspect the evidence](docs/write-ahead.md).
 
 ![Actual recovery browser reads one saved record after the worker was killed.](assets/write-ahead-desktop.png)
 
-Use current source or v0.2.1, macOS/Linux. This is a synthetic host-control test;
+Use current source or v0.2.2, macOS/Linux. This is a synthetic host-control test;
 the destination has no server-side deduplication. It is not a production
 exactly-once guarantee.
 
