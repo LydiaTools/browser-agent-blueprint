@@ -1,5 +1,12 @@
 # Changelog
 
+## Current source — 2026-10-24
+
+- Added a seven-case checkpoint-file SIGKILL experiment, prompted by a community follow-up about mid-write failure.
+- Kept the production writer unchanged; a disposable child intercepts partial temporary writes and completed fsync/rename boundaries, with a direct-overwrite negative control.
+- Added fresh-process byte/checksum/revision checks, orphan-file counts and replay-block checks to the contract suite, with a separate CI evidence artifact.
+- Added English/Chinese reproduction guides. This is source after v0.2.2, not a replacement for fixed Release assets or proof of browser/power-loss durability.
+
 ## 0.2.2 — 2026-10-21
 
 - Added an opt-in strict recovery mode that records destination-read evidence as `PENDING_REVIEW` and blocks further writes until a matching review decision is persisted.

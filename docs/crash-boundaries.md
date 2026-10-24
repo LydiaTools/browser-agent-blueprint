@@ -61,6 +61,11 @@ For a live service, recovery must read the actual target record by a stable
 identity. An absent local snapshot cannot establish whether a remote write
 committed, and it is not a reason to submit the write again.
 
+The separate [checkpoint-file kill experiment](checkpoint-kill.md) interrupts
+the host's temporary-file write and publication boundaries. It covers a
+different store and does not extend this browser snapshot experiment into
+a browser disk-flush test.
+
 ## Recorded run
 
 [Actual macOS report](examples/crash-boundaries-macos.json), 2026-10-20:

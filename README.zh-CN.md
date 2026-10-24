@@ -84,6 +84,14 @@ prepare 退出后，resume 用第二个进程读取检查点、恢复合成页�
 条记录，两次都不重新保存。它测的是显式快照恢复，不是浏览器磁盘刷写或断电持久性。
 [实验方法与真实报告](docs/crash-boundaries.md)；使用当前源码或 v0.2.2，旧 v0.1.1 ZIP 尚不含此实验。
 
+### 写检查点文件时终止进程
+
+运行 `npm run demo:checkpoint-kill`，比较直接覆盖与临时文件／fsync／rename
+写入器的七个确定性终止场景。新进程必须读到完整旧版本、完整新版本，或拒绝缺失／
+损坏的文件；不得重放已记录的操作。此命令不需要浏览器、模型或安装依赖。
+[中文步骤与边界](docs/checkpoint-kill.zh-CN.md) · [English](docs/checkpoint-kill.md)。
+使用当前源码，固定 v0.2.2 ZIP 不含此新增项。
+
 ### 写入前后真实终止进程
 
 运行 `npm run demo:write-ahead`：目标服务保持运行，工作进程被真实终止。

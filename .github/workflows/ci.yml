@@ -19,6 +19,12 @@ jobs:
       - run: npm run build:skill
       - run: git diff --exit-code -- skills/browser-task-recovery/references skills/browser-task-recovery/LICENSE
       - run: npm test
+      - uses: actions/upload-artifact@v7.0.2
+        if: always()
+        with:
+          name: checkpoint-file-kill-evidence
+          path: runs/checkpoint-kill.json
+          if-no-files-found: error
       - run: npm run metrics
       - run: npm run assemble -- content
       - name: Prepare pinned skill installer

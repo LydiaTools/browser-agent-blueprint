@@ -161,6 +161,19 @@ experiment tests explicit snapshot recovery; it does not kill the browser or
 prove disk-flush durability. [Method, actual report and limits](docs/crash-boundaries.md).
 Use current source or v0.2.2; the fixed v0.1.1 ZIP predates this experiment.
 
+### Kill a worker during checkpoint publication
+
+```sh
+npm run demo:checkpoint-kill
+```
+
+Seven deterministic process-kill cases compare direct overwrite with the
+existing temporary-file/fsync/rename writer. A fresh process must read the
+complete old checkpoint, the complete new one, or reject missing/invalid state;
+it must never replay the recorded operation. No browser, model or dependency
+installation is needed. [English method](docs/checkpoint-kill.md) · [中文](docs/checkpoint-kill.zh-CN.md).
+Use current source; this addition is after the fixed v0.2.2 ZIP.
+
 ### Kill a worker before or after a destination write
 
 ```sh

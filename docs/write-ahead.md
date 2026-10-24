@@ -60,6 +60,11 @@ then awaits persistence of CONFIRMED, UNKNOWN or FAILED. The callback must
 complete storage before resolving. The demo uses `writeCheckpoint`: file fsync,
 atomic rename and checksum readback. Without the callback, behavior stays in memory.
 
+The [checkpoint-file kill experiment](checkpoint-kill.md) isolates partial
+temporary writes, completed file fsync and completed rename, with and without
+an older checkpoint. Its real process deaths test file publication boundaries;
+they are separate from destination-write recovery and power-loss durability.
+
 Supply `operation_id`, `payload_sha256` and `payload_ref` on every write attempt.
 Generate the operation ID before the first attempt; reload it on recovery. Hash
 the exact trusted payload with the same serialization each time. The reference
