@@ -71,3 +71,15 @@ PIDs, confirmed exit signals, accepted revisions, final file hashes and
 unpromoted-file counts.
 
 See [the Chinese guide](checkpoint-kill.zh-CN.md) for the same steps.
+
+## Recorded Linux run
+
+[Actual report](examples/checkpoint-kill-linux.json), Node v22.23.3, 2026-10-24T10:36:10.928Z.
+All seven expected boundaries passed in [Checks run 40086556547](https://github.com/LydiaTools/browser-agent-blueprint/actions/runs/40086556547),
+source commit `b2e017bbd30c201036333079780647ae87218fa1`. The direct-overwrite
+control was rejected; before rename the prior revision remained intact or
+the checkpoint was missing; after rename the complete new revision was read.
+All fresh readers recorded zero replay executor calls. This is one synthetic
+Linux run, not a reliability percentage or outside-user trial.
+
+Report SHA-256: `1068b5bcd2f4b3d5a10a8f17a0ef2a1286a5a987d6b28c61fcbe17f5bebf68e4`.

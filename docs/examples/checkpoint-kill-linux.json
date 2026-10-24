@@ -1,0 +1,191 @@
+{
+  "started_at": "2026-10-24T10:36:10.351Z",
+  "completed_at": "2026-10-24T10:36:10.928Z",
+  "platform": "linux",
+  "node": "v22.23.3",
+  "status": "passed",
+  "cases": [
+    {
+      "boundary": "direct-overwrite",
+      "prior_checkpoint": true,
+      "writer": {
+        "stage": "direct-overwrite",
+        "writer_pid": 2368,
+        "bytes_written": 439,
+        "complete_bytes": 878
+      },
+      "writer_exit": {
+        "code": null,
+        "signal": "SIGKILL"
+      },
+      "fresh_reader": {
+        "reader_pid": 2381,
+        "accepted": false,
+        "reason": "invalid",
+        "replay_executor_calls": 0
+      },
+      "expected_revision": null,
+      "published_file_sha256": "7d2a19abf7f013bcaa51d7d92e8aaa00e6f701286649106a7ccf0ce8e2f0ac23",
+      "unpromoted_temp_files": 0,
+      "passed": true
+    },
+    {
+      "boundary": "partial-temp-write",
+      "prior_checkpoint": true,
+      "writer": {
+        "stage": "partial-temp-write",
+        "writer_pid": 2398,
+        "bytes_written": 439,
+        "complete_bytes": 878
+      },
+      "writer_exit": {
+        "code": null,
+        "signal": "SIGKILL"
+      },
+      "fresh_reader": {
+        "reader_pid": 2419,
+        "accepted": true,
+        "revision": 1,
+        "ledger_status": "DISPATCHED",
+        "checksum_verified": true,
+        "replay_executor_calls": 0,
+        "replay_persist_calls": 0
+      },
+      "expected_revision": 1,
+      "published_file_sha256": "4cc469533f71f5411e971cdd17aff90c12e8170968d639d62a15f84cc058dff2",
+      "unpromoted_temp_files": 1,
+      "passed": true
+    },
+    {
+      "boundary": "after-file-fsync",
+      "prior_checkpoint": true,
+      "writer": {
+        "stage": "after-file-fsync",
+        "writer_pid": 2445,
+        "file_fsync_completed": true,
+        "rename_completed": false
+      },
+      "writer_exit": {
+        "code": null,
+        "signal": "SIGKILL"
+      },
+      "fresh_reader": {
+        "reader_pid": 2472,
+        "accepted": true,
+        "revision": 1,
+        "ledger_status": "DISPATCHED",
+        "checksum_verified": true,
+        "replay_executor_calls": 0,
+        "replay_persist_calls": 0
+      },
+      "expected_revision": 1,
+      "published_file_sha256": "4cc469533f71f5411e971cdd17aff90c12e8170968d639d62a15f84cc058dff2",
+      "unpromoted_temp_files": 1,
+      "passed": true
+    },
+    {
+      "boundary": "after-rename",
+      "prior_checkpoint": true,
+      "writer": {
+        "stage": "after-rename",
+        "writer_pid": 2494,
+        "file_fsync_completed": true,
+        "rename_completed": true
+      },
+      "writer_exit": {
+        "code": null,
+        "signal": "SIGKILL"
+      },
+      "fresh_reader": {
+        "reader_pid": 2509,
+        "accepted": true,
+        "revision": 2,
+        "ledger_status": "CONFIRMED",
+        "checksum_verified": true,
+        "replay_executor_calls": 0,
+        "replay_persist_calls": 0
+      },
+      "expected_revision": 2,
+      "published_file_sha256": "82494c1469a1d2af133bb2b9c1a1b633e05b0c123562dc7eb36849160d7500dc",
+      "unpromoted_temp_files": 0,
+      "passed": true
+    },
+    {
+      "boundary": "partial-temp-write",
+      "prior_checkpoint": false,
+      "writer": {
+        "stage": "partial-temp-write",
+        "writer_pid": 2523,
+        "bytes_written": 439,
+        "complete_bytes": 878
+      },
+      "writer_exit": {
+        "code": null,
+        "signal": "SIGKILL"
+      },
+      "fresh_reader": {
+        "reader_pid": 2538,
+        "accepted": false,
+        "reason": "missing",
+        "replay_executor_calls": 0
+      },
+      "expected_revision": null,
+      "published_file_sha256": null,
+      "unpromoted_temp_files": 1,
+      "passed": true
+    },
+    {
+      "boundary": "after-file-fsync",
+      "prior_checkpoint": false,
+      "writer": {
+        "stage": "after-file-fsync",
+        "writer_pid": 2552,
+        "file_fsync_completed": true,
+        "rename_completed": false
+      },
+      "writer_exit": {
+        "code": null,
+        "signal": "SIGKILL"
+      },
+      "fresh_reader": {
+        "reader_pid": 2571,
+        "accepted": false,
+        "reason": "missing",
+        "replay_executor_calls": 0
+      },
+      "expected_revision": null,
+      "published_file_sha256": null,
+      "unpromoted_temp_files": 1,
+      "passed": true
+    },
+    {
+      "boundary": "after-rename",
+      "prior_checkpoint": false,
+      "writer": {
+        "stage": "after-rename",
+        "writer_pid": 2585,
+        "file_fsync_completed": true,
+        "rename_completed": true
+      },
+      "writer_exit": {
+        "code": null,
+        "signal": "SIGKILL"
+      },
+      "fresh_reader": {
+        "reader_pid": 2600,
+        "accepted": true,
+        "revision": 2,
+        "ledger_status": "CONFIRMED",
+        "checksum_verified": true,
+        "replay_executor_calls": 0,
+        "replay_persist_calls": 0
+      },
+      "expected_revision": 2,
+      "published_file_sha256": "82494c1469a1d2af133bb2b9c1a1b633e05b0c123562dc7eb36849160d7500dc",
+      "unpromoted_temp_files": 0,
+      "passed": true
+    }
+  ],
+  "temporary_files_cleaned": true,
+  "scope": "Deterministic process-kill boundaries of the original writeCheckpoint file writer. A test-only fs.writeFileSync interceptor writes a prefix before SIGKILL. Not a random mid-syscall tear, browser localStorage flush, remote-write test, power loss or exactly-once guarantee."
+}

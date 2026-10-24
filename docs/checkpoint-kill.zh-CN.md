@@ -44,3 +44,11 @@ npm run demo:checkpoint-kill
 文件哈希和临时文件数量。请核对其真实提交和报告；通过仅覆盖表中的测试。
 
 [English guide](checkpoint-kill.md)
+
+## 已记录的 Linux 实测
+
+[真实报告](examples/checkpoint-kill-linux.json)：Node v22.23.3，2026-10-24T10:36:10.928Z。
+[Checks 40086556547](https://github.com/LydiaTools/browser-agent-blueprint/actions/runs/40086556547)
+在提交 `b2e017bbd30c201036333079780647ae87218fa1` 上完成七项预期边界检查：
+直接覆盖的损坏文件被拒绝；rename 前保留旧版本或报告缺失；rename 后读取完整新版本。
+所有新进程的重放执行次数均为 0。这是一次合成 Linux 测试，不是可靠性百分比或外部用户试用。
