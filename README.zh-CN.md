@@ -92,6 +92,13 @@ prepare 退出后，resume 用第二个进程读取检查点、恢复合成页�
 [中文步骤与边界](docs/checkpoint-kill.zh-CN.md) · [English](docs/checkpoint-kill.md)。
 使用当前源码，固定 v0.2.2 ZIP 不含此新增项。
 
+### 保存确认后，直接终止浏览器
+
+运行 `npm run demo:browser-kill`，真实终止浏览器主进程，再用相同临时配置目录
+重启，不导入快照。随附 macOS 小样的 4 次确认后终止都读到了旧版本或没有记录。
+[中文方法、对照与原始报告](docs/browser-profile-kill.zh-CN.md) ·
+[English](docs/browser-profile-kill.md)。使用当前源码，固定 v0.2.2 ZIP 不含此新增项。
+
 ### 写入前后真实终止进程
 
 运行 `npm run demo:write-ahead`：目标服务保持运行，工作进程被真实终止。

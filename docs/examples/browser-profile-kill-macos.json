@@ -1,0 +1,192 @@
+{
+  "schema_version": 1,
+  "started_at": "2026-10-24T14:48:06.713Z",
+  "platform": "darwin",
+  "node": "v22.23.0",
+  "status": "observed",
+  "cases": [
+    {
+      "id": "clean-close",
+      "prior_clean_save": false,
+      "seed_pid": null,
+      "seed_exit": null,
+      "writer_pid": 31120,
+      "writer_exit": {
+        "code": 0,
+        "signal": null
+      },
+      "owned_profile_verified": true,
+      "writer_helpers_exited_before_reuse": true,
+      "boundary": "after-save-acknowledgement",
+      "acknowledgement_to_sigkill_ms": null,
+      "acknowledged_sha256": "671b886440e02cb41a78865d80b6722f8201d075387bfa8c427a69546c360382",
+      "prior_sha256": null,
+      "fresh_browser_pid": 31163,
+      "restored_sha256": "671b886440e02cb41a78865d80b6722f8201d075387bfa8c427a69546c360382",
+      "outcome": "acknowledged-version",
+      "displayed_save_count": 1,
+      "reader_save_calls": 0,
+      "restored_record": {
+        "id": "fixture-001",
+        "title": "Acknowledged version 2",
+        "body": "Original local browser-crash fixture.",
+        "saves": 1
+      },
+      "parse_error": null,
+      "screenshot": null
+    },
+    {
+      "id": "kill-before-save",
+      "prior_clean_save": false,
+      "seed_pid": null,
+      "seed_exit": null,
+      "writer_pid": 31207,
+      "writer_exit": {
+        "code": null,
+        "signal": "SIGKILL"
+      },
+      "owned_profile_verified": true,
+      "writer_helpers_exited_before_reuse": true,
+      "boundary": "before-save",
+      "acknowledgement_to_sigkill_ms": null,
+      "acknowledged_sha256": null,
+      "prior_sha256": null,
+      "fresh_browser_pid": 31242,
+      "restored_sha256": null,
+      "outcome": "missing",
+      "displayed_save_count": 0,
+      "reader_save_calls": 0,
+      "restored_record": null,
+      "parse_error": null,
+      "screenshot": null
+    },
+    {
+      "id": "kill-after-save-new",
+      "prior_clean_save": false,
+      "seed_pid": null,
+      "seed_exit": null,
+      "writer_pid": 31279,
+      "writer_exit": {
+        "code": null,
+        "signal": "SIGKILL"
+      },
+      "owned_profile_verified": true,
+      "writer_helpers_exited_before_reuse": true,
+      "boundary": "after-save-acknowledgement",
+      "acknowledgement_to_sigkill_ms": 0.015625,
+      "acknowledged_sha256": "671b886440e02cb41a78865d80b6722f8201d075387bfa8c427a69546c360382",
+      "prior_sha256": null,
+      "fresh_browser_pid": 31314,
+      "restored_sha256": null,
+      "outcome": "missing",
+      "displayed_save_count": 0,
+      "reader_save_calls": 0,
+      "restored_record": null,
+      "parse_error": null,
+      "screenshot": null
+    },
+    {
+      "id": "kill-after-save-update-1",
+      "prior_clean_save": true,
+      "seed_pid": 31356,
+      "seed_exit": {
+        "code": 0,
+        "signal": null
+      },
+      "writer_pid": 31396,
+      "writer_exit": {
+        "code": null,
+        "signal": "SIGKILL"
+      },
+      "owned_profile_verified": true,
+      "writer_helpers_exited_before_reuse": true,
+      "boundary": "after-save-acknowledgement",
+      "acknowledgement_to_sigkill_ms": 0.180125,
+      "acknowledged_sha256": "b5e400245d9970871af7034d964dab53ee76e25c090b537eda0d516d3606e3b3",
+      "prior_sha256": "ff867d3bc79e4b028308cff8d44233ddd987d01be4690725a0d0397a3a0ef8b4",
+      "fresh_browser_pid": 31435,
+      "restored_sha256": "ff867d3bc79e4b028308cff8d44233ddd987d01be4690725a0d0397a3a0ef8b4",
+      "outcome": "prior-version",
+      "displayed_save_count": 1,
+      "reader_save_calls": 0,
+      "restored_record": {
+        "id": "fixture-001",
+        "title": "Seed version 1",
+        "body": "Original local browser-crash fixture.",
+        "saves": 1
+      },
+      "parse_error": null,
+      "screenshot": "runs/browser-profile-kill-recovered.png"
+    },
+    {
+      "id": "kill-after-save-update-2",
+      "prior_clean_save": true,
+      "seed_pid": 31470,
+      "seed_exit": {
+        "code": 0,
+        "signal": null
+      },
+      "writer_pid": 31509,
+      "writer_exit": {
+        "code": null,
+        "signal": "SIGKILL"
+      },
+      "owned_profile_verified": true,
+      "writer_helpers_exited_before_reuse": true,
+      "boundary": "after-save-acknowledgement",
+      "acknowledgement_to_sigkill_ms": 0.012208,
+      "acknowledged_sha256": "b5e400245d9970871af7034d964dab53ee76e25c090b537eda0d516d3606e3b3",
+      "prior_sha256": "ff867d3bc79e4b028308cff8d44233ddd987d01be4690725a0d0397a3a0ef8b4",
+      "fresh_browser_pid": 31541,
+      "restored_sha256": "ff867d3bc79e4b028308cff8d44233ddd987d01be4690725a0d0397a3a0ef8b4",
+      "outcome": "prior-version",
+      "displayed_save_count": 1,
+      "reader_save_calls": 0,
+      "restored_record": {
+        "id": "fixture-001",
+        "title": "Seed version 1",
+        "body": "Original local browser-crash fixture.",
+        "saves": 1
+      },
+      "parse_error": null,
+      "screenshot": null
+    },
+    {
+      "id": "kill-after-save-update-3",
+      "prior_clean_save": true,
+      "seed_pid": 31575,
+      "seed_exit": {
+        "code": 0,
+        "signal": null
+      },
+      "writer_pid": 31611,
+      "writer_exit": {
+        "code": null,
+        "signal": "SIGKILL"
+      },
+      "owned_profile_verified": true,
+      "writer_helpers_exited_before_reuse": true,
+      "boundary": "after-save-acknowledgement",
+      "acknowledgement_to_sigkill_ms": 0.014709,
+      "acknowledged_sha256": "b5e400245d9970871af7034d964dab53ee76e25c090b537eda0d516d3606e3b3",
+      "prior_sha256": "ff867d3bc79e4b028308cff8d44233ddd987d01be4690725a0d0397a3a0ef8b4",
+      "fresh_browser_pid": 31663,
+      "restored_sha256": "ff867d3bc79e4b028308cff8d44233ddd987d01be4690725a0d0397a3a0ef8b4",
+      "outcome": "prior-version",
+      "displayed_save_count": 1,
+      "reader_save_calls": 0,
+      "restored_record": {
+        "id": "fixture-001",
+        "title": "Seed version 1",
+        "body": "Original local browser-crash fixture.",
+        "saves": 1
+      },
+      "parse_error": null,
+      "screenshot": null
+    }
+  ],
+  "scope": "A synthetic localStorage Save acknowledgement followed by SIGKILL of the owned Chromium browser process, then a fresh browser on the same disposable profile after its helpers exit. No storageState import/export. Not a kill inside setItem, power loss, a durability guarantee, or an exactly-once result.",
+  "browser": "156.0.8078.47",
+  "temporary_profiles_cleaned": true,
+  "completed_at": "2026-10-24T14:48:15.150Z"
+}

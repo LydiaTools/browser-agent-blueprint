@@ -174,6 +174,19 @@ it must never replay the recorded operation. No browser, model or dependency
 installation is needed. [English method](docs/checkpoint-kill.md) · [中文](docs/checkpoint-kill.zh-CN.md).
 Use current source; this addition is after the fixed v0.2.2 ZIP.
 
+### Kill the browser after Save
+
+```sh
+npm run demo:browser-kill
+```
+
+Reopen the same disposable browser profile after an actual browser-process
+`SIGKILL`, without importing a snapshot. The included macOS run restored old
+or missing data after four acknowledged writes. Read the controls, raw report
+and scope in the [English method](docs/browser-profile-kill.md) or
+[中文](docs/browser-profile-kill.zh-CN.md). Use current source; the fixed v0.2.2
+ZIP predates this experiment.
+
 ### Kill a worker before or after a destination write
 
 ```sh

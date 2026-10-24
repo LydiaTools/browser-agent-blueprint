@@ -17,6 +17,7 @@
     "demo:resume": "node demo/run.cjs --phase resume",
     "demo:crash-boundaries": "node demo/crash-boundaries.cjs",
     "demo:checkpoint-kill": "node demo/checkpoint-kill.cjs",
+    "demo:browser-kill": "node demo/browser-profile-kill.cjs",
     "demo:write-ahead": "node demo/write-ahead.cjs",
     "build:builder": "node scripts/build-builder.cjs",
     "test:builder": "node tests/builder-browser.cjs",
