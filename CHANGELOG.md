@@ -1,11 +1,12 @@
 # Changelog
 
-## Current source — 2026-10-24
+## 0.2.3 — 2026-10-24
 
+- Added six persistent-profile browser-crash observations with two controls, real browser PID termination, fresh-browser reads, process/profile guards, raw reports and an actual recovery screenshot. No browser-state import or automatic write replay.
 - Added a seven-case checkpoint-file SIGKILL experiment, prompted by a community follow-up about mid-write failure.
 - Kept the production writer unchanged; a disposable child intercepts partial temporary writes and completed fsync/rename boundaries, with a direct-overwrite negative control.
 - Added fresh-process byte/checksum/revision checks, orphan-file counts and replay-block checks to the contract suite, with a separate CI evidence artifact.
-- Added English/Chinese reproduction guides. This is source after v0.2.2, not a replacement for fixed Release assets or proof of browser/power-loss durability.
+- Added English/Chinese reproduction guides and bundled both experiments in v0.2.3. Fixed older Release assets remain unchanged. Browser crash observations are not a power-loss, persistence-rate or exactly-once guarantee.
 
 ## 0.2.2 — 2026-10-21
 

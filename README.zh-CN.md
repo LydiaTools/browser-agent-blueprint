@@ -38,7 +38,7 @@
 npx skills@1.7.4 add LydiaTools/browser-agent-blueprint --skill browser-task-recovery --agent codex
 ```
 
-也可手动复制完整技能目录。[安装与验证范围](docs/agent-skill.md)：已验证隔离项目安装、来源文件与独立脚本输出；没有据此宣称模型自动选中技能、真实浏览器恢复或其他宿主已验收。测试安装不计为外部采用。当前源码与 v0.2.2 包含此技能；旧版固定 ZIP 保持原样。
+也可手动复制完整技能目录。[安装与验证范围](docs/agent-skill.md)：已验证隔离项目安装、来源文件与独立脚本输出；没有据此宣称模型自动选中技能、真实浏览器恢复或其他宿主已验收。测试安装不计为外部采用。当前源码与 v0.2.3 包含此技能；旧版固定 ZIP 保持原样。
 
 ## 不安装环境，先拿到完整任务模板
 
@@ -48,7 +48,7 @@ npx skills@1.7.4 add LydiaTools/browser-agent-blueprint --skill browser-task-rec
 
 ![真实中文配装页：任务、接入说明、工作流和可下载的指令原文。](assets/profile-builder-zh.png)
 
-离线使用：解压 v0.2.2 源码包，在 `browser-agent-blueprint` 目录内打开 `builder/index.html`，不需要 Node。旧 v0.1.0 ZIP 保持原样，不含配装页；当前提示模块为 v0.1.1。
+离线使用：解压 v0.2.3 源码包，在 `browser-agent-blueprint` 目录内打开 `builder/index.html`，不需要 Node。旧 v0.1.0 ZIP 保持原样，不含配装页；当前提示模块为 v0.1.1。
 
 ## 直接运行
 
@@ -57,7 +57,7 @@ npx skills@1.7.4 add LydiaTools/browser-agent-blueprint --skill browser-task-rec
 可保存一条记录、刷新并核对保存次数。网页本身不运行 Agent；下面的本地命令
 才会验证宿主侧断点续作和未知提交恢复。
 
-不使用 Git 也可下载 [v0.2.2 源码 ZIP](https://github.com/LydiaTools/browser-agent-blueprint/releases/download/v0.2.2/browser-agent-blueprint-v0.2.2.zip)，
+不使用 Git 也可下载 [v0.2.3 源码 ZIP](https://github.com/LydiaTools/browser-agent-blueprint/releases/download/v0.2.3/browser-agent-blueprint-v0.2.3.zip)，
 解压后进入 `browser-agent-blueprint` 目录运行命令。ZIP 是固定版本快照；在线合成页随仓库当前版本更新。
 
 ```sh
@@ -82,7 +82,7 @@ prepare 退出后，resume 用第二个进程读取检查点、恢复合成页�
 另可在 macOS/Linux 运行 `npm run demo:crash-boundaries`：真实 `SIGKILL`
 终止工作进程，分别观察导出浏览器快照前、后的恢复结果。新进程分别读到 **0 / 1**
 条记录，两次都不重新保存。它测的是显式快照恢复，不是浏览器磁盘刷写或断电持久性。
-[实验方法与真实报告](docs/crash-boundaries.md)；使用当前源码或 v0.2.2，旧 v0.1.1 ZIP 尚不含此实验。
+[实验方法与真实报告](docs/crash-boundaries.md)；使用当前源码或 v0.2.3，旧 v0.1.1 ZIP 尚不含此实验。
 
 ### 写检查点文件时终止进程
 
@@ -90,14 +90,14 @@ prepare 退出后，resume 用第二个进程读取检查点、恢复合成页�
 写入器的七个确定性终止场景。新进程必须读到完整旧版本、完整新版本，或拒绝缺失／
 损坏的文件；不得重放已记录的操作。此命令不需要浏览器、模型或安装依赖。
 [中文步骤与边界](docs/checkpoint-kill.zh-CN.md) · [English](docs/checkpoint-kill.md)。
-使用当前源码，固定 v0.2.2 ZIP 不含此新增项。
+使用当前源码或 v0.2.3，固定 v0.2.2 ZIP 不含此新增项。
 
 ### 保存确认后，直接终止浏览器
 
 运行 `npm run demo:browser-kill`，真实终止浏览器主进程，再用相同临时配置目录
 重启，不导入快照。随附 macOS 小样的 4 次确认后终止都读到了旧版本或没有记录。
 [中文方法、对照与原始报告](docs/browser-profile-kill.zh-CN.md) ·
-[English](docs/browser-profile-kill.md)。使用当前源码，固定 v0.2.2 ZIP 不含此新增项。
+[English](docs/browser-profile-kill.md)。使用当前源码或 v0.2.3，固定 v0.2.2 ZIP 不含此新增项。
 
 ### 写入前后真实终止进程
 
@@ -109,7 +109,7 @@ prepare 退出后，resume 用第二个进程读取检查点、恢复合成页�
 
 ![进程终止后，新浏览器读回一条已保存记录。](assets/write-ahead-desktop.png)
 
-[方法、接入与证据](docs/write-ahead.zh-CN.md)。使用当前源码或 v0.2.2，
+[方法、接入与证据](docs/write-ahead.zh-CN.md)。使用当前源码或 v0.2.3，
 macOS/Linux；这是合成宿主测试，没有目标端去重，也不构成生产环境恰好执行一次保证。
 
 跑通示例或把模块接入自己的浏览器宿主后，可[提交一条使用记录](https://github.com/LydiaTools/browser-agent-blueprint/issues/new?template=integration_observation.yml)：

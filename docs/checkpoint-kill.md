@@ -16,7 +16,7 @@ npm run demo:checkpoint-kill
 No package installation, browser, model, credentials or service is needed for
 this command. It writes its report to `runs/checkpoint-kill.json` and removes
 its temporary test files. This is a current-source addition after the fixed
-v0.2.2 release; it is not included in that release ZIP.
+v0.2.2 release; use current source or v0.2.3. The fixed v0.2.2 ZIP does not include it.
 
 ## What the seven cases check
 

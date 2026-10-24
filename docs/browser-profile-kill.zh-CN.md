@@ -13,7 +13,7 @@ Chromium 浏览器主进程，再打开它自己的临时配置目录，不导�
 使用当前源码、Node 20+ 和 macOS／Linux：
 
 ```sh
-npm ci --ignore-scripts
+npm install --ignore-scripts
 npx playwright install chromium
 npm run demo:browser-kill
 ```
@@ -27,7 +27,7 @@ BLUEPRINT_BROWSER_EXECUTABLE="/Applications/Google Chrome.app/Contents/MacOS/Goo
 脚本自己创建回环服务器和一次性浏览器配置目录，不打开日常浏览器、账号或已有
 配置。报告写入忽略目录 `runs/browser-profile-kill.json`，实际恢复截图为
 `runs/browser-profile-kill-recovered.png`。确认所属进程退出后才清理临时配置；
-清理错误会记录并停止，不会宣称已清理。此命令晚于固定 v0.2.2 ZIP，请使用当前源码。
+清理错误会记录并停止，不会宣称已清理。此命令晚于固定 v0.2.2 ZIP，请使用当前源码或 v0.2.3。
 
 ## 实际测了什么
 
@@ -64,6 +64,17 @@ Node v22.23.0，完成于 2026-10-24T14:48:15.150Z。
 版本 1。图片未经修图，没有虚拟鼠标覆盖层，内容为合成记录。
 
 ![重启浏览器读到 Seed version 1，保存次数为 1。](../assets/browser-profile-kill-macos.png)
+
+## 独立 Linux CI 观察
+
+[Linux 原始报告](examples/browser-profile-kill-linux.json)来自
+[Checks 40104681290](https://github.com/LydiaTools/browser-agent-blueprint/actions/runs/40104681290)，
+Chromium 151.0.7922.34，完成于 2026-10-24T14:57:11.615Z。
+下载的浏览器附件完整 SHA-256 与 GitHub 的摘要匹配后，才检查了报告。
+
+该次运行的六项结果相同：正常关闭保留新版本；保存前终止无记录；全新配置确认后
+终止无记录；三次更新都退回旧版本。已逐项检查五个真实退出信号、不同读取 PID、
+读取阶段零次保存和配置清理。这是两个环境各一组小样，不是总体失败率统计。
 
 ## 如何理解报告
 

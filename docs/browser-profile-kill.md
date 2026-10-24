@@ -15,7 +15,7 @@ The boundary is **after the Save handler returns**, not inside native `setItem`.
 Use current source, Node 20+, and macOS or Linux:
 
 ```sh
-npm ci --ignore-scripts
+npm install --ignore-scripts
 npx playwright install chromium
 npm run demo:browser-kill
 ```
@@ -31,7 +31,7 @@ It never opens your daily browser, account or profile. Output goes to ignored
 `runs/browser-profile-kill.json` and `runs/browser-profile-kill-recovered.png`.
 Profiles are removed after their owned processes exit. A cleanup error stops
 the run and is recorded instead of claiming successful cleanup. This command
-was added after the fixed v0.2.2 ZIP; it is in current source.
+was added after the fixed v0.2.2 ZIP; it is in current source and v0.2.3.
 
 ## What is measured
 
@@ -73,6 +73,20 @@ version 2. It is an unretouched screenshot of the synthetic fixture, not a
 customer account or a reconstructed UI.
 
 ![Fresh browser displaying Seed version 1 and save count 1 after the acknowledged update was killed.](../assets/browser-profile-kill-macos.png)
+
+## Independent Linux CI observation
+
+[Raw Linux report](examples/browser-profile-kill-linux.json) from
+[Checks 40104681290](https://github.com/LydiaTools/browser-agent-blueprint/actions/runs/40104681290),
+Chromium 151.0.7922.34, completed 2026-10-24T14:57:11.615Z.
+The downloaded browser artifact's SHA-256 matched GitHub's digest before inspection.
+
+This run recorded the same six outcomes: new version after clean close,
+missing before Save, missing after the new-profile acknowledgement, and the
+prior version in all three update trials. The five killed browser exits,
+different reader PIDs, zero reader Save calls and profile cleanup were checked
+in the actual report. These are two small observed runs, not a measured
+population failure rate.
 
 ## Interpret the report
 
