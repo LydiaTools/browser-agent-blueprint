@@ -20,7 +20,7 @@ The optional third-party installer adds guidance, not a browser or background sc
 [Install the Agent Skill](docs/agent-skill.md) · [Build a task profile online](https://lydiatools.github.io/browser-agent-blueprint/builder/) · [Quick start](#quick-start) · [Browser crash experiment](docs/browser-profile-kill.md) · [Copy a module](#copy-a-module) ·
 [Project overview](https://lydiatools.github.io/browser-agent-blueprint/?utm_source=github&utm_medium=referral&utm_campaign=browser_agent_blueprint&utm_content=repository_readme_overview) ·
 [Demo guide](https://lydiatools.github.io/browser-agent-blueprint/demo/?utm_source=github&utm_medium=referral&utm_campaign=browser_agent_blueprint&utm_content=repository_readme_en) ·
-[Download the v0.2.4 source bundle](https://github.com/LydiaTools/browser-agent-blueprint/releases/download/v0.2.4/browser-agent-blueprint-v0.2.4.zip) ·
+[Download the v0.2.5 source bundle](https://github.com/LydiaTools/browser-agent-blueprint/releases/download/v0.2.5/browser-agent-blueprint-v0.2.5.zip) ·
 [See the boundaries](#limits-and-disclaimer) · [中文](README.zh-CN.md)
 
 Built and maintained by [@LydiaTools](https://github.com/LydiaTools).
@@ -43,7 +43,7 @@ When several agents browse in parallel, there is another question: **are their s
 
 Using agent-browser? [Try pinned tabs against shared storage](docs/agent-browser-pinned-sessions.md) in a disposable browser and see the difference for yourself.
 
-When a browser test ends, which server should stop? [Run two cooperative test servers](docs/owned-test-servers.md), close one through its own child-process channel, and verify the other still responds. This is a local example, not a general process cleanup tool; the fixed v0.2.4 ZIP predates it.
+When a browser test ends, which server should stop? [Run two cooperative test servers](docs/owned-test-servers.md), close one through its own child-process channel, and verify the other still responds. This local example is included in v0.2.5; it is not a general process cleanup tool. The fixed v0.2.4 ZIP predates it.
 
 | Failure | Included contract |
 |---|---|
@@ -108,7 +108,7 @@ The output is `dist/content.txt`. Review it, map conceptual tools to your actual
 host schemas, and place it in a supported trusted instruction surface.
 Assembly has no npm dependencies. It reports bytes and a hash, **not token savings**.
 
-Without Git, download the [v0.2.4 source bundle](https://github.com/LydiaTools/browser-agent-blueprint/releases/download/v0.2.4/browser-agent-blueprint-v0.2.4.zip),
+Without Git, download the [v0.2.5 source bundle](https://github.com/LydiaTools/browser-agent-blueprint/releases/download/v0.2.5/browser-agent-blueprint-v0.2.5.zip),
 extract it, and run the commands from its `browser-agent-blueprint` folder. The
 ZIP is a fixed release snapshot; the online synthetic page follows the current
 repository version.

@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.2.5 — 2026-11-01
+
+- Bundles the existing agent-browser pinned-tab/shared-storage reproduction and cooperative test-server cleanup example with English/Chinese guides.
+- The pinned-tab reproduction needs its separately installed agent-browser 0.41.0 and Node 24+; the cooperative-server example needs Node 20+. These synthetic examples do not verify production integrations or prevent unrelated shell commands.
+
 ## 0.2.4 — 2026-11-01
 
 - Added a local Chromium session-isolation experiment with fictional cookie and localStorage roles, server-side readback, English/Chinese guides, and browser CI coverage. This does not test Shuttle or any remote browser adapter.

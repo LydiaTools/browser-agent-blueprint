@@ -18,7 +18,7 @@ npm install --prefix "$tool_dir" --ignore-scripts agent-browser@0.41.0
 node demo/agent-browser-pinned.cjs "$(command -v node)" "$tool_dir/node_modules/agent-browser/bin/agent-browser.js"
 ```
 
-两处 `node` 都需使用 Node 24+。固定的 v0.2.4 ZIP 不含本次可选实验，请使用当前仓库源码。`tool_dir` 是独立的临时安装目录，实验结束后可自行删除。
+两处 `node` 都需使用 Node 24+。固定的 v0.2.4 ZIP 不含本次可选实验，请使用 v0.2.5 或当前仓库源码。`tool_dir` 是独立的临时安装目录，实验结束后可自行删除。
 
 脚本检查三件事：
 
