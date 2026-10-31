@@ -42,6 +42,8 @@ npx skills@1.7.4 add LydiaTools/browser-agent-blueprint --skill browser-task-rec
 
 多个 Agent 并行操作时，还需要问：**会话真的互相隔离了吗？** [本地会话隔离实验](docs/session-isolation.zh-CN.md)用合成数据展示同一上下文的两个标签页会共享什么，以及独立 Playwright 上下文的差别。
 
+如果你使用 agent-browser，也可以在临时浏览器里[亲自验证固定标签与共享存储的区别](docs/agent-browser-pinned-sessions.zh-CN.md)。
+
 ## 不安装环境，先拿到完整任务模板
 
 打开[在线配装页](https://lydiatools.github.io/browser-agent-blueprint/builder/?lang=zh)，选择任务，按需附加接入说明和工作流，即可预览、复制或下载 `.txt`。页面列出来源文件、实际 UTF-8 字节和 SHA-256；六种基础配置与原有 CLI 逐字节一致。
