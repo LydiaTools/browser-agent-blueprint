@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Try an interactive simulation of a browser save whose reply is lost, and compare a retry with reading the saved state.">
+  <title>Did the save happen? · Browser Agent Blueprint</title>
+  <style>
+    :root{color-scheme:light;--ink:#173247;--muted:#526a7a;--paper:#eef3f6;--surface:#fff;--line:#bdcbd4;--blue:#165dad;--gold:#bd7812;--green:#14654d}
+    *{box-sizing:border-box} body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.55 system-ui,-apple-system,sans-serif}
+    .wrap{width:min(1100px,calc(100% - 2.5rem));margin:auto} a{color:#124e7f;text-underline-offset:3px} button{font:inherit;cursor:pointer}
+    header{display:flex;justify-content:space-between;align-items:center;gap:1rem;min-height:72px;border-bottom:1px solid var(--line)}
+    .brand{font-weight:700;text-decoration:none;color:var(--ink)} .lang{border:1px solid var(--line);background:transparent;padding:.45rem .75rem;color:var(--ink)}
+    main{padding:clamp(2rem,5vw,4rem) 0 4rem} h1{font-size:clamp(2.3rem,5vw,4.25rem);letter-spacing:-.025em;line-height:1.06;max-width:18ch;margin:0}
+    :lang(zh-CN) h1{max-width:100%;font-size:clamp(2.2rem,4vw,3.7rem)}
+    .lead{max-width:63ch;color:var(--muted);font-size:1.08rem;margin:1rem 0 .5rem} .simulation{font-size:.9rem;color:var(--muted);margin:0 0 2rem}
+    .workspace{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(290px,.9fr);border-top:2px solid var(--ink);gap:2.5rem;padding-top:1.5rem}
+    h2{font-size:1.15rem;margin:0 0 .9rem;letter-spacing:-.02em} .page{background:var(--surface);border:1px solid var(--line);padding:1.25rem}
+    .draft-label,.status-label{color:var(--muted);font-size:.85rem;margin:0 0 .4rem} .draft{margin:0 0 1.1rem;font-size:1.12rem;font-weight:650}
+    .buttons{display:flex;gap:.6rem;flex-wrap:wrap} .button{border:1px solid var(--ink);padding:.65rem 1rem;min-height:46px;background:var(--ink);color:white;font-weight:650}
+    .button.secondary{background:white;color:var(--ink)} .button:disabled{opacity:.42;cursor:not-allowed} .button:focus-visible,.lang:focus-visible,a:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
+    .status{margin:1rem 0 0;min-height:3.1em;font-weight:600;color:var(--blue)} .status.uncertain{color:#875000}.status.good{color:var(--green)}
+    .decision{margin-top:1.35rem;padding-top:1.25rem;border-top:1px solid var(--line)} .decision p{color:var(--muted);margin:.4rem 0 1rem}
+    .receipt{border-left:3px solid var(--gold);padding-left:1.2rem;min-width:0}.receipt h2{margin-bottom:1rem} dl{margin:0} .row{display:grid;grid-template-columns:1fr auto;gap:1rem;padding:.8rem 0;border-bottom:1px solid var(--line)}
+    dt{color:var(--muted)}dd{margin:0;text-align:right;font-weight:700} .events{padding-left:1.3rem;min-height:7rem;color:var(--muted)} .events li+li{margin-top:.4rem}
+    .footnote{border-top:1px solid var(--line);margin-top:2.25rem;padding-top:1.2rem;color:var(--muted);max-width:76ch} .footnote p{margin:.5rem 0}
+    @media(max-width:700px){.workspace{grid-template-columns:1fr;gap:2rem}.receipt{border-left:0;border-top:2px solid var(--gold);padding:1rem 0 0}.events{min-height:0}header{min-height:62px}}
+    @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <header><a class="brand" href="../">Browser Agent Blueprint</a><button id="language" class="lang" type="button" aria-label="切换为中文">中文</button></header>
+  <main>
+    <h1 data-i18n="title">You clicked save. The reply disappeared.</h1>
+    <p class="lead" data-i18n="lead">The page may have saved even when the tool reports an error. What happens if you try again?</p>
+    <p class="simulation" data-i18n="simulation">Interactive simulation. No agent, real account or network request is used.</p>
+    <div class="workspace">
+      <section aria-labelledby="page-title">
+        <h2 id="page-title" data-i18n="pageTitle">A sample draft</h2>
+        <div class="page">
+          <p class="draft-label" data-i18n="draftLabel">Draft title</p>
+          <p class="draft" data-i18n="draft">A note worth keeping</p>
+          <div class="buttons"><button id="save" class="button" type="button" data-i18n="save">Save draft</button><button id="reset" class="button secondary" type="button" data-i18n="reset">Start over</button></div>
+          <p id="status" class="status" role="status" aria-live="polite"></p>
+        </div>
+        <div class="decision">
+          <h2 data-i18n="question">The reply is missing. What next?</h2>
+          <p data-i18n="hint">Try either choice, then start over to compare.</p>
+          <div class="buttons"><button id="retry" class="button secondary" type="button" disabled data-i18n="retry">Retry the save</button><button id="read" class="button secondary" type="button" disabled data-i18n="read">Read saved state</button></div>
+        </div>
+      </section>
+      <section class="receipt" aria-labelledby="receipt-title">
+        <h2 id="receipt-title" data-i18n="receiptTitle">What you can verify</h2>
+        <dl><div class="row"><dt data-i18n="record">Saved record</dt><dd id="record"></dd></div><div class="row"><dt data-i18n="count">Save count</dt><dd id="count"></dd></div></dl>
+        <p class="status-label" style="margin-top:1.1rem" data-i18n="timeline">Activity</p>
+        <ol id="events" class="events" aria-live="polite"></ol>
+      </section>
+    </div>
+    <div class="footnote"><p data-i18n="footnote">This fictional example stores state only in this page while it is open. It illustrates one possible outcome; it does not run the CLI or guarantee that a real site can be read back.</p><p><a id="case" href="https://github.com/LydiaTools/browser-agent-blueprint/blob/main/docs/agent-browser-lost-reply.md" data-i18n="case">Read the real local version comparison</a> · <a href="https://github.com/LydiaTools/browser-agent-blueprint" data-i18n="source">Explore the open-source project</a></p></div>
+  </main>
+</div>
+<script>
+const messages={
+ en:{title:'You clicked save. The reply disappeared.',lead:'The page may have saved even when the tool reports an error. What happens if you try again?',simulation:'Interactive simulation. No agent, real account or network request is used.',pageTitle:'A sample draft',draftLabel:'Draft title',draft:'A note worth keeping',save:'Save draft',reset:'Start over',question:'The reply is missing. What next?',hint:'Try either choice, then start over to compare.',retry:'Retry the save',read:'Read saved state',receiptTitle:'What you can verify',record:'Saved record',count:'Save count',timeline:'Activity',footnote:'This fictional example stores state only in this page while it is open. It illustrates one possible outcome; it does not run the CLI or guarantee that a real site can be read back.',case:'Read the real local version comparison',source:'Explore the open-source project',initial:'Ready to save the sample draft.',unknown:'No reply received. The result is unknown.',retried:'A second save was sent. Read the saved state.',checked:'Readback found the record. No second save was needed.',checkedAgain:'Readback found two saves.',hidden:'Not checked',none:'No record',saved:'A note worth keeping',readyEvent:'Waiting for the first save.',saveEvent:'The first reply was lost.',retryEvent:'A second save was sent.',readEvent:'Readback found the saved record.',language:'切换为中文'},
+ zh:{title:'保存点下去了，回复却不见了。',lead:'工具报错时，页面可能已经保存成功。如果再试一次，会发生什么？',simulation:'互动模拟：不调用 Agent、不连接真实账号，也不发送网络请求。',pageTitle:'一条示例草稿',draftLabel:'草稿标题',draft:'一条值得留下的笔记',save:'保存草稿',reset:'重新开始',question:'没有收到回复，接下来怎么做？',hint:'分别试试两个选择，再重新开始进行对比。',retry:'再次保存',read:'回读保存状态',receiptTitle:'可以核对的结果',record:'已保存的记录',count:'保存次数',timeline:'操作记录',footnote:'此虚构示例只在打开的页面中保存状态，展示一种可能的结果；它不会运行 CLI，也不保证真实网站都能回读。',case:'查看真实本地版本对照实验',source:'查看开源项目',initial:'示例草稿准备好了。',unknown:'没有收到回复，结果未知。',retried:'已发送第二次保存，请回读状态。',checked:'回读找到记录，不需要再次保存。',checkedAgain:'回读发现保存了两次。',hidden:'尚未核对',none:'没有记录',saved:'一条值得留下的笔记',readyEvent:'等待第一次保存。',saveEvent:'第一次保存的回复丢失。',retryEvent:'发送了第二次保存。',readEvent:'回读找到了已保存的记录。',language:'Switch to English'}
+};
+let language=new URLSearchParams(location.search).get('lang')==='zh'?'zh':'en';
+let state='ready',saves=0,events=[];
+const $=id=>document.getElementById(id);
+function render(){const t=messages[language];document.documentElement.lang=language==='zh'?'zh-CN':'en';
+ document.querySelectorAll('[data-i18n]').forEach(el=>{el.textContent=t[el.dataset.i18n]});
+ $('language').textContent=language==='en'?'中文':'English';$('language').setAttribute('aria-label',t.language);
+ $('case').href='https://github.com/LydiaTools/browser-agent-blueprint/blob/main/docs/agent-browser-lost-reply'+(language==='zh'?'.zh-CN':'')+'.md';
+ $('save').disabled=state!=='ready';$('retry').disabled=state!=='unknown';$('read').disabled=state==='ready'||state.startsWith('checked');
+ $('status').textContent=t[state==='ready'?'initial':state==='unknown'?'unknown':state==='retried'?'retried':state==='checkedAgain'?'checkedAgain':'checked'];
+ $('status').className='status '+(state==='unknown'?'uncertain':state==='checked'?'good':'');
+ const visible=state.startsWith('checked');$('record').textContent=visible?(saves?t.saved:t.none):t.hidden;$('count').textContent=visible?String(saves):t.hidden;
+ $('events').replaceChildren(...(events.length?events:['readyEvent']).map(key=>{const li=document.createElement('li');li.textContent=t[key];return li}));
+}
+$('save').addEventListener('click',()=>{if(state!=='ready')return;saves=1;state='unknown';events=['saveEvent'];render()});
+$('retry').addEventListener('click',()=>{if(state!=='unknown')return;saves++;state='retried';events.push('retryEvent');render()});
+$('read').addEventListener('click',()=>{if(state==='ready'||state.startsWith('checked'))return;state=state==='retried'?'checkedAgain':'checked';events.push('readEvent');render()});
+$('reset').addEventListener('click',()=>{state='ready';saves=0;events=[];render()});
+$('language').addEventListener('click',()=>{language=language==='en'?'zh':'en';const url=new URL(location.href);if(language==='zh')url.searchParams.set('lang','zh');else url.searchParams.delete('lang');history.replaceState(null,'',url);render()});
+render();
+</script>
+</body>
+</html>

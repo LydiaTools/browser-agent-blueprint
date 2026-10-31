@@ -38,6 +38,8 @@ npx skills@1.7.4 add LydiaTools/browser-agent-blueprint --skill browser-task-rec
 
 [看一次真实浏览器工具的回复丢失实验](docs/agent-browser-lost-reply.zh-CN.md)：在虚构本地页面中，agent-browser 0.38.2 在回复被丢弃后发送了 5 次点击；0.41.0 只发了 1 次并提示结果未知。上游已经修复该重试问题；这是一项可复现的小样，不代表所有网站或版本。
 
+想先理解为什么要回读？[打开互动模拟](https://lydiatools.github.io/browser-agent-blueprint/demo/lost-reply.html?lang=zh)，不需要安装。它是虚构的网页演示，与上面的真实本地 CLI 对照实验分开。
+
 模块覆盖客套废话黑名单、工具失败分级恢复、检查点、暂停与宿主唤醒、
 内容录入和社媒状态校验。页面禁用或只读状态视为约束；只按可见界面完成前置步骤，
 仍不可用就停止。可按任务拼装，字节统计不冒充 token 节省。

@@ -10,6 +10,7 @@
   "scripts": {
     "test": "node --test tests/policy.test.cjs tests/builder.test.cjs tests/skill.test.cjs tests/checkpoint-kill.test.cjs tests/owned-test-servers.test.cjs",
     "test:browser": "node --test tests/analytics-consent.test.cjs",
+    "test:lost-reply": "node tests/lost-reply-browser.cjs",
     "assemble": "node scripts/assemble.cjs",
     "metrics": "node scripts/metrics.cjs",
     "demo": "node demo/run.cjs",

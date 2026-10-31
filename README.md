@@ -41,6 +41,12 @@ This project makes that distinction explicit in prompts and executable examples.
 
 [See one lost reply with real browser tools](docs/agent-browser-lost-reply.md): on a fictional local page, agent-browser 0.38.2 sent five clicks after the reply was dropped; 0.41.0 sent one and reported `outcome_unknown`. The underlying retry bug was fixed upstream. This is a reproducible local experiment, not a claim about all sites or versions.
 
+Want to understand the decision first? [Try the interactive lost-reply simulation](https://lydiatools.github.io/browser-agent-blueprint/demo/lost-reply.html) without installation. It is a fictional browser-only illustration, separate from the real local CLI experiment.
+
+![Actual simulation after the first reply is lost, showing the choice between retrying and reading the saved state](assets/lost-reply-simulation.png)
+
+*Actual browser screenshot of the interactive simulation; no real account or browser agent is involved.*
+
 When several agents browse in parallel, there is another question: **are their sessions actually separate?** The [local session-isolation experiment](docs/session-isolation.md) shows what two tabs can share, and what a separate Playwright context changes, using only synthetic data.
 
 Using agent-browser? [Try pinned tabs against shared storage](docs/agent-browser-pinned-sessions.md), then [compare independently launched sessions](docs/agent-browser-pinned-sessions.md#independent-sessions) with the same synthetic data. The independent-session example is in current source; the v0.2.5 ZIP predates it.
