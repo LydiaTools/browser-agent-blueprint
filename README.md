@@ -39,6 +39,8 @@ Should it click again?
 An action ledger gives the host a better question: **what actually happened?**
 This project makes that distinction explicit in prompts and executable examples.
 
+When several agents browse in parallel, there is another question: **are their sessions actually separate?** The [local session-isolation experiment](docs/session-isolation.md) shows what two tabs can share, and what a separate Playwright context changes, using only synthetic data.
+
 | Failure | Included contract |
 |---|---|
 | The agent says “done” after a click | Define and read the actual postcondition |
