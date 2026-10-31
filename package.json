@@ -8,7 +8,7 @@
     "node": ">=20"
   },
   "scripts": {
-    "test": "node --test tests/policy.test.cjs tests/builder.test.cjs tests/skill.test.cjs tests/checkpoint-kill.test.cjs",
+    "test": "node --test tests/policy.test.cjs tests/builder.test.cjs tests/skill.test.cjs tests/checkpoint-kill.test.cjs tests/owned-test-servers.test.cjs",
     "test:browser": "node --test tests/analytics-consent.test.cjs",
     "assemble": "node scripts/assemble.cjs",
     "metrics": "node scripts/metrics.cjs",
@@ -20,6 +20,7 @@
     "demo:browser-kill": "node demo/browser-profile-kill.cjs",
     "demo:write-ahead": "node demo/write-ahead.cjs",
     "demo:session-isolation": "node demo/session-isolation.cjs",
+    "demo:owned-servers": "node demo/owned-test-servers.cjs",
     "build:builder": "node scripts/build-builder.cjs",
     "test:builder": "node tests/builder-browser.cjs",
     "build:skill": "node scripts/build-skill.cjs",
