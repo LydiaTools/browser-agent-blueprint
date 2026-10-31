@@ -26,6 +26,14 @@ The script checks that:
 2. A cookie and localStorage value written in tab A are visible in tab B at the same origin.
 3. Closing tab A causes its next pinned `get url` to return `tab_gone` in this test.
 
+## A pinned tab is not an action receipt
+
+In [agent-browser issue #2146](https://github.com/vercel-labs/agent-browser/issues/2146), a user reports that some clicks on a background pinned tab returned success without the page handler taking effect. The report covers agent-browser 0.38.2 on Linux; a later commenter describes a related observation on 0.39.4. The issue is open and these are their reports, not our reproduction.
+
+In our separate macOS / Chrome test with agent-browser 0.41.0, the synthetic tabs continued to report `visible`, including after bringing the other tab forward. We therefore did not reproduce or rule out the reported hidden-tab scenario. The storage experiment above checks tab selection and storage, not whether clicks reach a page or complete a save.
+
+For a consequential action, check the expected result for that operation—for example, read back the newly created record. If the result cannot be checked, keep it unknown and reconcile before retrying; a successful click return or tab binding alone is not proof that the write completed.
+
 <a id="independent-sessions"></a>
 ## Try independent sessions
 
