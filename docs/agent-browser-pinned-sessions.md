@@ -18,7 +18,7 @@ npm install --prefix "$tool_dir" --ignore-scripts agent-browser@0.41.0
 node demo/agent-browser-pinned.cjs "$(command -v node)" "$tool_dir/node_modules/agent-browser/bin/agent-browser.js"
 ```
 
-Use a Node 24+ executable for both `node` paths. The optional integration is not included in the fixed v0.2.4 ZIP; use the current repository. `tool_dir` is a separate temporary installation that you can remove after the test.
+Use a Node 24+ executable for both `node` paths. The optional integration is not included in the fixed v0.2.4 ZIP; use v0.2.5 or the current repository. `tool_dir` is a separate temporary installation that you can remove after the test.
 
 The script checks that:
 

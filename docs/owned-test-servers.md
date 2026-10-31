@@ -28,4 +28,4 @@ This is **not** a general cleanup tool or an OS security boundary. A real server
 
 For broader process inspection, [proc](https://github.com/yazeed/proc) documents port/process lookup and dry runs. [AgentDust](https://github.com/hamzahamidi/agentdust) documents session-based cleanup for supported environments. These are separate projects; we have not benchmarked or integrated them.
 
-The current source contains this example. The fixed v0.2.4 ZIP predates it.
+The v0.2.5 source bundle and current source contain this example. The fixed v0.2.4 ZIP predates it.

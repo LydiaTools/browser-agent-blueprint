@@ -44,7 +44,7 @@ npx skills@1.7.4 add LydiaTools/browser-agent-blueprint --skill browser-task-rec
 
 如果你使用 agent-browser，也可以在临时浏览器里[亲自验证固定标签与共享存储的区别](docs/agent-browser-pinned-sessions.zh-CN.md)。
 
-浏览器测试结束时，应该关闭哪个服务？[运行两个配合退出的测试服务](docs/owned-test-servers.zh-CN.md)，通过各自的子进程通道关闭其中一个，再验证另一个仍可用。这是本地示例，不是通用进程清理工具；固定 v0.2.4 ZIP 尚不包含它。
+浏览器测试结束时，应该关闭哪个服务？[运行两个配合退出的测试服务](docs/owned-test-servers.zh-CN.md)，通过各自的子进程通道关闭其中一个，再验证另一个仍可用。v0.2.5 包含此本地示例；它不是通用进程清理工具，固定 v0.2.4 ZIP 尚不包含它。
 
 ## 不安装环境，先拿到完整任务模板
 
@@ -63,7 +63,7 @@ npx skills@1.7.4 add LydiaTools/browser-agent-blueprint --skill browser-task-rec
 可保存一条记录、刷新并核对保存次数。网页本身不运行 Agent；下面的本地命令
 才会验证宿主侧断点续作和未知提交恢复。
 
-不使用 Git 也可下载 [v0.2.4 源码 ZIP](https://github.com/LydiaTools/browser-agent-blueprint/releases/download/v0.2.4/browser-agent-blueprint-v0.2.4.zip)，
+不使用 Git 也可下载 [v0.2.5 源码 ZIP](https://github.com/LydiaTools/browser-agent-blueprint/releases/download/v0.2.5/browser-agent-blueprint-v0.2.5.zip)，
 解压后进入 `browser-agent-blueprint` 目录运行命令。ZIP 是固定版本快照；在线合成页随仓库当前版本更新。
 
 ```sh

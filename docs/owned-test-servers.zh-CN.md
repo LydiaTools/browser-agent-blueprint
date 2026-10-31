@@ -20,4 +20,4 @@ npm run demo:owned-servers
 
 [proc](https://github.com/yazeed/proc) 提供端口／进程查询和预览操作；[AgentDust](https://github.com/hamzahamidi/agentdust) 描述了在支持环境下按会话清理进程的方案。这些是独立项目，尚未在此进行基准比较或集成。
 
-当前源码包含本示例；固定的 v0.2.4 ZIP 发布于示例加入之前。
+v0.2.5 源码包和当前源码包含本示例；固定的 v0.2.4 ZIP 发布于示例加入之前。
