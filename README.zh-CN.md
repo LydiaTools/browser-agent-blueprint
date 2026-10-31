@@ -30,7 +30,9 @@ npx skills@1.7.4 add LydiaTools/browser-agent-blueprint --skill browser-task-rec
 
 已收录于 [Awesome-AI-Agents](https://github.com/Jenqyang/Awesome-AI-Agents) 的 Reference Repo 分类。
 
-需要单独的动作/读回报告与 CI 检查入口，可使用配套个人工具 [StepReceipt](https://github.com/LydiaTools/stepreceipt)。检查由接入方提供；它与本仓库的 demo 分开使用，没有自动接入。
+**想把恢复保护和可读报告放在同一次运行里？** [StepReceipt 联合示例](https://github.com/LydiaTools/stepreceipt/blob/main/docs/BLUEPRINT-INTEGRATION.zh-CN.md)把固定版本的 Blueprint 控制器、浏览器操作、单独回读和 HTML 报告串在一起。可以直接查看[超时后确认保存](https://lydiatools.github.io/stepreceipt/cases/blueprint-saved-timeout.html)、[回读不可用](https://lydiatools.github.io/stepreceipt/cases/blueprint-unknown-readback.html)和[无保护重试](https://lydiatools.github.io/stepreceipt/cases/blueprint-unguarded-retry.html)三个案例，报告支持切换中文。
+
+示例使用本地虚构服务，在同一进程中新建控制器并重新加载日志。StepReceipt 是独立工具，检查由接入方提供；本仓库的 demo 不会自动接入它。
 
 ## 解决什么
 

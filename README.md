@@ -31,7 +31,9 @@ if you want to keep the modules and recovery cases handy.
 
 Listed in [Awesome-AI-Agents](https://github.com/Jenqyang/Awesome-AI-Agents) under Reference Repo.
 
-For standalone action/readback reports and a recorded-check CI gate, see the companion [StepReceipt](https://github.com/LydiaTools/stepreceipt). Its checks are supplied by the integration; it is a separate tool, not automatically connected to these demos.
+**Want a recovery guard and a readable receipt in one run?** An [optional StepReceipt example](https://github.com/LydiaTools/stepreceipt/blob/main/docs/BLUEPRINT-INTEGRATION.md) combines a pinned Blueprint controller with a browser action, a separate readback, and an HTML report. Explore the [saved-after-timeout](https://lydiatools.github.io/stepreceipt/cases/blueprint-saved-timeout.html), [unavailable-readback](https://lydiatools.github.io/stepreceipt/cases/blueprint-unknown-readback.html), and [unguarded-retry](https://lydiatools.github.io/stepreceipt/cases/blueprint-unguarded-retry.html) cases.
+
+The example runs against a synthetic local service and reloads the journal into a fresh controller in the same process. StepReceipt is separate; checks are supplied by the integration, not automatically connected to this repository's demos.
 
 ## The problem
 
