@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.2.4 — 2026-11-01
+
+- Added a local Chromium session-isolation experiment with fictional cookie and localStorage roles, server-side readback, English/Chinese guides, and browser CI coverage. This does not test Shuttle or any remote browser adapter.
+- The source bundle now includes that experiment; older fixed releases remain unchanged.
+
 ## 0.2.3 — 2026-10-24
 
 - Added six persistent-profile browser-crash observations with two controls, real browser PID termination, fresh-browser reads, process/profile guards, raw reports and an actual recovery screenshot. No browser-state import or automatic write replay.
