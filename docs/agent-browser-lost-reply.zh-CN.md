@@ -21,6 +21,6 @@
 
 安装并运行的完整命令见[英文版](agent-browser-lost-reply.md#run-the-experiment)。它从 npm 下载指定版本，脚本会核对版本和次数，并关闭自己创建的会话。安装包目录会保留供检查；如果启动或清理失败，脚本会显示保留的临时路径。旧版本请放在隔离环境中，不要用于真实账号。
 
-上游项目已经修复重试问题；Browser Agent Blueprint 提供的是复现实验和“操作后回读”的工作流，不会自动控制 agent-browser。实验在当前源码中，较早的 v0.2.5 ZIP 不包含它。
+上游项目已经修复重试问题；Browser Agent Blueprint 提供的是复现实验和“操作后回读”的工作流，不会自动控制 agent-browser。实验在当前源码和 v0.2.6 预览版中，较早的 v0.2.5 ZIP 不包含它。
 
 [返回项目](../README.zh-CN.md)

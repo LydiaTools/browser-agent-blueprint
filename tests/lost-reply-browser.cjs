@@ -3,6 +3,7 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const http = require('node:http');
 const path = require('node:path');
+const {pathToFileURL} = require('node:url');
 const {chromium} = require(process.env.BLUEPRINT_PLAYWRIGHT || 'playwright');
 
 (async () => {
@@ -47,9 +48,19 @@ const {chromium} = require(process.env.BLUEPRINT_PLAYWRIGHT || 'playwright');
     assert.equal(requests, initialRequests, 'Simulation actions must not make network requests');
     await page.reload();
     assert.equal(await page.locator('#count').innerText(), '尚未核对');
+    const offline = await browser.newContext({offline: true});
+    try {
+      const filePage = await offline.newPage();
+      await filePage.goto(pathToFileURL(path.join(__dirname, '../demo/lost-reply.html')).href);
+      await filePage.locator('#language').click();
+      await filePage.locator('#save').click();
+      await filePage.locator('#read').click();
+      assert.equal(await filePage.locator('#count').innerText(), '1');
+      assert.equal(await filePage.locator('#status').innerText(), '回读找到记录，不需要再次保存。');
+    } finally { await offline.close(); }
     assert.deepEqual(errors, []);
     assert.deepEqual(external, []);
-    console.log('Lost-reply simulation: both paths, language, reset, reload and mobile passed.');
+    console.log('Lost-reply simulation: both paths, language, reset, reload, mobile and offline file passed.');
   } finally {
     await browser.close();
     await new Promise(resolve => server.close(resolve));

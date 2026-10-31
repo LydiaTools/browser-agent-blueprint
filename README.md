@@ -20,7 +20,7 @@ The optional third-party installer adds guidance, not a browser or background sc
 [Install the Agent Skill](docs/agent-skill.md) · [Build a task profile online](https://lydiatools.github.io/browser-agent-blueprint/builder/) · [Quick start](#quick-start) · [Browser crash experiment](docs/browser-profile-kill.md) · [Copy a module](#copy-a-module) ·
 [Project overview](https://lydiatools.github.io/browser-agent-blueprint/?utm_source=github&utm_medium=referral&utm_campaign=browser_agent_blueprint&utm_content=repository_readme_overview) ·
 [Demo guide](https://lydiatools.github.io/browser-agent-blueprint/demo/?utm_source=github&utm_medium=referral&utm_campaign=browser_agent_blueprint&utm_content=repository_readme_en) ·
-[Download the v0.2.5 source bundle](https://github.com/LydiaTools/browser-agent-blueprint/releases/download/v0.2.5/browser-agent-blueprint-v0.2.5.zip) ·
+[Download the v0.2.6 preview bundle](https://github.com/LydiaTools/browser-agent-blueprint/releases/download/v0.2.6/browser-agent-blueprint-v0.2.6.zip) ·
 [See the boundaries](#limits-and-disclaimer) · [中文](README.zh-CN.md)
 
 Built and maintained by [@LydiaTools](https://github.com/LydiaTools).
@@ -42,6 +42,8 @@ This project makes that distinction explicit in prompts and executable examples.
 [See one lost reply with real browser tools](docs/agent-browser-lost-reply.md): on a fictional local page, agent-browser 0.38.2 sent five clicks after the reply was dropped; 0.41.0 sent one and reported `outcome_unknown`. The underlying retry bug was fixed upstream. This is a reproducible local experiment, not a claim about all sites or versions.
 
 Want to understand the decision first? [Try the interactive lost-reply simulation](https://lydiatools.github.io/browser-agent-blueprint/demo/lost-reply.html) without installation. It is a fictional browser-only illustration, separate from the real local CLI experiment.
+
+To use the simulation offline, extract the v0.2.6 preview ZIP and open `demo/lost-reply.html` in Chrome. No server or Node is needed for this page.
 
 ![Actual simulation after the first reply is lost, showing the choice between retrying and reading the saved state](assets/lost-reply-simulation.png)
 
@@ -116,7 +118,7 @@ The output is `dist/content.txt`. Review it, map conceptual tools to your actual
 host schemas, and place it in a supported trusted instruction surface.
 Assembly has no npm dependencies. It reports bytes and a hash, **not token savings**.
 
-Without Git, download the [v0.2.5 source bundle](https://github.com/LydiaTools/browser-agent-blueprint/releases/download/v0.2.5/browser-agent-blueprint-v0.2.5.zip),
+Without Git, download the [v0.2.6 preview bundle](https://github.com/LydiaTools/browser-agent-blueprint/releases/download/v0.2.6/browser-agent-blueprint-v0.2.6.zip),
 extract it, and run the commands from its `browser-agent-blueprint` folder. The
 ZIP is a fixed release snapshot; the online synthetic page follows the current
 repository version.

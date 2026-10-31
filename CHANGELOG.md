@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.2.6 — 2026-11-01
+
+- Adds a bilingual, browser-only lost-reply simulation, including a direct offline HTML path; it illustrates a fictional state and does not run an agent.
+- Adds a separate macOS local fault-injection comparison of agent-browser 0.38.2 and 0.41.0, with the upstream fix credited and scope explained. The real-tool experiment requires separately installed CLI versions and Node 24+.
+- Includes the independent-session comparison and pinned-tab click-readback notes added after v0.2.5. This preview is not a production compatibility or exactly-once guarantee.
+
 ## 0.2.5 — 2026-11-01
 
 - Bundles the existing agent-browser pinned-tab/shared-storage reproduction and cooperative test-server cleanup example with English/Chinese guides.

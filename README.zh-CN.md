@@ -40,6 +40,8 @@ npx skills@1.7.4 add LydiaTools/browser-agent-blueprint --skill browser-task-rec
 
 想先理解为什么要回读？[打开互动模拟](https://lydiatools.github.io/browser-agent-blueprint/demo/lost-reply.html?lang=zh)，不需要安装。它是虚构的网页演示，与上面的真实本地 CLI 对照实验分开。
 
+离线体验：解压 v0.2.6 预览 ZIP，用 Chrome 打开 `demo/lost-reply.html`，切换中文即可；这个页面不需要服务器或 Node。
+
 模块覆盖客套废话黑名单、工具失败分级恢复、检查点、暂停与宿主唤醒、
 内容录入和社媒状态校验。页面禁用或只读状态视为约束；只按可见界面完成前置步骤，
 仍不可用就停止。可按任务拼装，字节统计不冒充 token 节省。
@@ -67,7 +69,7 @@ npx skills@1.7.4 add LydiaTools/browser-agent-blueprint --skill browser-task-rec
 可保存一条记录、刷新并核对保存次数。网页本身不运行 Agent；下面的本地命令
 才会验证宿主侧断点续作和未知提交恢复。
 
-不使用 Git 也可下载 [v0.2.5 源码 ZIP](https://github.com/LydiaTools/browser-agent-blueprint/releases/download/v0.2.5/browser-agent-blueprint-v0.2.5.zip)，
+不使用 Git 也可下载 [v0.2.6 预览 ZIP](https://github.com/LydiaTools/browser-agent-blueprint/releases/download/v0.2.6/browser-agent-blueprint-v0.2.6.zip)，
 解压后进入 `browser-agent-blueprint` 目录运行命令。ZIP 是固定版本快照；在线合成页随仓库当前版本更新。
 
 ```sh

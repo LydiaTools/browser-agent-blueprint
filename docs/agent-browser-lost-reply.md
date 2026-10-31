@@ -42,6 +42,6 @@ Expected output:
 {"version":"0.41.0","click_requests":1,"synthetic_saves":1,"error_code":"outcome_unknown"}
 ```
 
-The upstream project already has the retry fix. Browser Agent Blueprint adds a concrete experiment and an action/readback workflow; it is not an integration that automatically controls agent-browser. The demo is in current source; the older v0.2.5 ZIP does not include it.
+The upstream project already has the retry fix. Browser Agent Blueprint adds a concrete experiment and an action/readback workflow; it is not an integration that automatically controls agent-browser. The demo is in current source and the v0.2.6 preview; the older v0.2.5 ZIP does not include it.
 
 [中文](agent-browser-lost-reply.zh-CN.md) · [Back to the project](../README.md)
