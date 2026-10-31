@@ -6,6 +6,16 @@
 
 **12 个 txt 模块 · 4 类工作流 · 可复现的恢复实验**
 
+## 作为 Agent Skill 安装
+
+当前仓库提供独立的 `browser-task-recovery` 技能。需要 Node 22.20+，在要使用的项目内运行第三方 Vercel skills CLI：
+
+```sh
+npx skills@1.7.4 add LydiaTools/browser-agent-blueprint --skill browser-task-recovery --agent codex
+```
+
+也可手动复制完整技能目录。[安装与验证范围](docs/agent-skill.md)：已验证隔离项目安装、来源文件与独立脚本输出；没有据此宣称模型自动选中技能、真实浏览器恢复或其他宿主已验收。测试安装不计为外部采用。当前源码与 v0.2.3 包含此技能；旧版固定 ZIP 保持原样。
+
 ![两个独立进程恢复同一条合成记录，并核对保存次数为 1](assets/recovery-proof.png)
 
 图中保留[合成测试页的原始截图](assets/recovery-fixture.png)，旁边展示本地运行的
@@ -29,16 +39,6 @@
 模块覆盖客套废话黑名单、工具失败分级恢复、检查点、暂停与宿主唤醒、
 内容录入和社媒状态校验。页面禁用或只读状态视为约束；只按可见界面完成前置步骤，
 仍不可用就停止。可按任务拼装，字节统计不冒充 token 节省。
-
-## 作为 Agent Skill 安装
-
-当前仓库提供独立的 `browser-task-recovery` 技能。需要 Node 22.20+，在要使用的项目内运行第三方 Vercel skills CLI：
-
-```sh
-npx skills@1.7.4 add LydiaTools/browser-agent-blueprint --skill browser-task-recovery --agent codex
-```
-
-也可手动复制完整技能目录。[安装与验证范围](docs/agent-skill.md)：已验证隔离项目安装、来源文件与独立脚本输出；没有据此宣称模型自动选中技能、真实浏览器恢复或其他宿主已验收。测试安装不计为外部采用。当前源码与 v0.2.3 包含此技能；旧版固定 ZIP 保持原样。
 
 ## 不安装环境，先拿到完整任务模板
 

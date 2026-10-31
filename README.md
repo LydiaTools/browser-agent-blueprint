@@ -9,6 +9,14 @@ and resumable tasks — with a real local browser demo.
 
 [![Checks](https://github.com/LydiaTools/browser-agent-blueprint/actions/workflows/ci.yml/badge.svg)](https://github.com/LydiaTools/browser-agent-blueprint/actions/workflows/ci.yml)
 
+**Try the browser-task-recovery Skill** in a Codex project (Node 22.20+):
+
+```sh
+npx skills@1.7.4 add LydiaTools/browser-agent-blueprint --skill browser-task-recovery --agent codex
+```
+
+The optional third-party installer adds guidance, not a browser or background scheduler. [Manual installation and validation](docs/agent-skill.md).
+
 [Install the Agent Skill](docs/agent-skill.md) · [Build a task profile online](https://lydiatools.github.io/browser-agent-blueprint/builder/) · [Quick start](#quick-start) · [Browser crash experiment](docs/browser-profile-kill.md) · [Copy a module](#copy-a-module) ·
 [Project overview](https://lydiatools.github.io/browser-agent-blueprint/?utm_source=github&utm_medium=referral&utm_campaign=browser_agent_blueprint&utm_content=repository_readme_overview) ·
 [Demo guide](https://lydiatools.github.io/browser-agent-blueprint/demo/?utm_source=github&utm_medium=referral&utm_campaign=browser_agent_blueprint&utm_content=repository_readme_en) ·
@@ -62,11 +70,7 @@ then run the two commands below to check the result on your machine.
 
 ### Install as an Agent Skill
 
-For a project using Codex, the current repository includes a self-contained `browser-task-recovery` skill:
-
-```sh
-npx skills@1.7.4 add LydiaTools/browser-agent-blueprint --skill browser-task-recovery --agent codex
-```
+For a project using Codex, use the installation command above to add the self-contained `browser-task-recovery` skill.
 
 This optional third-party installer needs Node 22.20+. The skill routes uncertain writes and resumed tasks to the relevant original references; its bundled helper can export all six profiles after installation. [Installation, manual copy and validation scope](docs/agent-skill.md). Project-scope installation and exact resource/helper output are tested; live agent selection and other hosts are not. Test installs are excluded from adoption claims. The v0.2.3 bundle includes the skill; fixed older ZIPs remain unchanged.
 

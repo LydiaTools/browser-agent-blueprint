@@ -20,7 +20,7 @@ npx skills@1.7.4 add LydiaTools/browser-agent-blueprint --list
 
 Manual alternative: copy the **whole** `skills/browser-task-recovery` folder into the project's `.agents/skills/` directory. Keep its scripts, references and MIT notice together. Copying `SKILL.md` alone loses the supporting files. [Official OpenAI skill guidance](https://learn.chatgpt.com/docs/customization/overview#skills) describes project skill folders and progressive discovery; the Vercel CLI is a separate third-party installer, not an OpenAI endorsement.
 
-The skill is distributed from the **current repository source** and the v0.2.1 bundle. Older fixed ZIPs remain unchanged.
+The skill is distributed from the **current repository source** and the v0.2.3 bundle. Older fixed ZIPs remain unchanged.
 
 ## Ask for the workflow
 
