@@ -6,7 +6,7 @@ This [public Shuttle issue](https://github.com/shuttle-browser/shuttle/issues/12
 
 ## Try the local experiment
 
-From the repository root, with Node 20+ and dependencies installed:
+This experiment is in the current main-branch source, not the fixed v0.2.3 ZIP. From the repository root, with Node 20+ and dependencies installed:
 
 ```sh
 npm install
