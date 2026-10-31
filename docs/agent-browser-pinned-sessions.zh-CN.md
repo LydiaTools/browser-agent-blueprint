@@ -26,6 +26,14 @@ node demo/agent-browser-pinned.cjs "$(command -v node)" "$tool_dir/node_modules/
 2. 同源标签 A 写入的 Cookie 和 localStorage 值能被标签 B 看到。
 3. 关闭标签 A 后，测试中的下一次固定标签 `get url` 返回 `tab_gone`。
 
+## 固定标签，不等于操作已完成
+
+[agent-browser 问题 #2146](https://github.com/vercel-labs/agent-browser/issues/2146) 中，一位用户报告：某些后台固定标签上的点击返回成功，但页面处理函数没有执行。原报告使用 Linux 上的 agent-browser 0.38.2；另一位评论者描述了 0.39.4 上的相关观察。问题仍在讨论中，这是他们的报告，并非我们的复现。
+
+我们另用 macOS、Chrome 和 agent-browser 0.41.0 测试虚构页面，包括把另一个标签切到前台；测试中的标签仍报告 `visible`。因此，这次既没有复现，也不能排除上述后台标签场景。前面的存储实验只检查标签选择和存储，不检查点击是否送达或保存是否完成。
+
+重要操作后，应按该操作核对预期结果，例如读取本次新建的记录。如果无法核对，就保持结果未知，确认实际状态后再决定是否重试；点击返回成功或标签绑定本身，都不能证明写入完成。
+
 <a id="independent-sessions"></a>
 ## 试试独立会话
 
