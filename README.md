@@ -7,6 +7,8 @@ and resumable tasks — with a real local browser demo.
 
 **12 prompt modules · 4 workflow templates · reproducible recovery demos**
 
+**[Try the interactive lost-reply simulation](https://lydiatools.github.io/browser-agent-blueprint/demo/lost-reply.html)**: save once, then compare retrying with reading the saved state. No setup needed.
+
 [![Checks](https://github.com/LydiaTools/browser-agent-blueprint/actions/workflows/ci.yml/badge.svg)](https://github.com/LydiaTools/browser-agent-blueprint/actions/workflows/ci.yml)
 
 **Try the browser-task-recovery Skill** in a Codex project (Node 22.20+):

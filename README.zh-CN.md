@@ -6,6 +6,8 @@
 
 **12 个 txt 模块 · 4 类工作流 · 可复现的恢复实验**
 
+**[试试回复丢失的互动模拟](https://lydiatools.github.io/browser-agent-blueprint/demo/lost-reply.html?lang=zh)**：保存一次后，分别试试直接重试和先读取保存状态。打开网页即可体验。
+
 ## 作为 Agent Skill 安装
 
 当前仓库提供独立的 `browser-task-recovery` 技能。需要 Node 22.20+，在要使用的项目内运行第三方 Vercel skills CLI：
