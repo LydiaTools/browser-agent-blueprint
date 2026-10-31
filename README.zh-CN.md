@@ -44,6 +44,8 @@ npx skills@1.7.4 add LydiaTools/browser-agent-blueprint --skill browser-task-rec
 
 如果你使用 agent-browser，也可以在临时浏览器里[亲自验证固定标签与共享存储的区别](docs/agent-browser-pinned-sessions.zh-CN.md)。
 
+浏览器测试结束时，应该关闭哪个服务？[运行两个配合退出的测试服务](docs/owned-test-servers.zh-CN.md)，通过各自的子进程通道关闭其中一个，再验证另一个仍可用。这是本地示例，不是通用进程清理工具；固定 v0.2.4 ZIP 尚不包含它。
+
 ## 不安装环境，先拿到完整任务模板
 
 打开[在线配装页](https://lydiatools.github.io/browser-agent-blueprint/builder/?lang=zh)，选择任务，按需附加接入说明和工作流，即可预览、复制或下载 `.txt`。页面列出来源文件、实际 UTF-8 字节和 SHA-256；六种基础配置与原有 CLI 逐字节一致。

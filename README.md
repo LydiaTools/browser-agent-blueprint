@@ -43,6 +43,8 @@ When several agents browse in parallel, there is another question: **are their s
 
 Using agent-browser? [Try pinned tabs against shared storage](docs/agent-browser-pinned-sessions.md) in a disposable browser and see the difference for yourself.
 
+When a browser test ends, which server should stop? [Run two cooperative test servers](docs/owned-test-servers.md), close one through its own child-process channel, and verify the other still responds. This is a local example, not a general process cleanup tool; the fixed v0.2.4 ZIP predates it.
+
 | Failure | Included contract |
 |---|---|
 | The agent says “done” after a click | Define and read the actual postcondition |
