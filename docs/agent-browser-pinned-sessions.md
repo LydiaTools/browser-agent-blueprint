@@ -26,4 +26,17 @@ The script checks that:
 2. A cookie and localStorage value written in tab A are visible in tab B at the same origin.
 3. Closing tab A causes its next pinned `get url` to return `tab_gone` in this test.
 
+<a id="independent-sessions"></a>
+## Try independent sessions
+
+What if the agents need separate storage? agent-browser already supports independently launched sessions. In the following comparison, the script starts two fresh sessions **without connecting them to the same browser over CDP**. It uses a temporary configuration and a synthetic localhost page; it does not use an existing login. This example was tested on macOS with Chrome and agent-browser 0.41.0.
+
+After the setup above, run this from the current repository with Node 24+:
+
+```bash
+node demo/agent-browser-independent.cjs "$(command -v node)" "$tool_dir/node_modules/agent-browser/bin/agent-browser.js" "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+```
+
+The test writes a different fictional cookie and localStorage value in each session. The second starts empty, the first keeps its own values, and the second remains usable after the first closes. The script closes only the sessions it created. This example is in current source; the fixed v0.2.5 ZIP does not include it.
+
 For a comparison with separate Playwright contexts, run `npm run demo:session-isolation` and see [the companion explanation](session-isolation.md). These are small local experiments, not a security audit or a guarantee about every agent-browser command, site, browser adapter, or version. Pinning a tab is not an account-isolation boundary. For separate accounts, select an isolation mechanism appropriate to the browser and verify it with synthetic data before using real accounts.
