@@ -42,7 +42,7 @@ npx skills@1.7.4 add LydiaTools/browser-agent-blueprint --skill browser-task-rec
 
 多个 Agent 并行操作时，还需要问：**会话真的互相隔离了吗？** [本地会话隔离实验](docs/session-isolation.zh-CN.md)用合成数据展示同一上下文的两个标签页会共享什么，以及独立 Playwright 上下文的差别。
 
-如果你使用 agent-browser，也可以在临时浏览器里[亲自验证固定标签与共享存储的区别](docs/agent-browser-pinned-sessions.zh-CN.md)。
+如果你使用 agent-browser，可以[验证固定标签与共享存储的区别](docs/agent-browser-pinned-sessions.zh-CN.md)，再用同样的虚构数据[对照独立启动的会话](docs/agent-browser-pinned-sessions.zh-CN.md#independent-sessions)。独立会话示例在当前源码中，v0.2.5 ZIP 尚不包含。
 
 浏览器测试结束时，应该关闭哪个服务？[运行两个配合退出的测试服务](docs/owned-test-servers.zh-CN.md)，通过各自的子进程通道关闭其中一个，再验证另一个仍可用。v0.2.5 包含此本地示例；它不是通用进程清理工具，固定 v0.2.4 ZIP 尚不包含它。
 

@@ -26,4 +26,17 @@ node demo/agent-browser-pinned.cjs "$(command -v node)" "$tool_dir/node_modules/
 2. 同源标签 A 写入的 Cookie 和 localStorage 值能被标签 B 看到。
 3. 关闭标签 A 后，测试中的下一次固定标签 `get url` 返回 `tab_gone`。
 
+<a id="independent-sessions"></a>
+## 试试独立会话
+
+如果需要分别保存数据呢？agent-browser 本身支持独立启动会话。下面的对照实验启动两个全新会话，**不通过 CDP 连接同一个浏览器**；脚本使用临时配置和虚构的本地页面，不使用现有登录。此示例已在 macOS、Chrome 和 agent-browser 0.41.0 上测试。
+
+完成上面的准备后，在当前源码目录使用 Node 24+ 运行：
+
+```bash
+node demo/agent-browser-independent.cjs "$(command -v node)" "$tool_dir/node_modules/agent-browser/bin/agent-browser.js" "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+```
+
+脚本分别写入虚构的 Cookie 和 localStorage：第二个会话开始时为空，第一个保留自己的值；关闭第一个后，第二个仍可使用。脚本只关闭自己创建的会话。此示例在当前源码中，固定 v0.2.5 ZIP 尚不包含。
+
 如需对照独立 Playwright 上下文，可运行 `npm run demo:session-isolation`，见[配套说明](session-isolation.zh-CN.md)。这只是本地小实验，并非安全审计，也不代表所有 agent-browser 命令、网站、浏览器适配器或版本都有相同行为。固定标签不能单独作为账号隔离边界；使用真实账号前，应选择适合该浏览器的隔离方式，并先用虚构数据核验。
