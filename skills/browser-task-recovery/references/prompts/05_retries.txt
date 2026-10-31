@@ -14,6 +14,10 @@ F4 UNCERTAIN MUTATION: lost acknowledgement, submission timeout or interrupted
 write. Mark UNKNOWN. Reconcile with an authoritative read before replay.
 If present, mark CONFIRMED without writing. Replay only after authoritative
 negative evidence, valid authorization and safe deduplication.
+An empty read immediately after a timeout is only a point-in-time observation:
+the original request may still be executing, or the read may be stale. Keep the
+outcome UNKNOWN unless the host can establish that the prior attempt cannot
+commit later and the read covers the intended record. Waiting alone is not proof.
 If absence cannot be established, stop dependent writes.
 When the host requires human-reviewed recovery, persist the independent read's
 outcome, evidence reference and evidence hash as PENDING_REVIEW. A named,

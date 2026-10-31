@@ -42,6 +42,8 @@ npx skills@1.7.4 add LydiaTools/browser-agent-blueprint --skill browser-task-rec
 
 [看一次真实浏览器工具的回复丢失实验](docs/agent-browser-lost-reply.zh-CN.md)：在虚构本地页面中，agent-browser 0.38.2 在回复被丢弃后发送了 5 次点击；0.41.0 只发了 1 次并提示结果未知。上游已经修复该重试问题；这是一项可复现的小样，不代表所有网站或版本。
 
+**如果第一次读回什么也没找到呢？** 原请求可能还在执行。[恢复指南](docs/write-ahead.zh-CN.md)解释了为什么此时的零条结果仍不确定；当前源码附有延迟写入的合成测试。固定的 v0.2.6 下载包早于这次补充；读回结果仍由宿主判断。
+
 想先理解为什么要回读？[打开互动模拟](https://lydiatools.github.io/browser-agent-blueprint/demo/lost-reply.html?lang=zh)，不需要安装。它是虚构的网页演示，与上面的真实本地 CLI 对照实验分开。
 
 离线体验：解压 v0.2.6 预览 ZIP，用 Chrome 打开 `demo/lost-reply.html`，切换中文即可；这个页面不需要服务器或 Node。

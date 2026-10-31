@@ -107,6 +107,20 @@ flow; this library records the supplied reviewer value but cannot authenticate
 a person by itself. The demo checks successful reads, counts and exact synthetic
 titles.
 
+A zero-result read immediately after a timeout is a snapshot, not proof that an
+earlier request has stopped: it may still commit later, and reads may be stale.
+Record it as `inconclusive` unless the host can establish both that the earlier
+attempt cannot commit later and that the read covers the intended record. A
+timer alone cannot establish either fact. This controller records the host's
+classification; it cannot detect in-flight work or validate a reviewer's claim.
+The distinction also applies to the legacy boolean reconciliation method.
+
+Related independent report: [browser-harness #869](https://github.com/browser-use/browser-harness/issues/869)
+describes an IPC timeout while a browser action continues, with a commenter’s
+local duplicate-submit example. [PR #873](https://github.com/browser-use/browser-harness/pull/873)
+was open when checked on 2026-11-01. We have not independently reproduced that
+report or verified the proposed fix.
+
 Persistence failure freezes the instance: inspect storage and reload verified
 state before further dispatch. Persisted calls must be sequential; overlap is rejected.
 

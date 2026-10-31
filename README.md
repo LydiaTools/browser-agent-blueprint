@@ -45,6 +45,8 @@ This project makes that distinction explicit in prompts and executable examples.
 
 [See one lost reply with real browser tools](docs/agent-browser-lost-reply.md): on a fictional local page, agent-browser 0.38.2 sent five clicks after the reply was dropped; 0.41.0 sent one and reported `outcome_unknown`. The underlying retry bug was fixed upstream. This is a reproducible local experiment, not a claim about all sites or versions.
 
+**What if the first read finds nothing?** The original request may still be in flight. The [recovery guide](docs/write-ahead.md) explains why an early zero is inconclusive, with a synthetic delayed-write test in current source. The fixed v0.2.6 ZIP predates this guidance and test; the controller relies on the host to classify the read.
+
 Want to understand the decision first? [Try the interactive lost-reply simulation](https://lydiatools.github.io/browser-agent-blueprint/demo/lost-reply.html) without installation. It is a fictional browser-only illustration, separate from the real local CLI experiment.
 
 To use the simulation offline, extract the v0.2.6 preview ZIP and open `demo/lost-reply.html` in Chrome. No server or Node is needed for this page.

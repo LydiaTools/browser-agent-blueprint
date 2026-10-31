@@ -220,6 +220,23 @@ test('inconclusive observation stays pending and prevents a write after unresolv
  await assert.rejects(c.run('blocked',action(),async()=>++writes,async()=>true),PolicyError);
  assert.equal(writes,0);
 });
+test('an early empty read stays inconclusive while a timed-out write may finish later',async()=>{
+ let disk={};let records=0;let finishRemote;
+ const remoteDone=new Promise(resolve=>{finishRemote=()=>{records++;resolve();};});
+ const persist=ledger=>{disk=structuredClone(ledger);};
+ const bound={...action(),operation_id:'delayed-write',payload_sha256:'a'.repeat(64),payload_ref:'approved-input.json'};
+ const c=new Controller({...scope(),maxWrites:2},{},{persist,requireHumanReview:true});
+ await assert.rejects(c.run('attempt-1',bound,async()=>{throw new Error('client timeout; remote still running');},async()=>true));
+ assert.equal(records,0); // The target has not committed yet; this is not final absence.
+ await c.recordRecoveryObservation('attempt-1',observation('inconclusive'));
+ await assert.rejects(c.run('premature-retry',bound,async()=>records++,async()=>true),PolicyError);
+ finishRemote();await remoteDone;
+ assert.equal(records,1);
+ await c.recordRecoveryObservation('attempt-1',observation('present'));
+ await c.reviewAndReconcile('attempt-1',review('landed'));
+ await assert.rejects(c.run('late-retry',bound,async()=>records++,async()=>true),PolicyError);
+ assert.equal(disk['attempt-1'].status,'CONFIRMED');assert.equal(records,1);
+});
 test('strict checkpoints require a bound write and matching human recovery review',()=>{
  const dir=fs.mkdtempSync(path.join(os.tmpdir(),'blueprint-strict-ledger-'));
  try {

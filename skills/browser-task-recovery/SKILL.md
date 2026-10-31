@@ -13,6 +13,7 @@ Use the browser tools already available in the host. This skill supplies task gu
 - Keep the intended write and the observation separate. A timeout or a clicked button is not a saved-state result. Record the action as `UNKNOWN` while the outcome is unresolved.
 - Read the target's persisted postcondition before another write: identify the intended record, compare the relevant fields and look for an existing submission using the available host tools. Use a fresh page state and verify the actual account/origin.
 - If readback confirms the intended result, mark it verified and do not replay that action ID. If readback is unavailable or inconclusive, preserve `UNKNOWN` and stop dependent mutations. A failed read is not evidence that the write failed.
+- A successful read showing no record immediately after a timeout may still be inconclusive: the original request can finish later, or the read can be stale. Keep it unresolved until the host has evidence that the prior attempt cannot commit later and the read covers the intended record. A delay alone does not establish this.
 - Retry only an eligible read within the task's finite budget. Do not turn an uncertain external write into an automatic retry.
 
 Read [browser observations](references/prompts/03_browser.txt), [failure classes](references/prompts/05_retries.txt), or [completion evidence](references/prompts/08_evidence.txt) when the corresponding decision needs more detail.
