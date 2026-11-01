@@ -5,6 +5,21 @@ on:
 permissions:
   contents: read
 jobs:
+  compact-handoff:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+          package-manager-cache: false
+      - name: Download pinned external hook
+        run: curl -fsSL --max-time 30 https://raw.githubusercontent.com/wcf778/codex-checkpoint/162883999177bc9112cd75f648967eccdea2d768/plugins/context-checkpoint/hooks/context-checkpoint.cjs -o "$RUNNER_TEMP/context-checkpoint.cjs"
+      - name: Run synthetic handoff with hash verification
+        run: node --test tests/compact-handoff.test.cjs
+        env:
+          CONTEXT_CHECKPOINT_HOOK: ${{ runner.temp }}/context-checkpoint.cjs
   contracts:
     runs-on: ubuntu-latest
     steps:

@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased — Synthetic checkpoint handoff
+
+- Adds an explicitly pinned, separately downloaded Codex Checkpoint hook example with a synthetic conversation and this project's separate action ledger. The reminder is not a guard; the example does not run Codex or a browser. The v0.2.6 ZIP predates it.
+
 ## 0.2.6 — 2026-11-01
 
 - Adds a bilingual, browser-only lost-reply simulation, including a direct offline HTML path; it illustrates a fictional state and does not run an agent.

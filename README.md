@@ -57,6 +57,8 @@ To use the simulation offline, extract the v0.2.6 preview ZIP and open `demo/los
 
 When several agents browse in parallel, there is another question: **are their sessions actually separate?** The [local session-isolation experiment](docs/session-isolation.md) shows what two tabs can share, and what a separate Playwright context changes, using only synthetic data.
 
+**What if context is compacted after a save times out?** [Run the synthetic checkpoint handoff](docs/compact-handoff.md) with wcf778's Codex Checkpoint: a manually supplied reminder returns, while this project's separate ledger blocks a duplicate. It does not run a real Codex session or prove agent behavior; the v0.2.6 ZIP predates this example.
+
 Using agent-browser? [Try pinned tabs against shared storage](docs/agent-browser-pinned-sessions.md), then [compare independently launched sessions](docs/agent-browser-pinned-sessions.md#independent-sessions) with the same synthetic data. The independent-session example is in current source; the v0.2.5 ZIP predates it.
 
 When a browser test ends, which server should stop? [Run two cooperative test servers](docs/owned-test-servers.md), close one through its own child-process channel, and verify the other still responds. This local example is included in v0.2.5; it is not a general process cleanup tool. The fixed v0.2.4 ZIP predates it.
