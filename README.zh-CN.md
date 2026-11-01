@@ -60,6 +60,8 @@ npx skills@1.7.4 add LydiaTools/browser-agent-blueprint --skill browser-task-rec
 
 浏览器测试结束时，应该关闭哪个服务？[运行两个配合退出的测试服务](docs/owned-test-servers.zh-CN.md)，通过各自的子进程通道关闭其中一个，再验证另一个仍可用。v0.2.5 包含此本地示例；它不是通用进程清理工具，固定 v0.2.4 ZIP 尚不包含它。
 
+[真实工具的端口冲突验证](docs/owned-test-servers.zh-CN.md#端口号不代表进程归属)展示了为什么端口号本身不能证明进程属于本次任务。这个新案例在当前源码中，v0.2.6 ZIP 尚不包含。
+
 ## 不安装环境，先拿到完整任务模板
 
 打开[在线配装页](https://lydiatools.github.io/browser-agent-blueprint/builder/?lang=zh)，选择任务，按需附加接入说明和工作流，即可预览、复制或下载 `.txt`。页面列出来源文件、实际 UTF-8 字节和 SHA-256；六种基础配置与原有 CLI 逐字节一致。

@@ -63,6 +63,8 @@ Using agent-browser? [Try pinned tabs against shared storage](docs/agent-browser
 
 When a browser test ends, which server should stop? [Run two cooperative test servers](docs/owned-test-servers.md), close one through its own child-process channel, and verify the other still responds. This local example is included in v0.2.5; it is not a general process cleanup tool. The fixed v0.2.4 ZIP predates it.
 
+A [real-tool port-conflict check](docs/owned-test-servers.md#a-port-number-is-not-ownership) shows why a port alone does not identify which process belongs to a run. This new case is in current source, not the v0.2.6 ZIP.
+
 | Failure | Included contract |
 |---|---|
 | The agent says “done” after a click | Define and read the actual postcondition |

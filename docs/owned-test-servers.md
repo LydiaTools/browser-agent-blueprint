@@ -22,6 +22,14 @@ Requires Node 20+. No browser, packages, account, or model is needed. The contro
 
 The controller uses the `ChildProcess` IPC channel it created and sends a shutdown request. The child closes its own HTTP server. No process is selected or signaled by name, port, PID, or path; an IPC disconnect also asks the child to close. Only the two synthetic servers started by this example are involved.
 
+## A port number is not ownership
+
+[ProofShot](https://github.com/AmElmo/proofshot) collects browser recordings and logs for review. Its [Hacker News discussion](https://news.ycombinator.com/item?id=47499672) led me to check how a real browser-testing tool handles a busy port. In ProofShot 1.6.0, [`start --run` checks the port and attempts to terminate its existing listeners](https://github.com/AmElmo/proofshot/blob/963aa67949ad8e82810135e0a7cfce4827fd4686/src/server/start.ts#L59-L84). On Unix, the [lookup and termination use `lsof` and `kill -9`](https://github.com/AmElmo/proofshot/blob/963aa67949ad8e82810135e0a7cfce4827fd4686/src/utils/process.ts#L60-L84).
+
+I checked the published `proofshot@1.6.0` package on macOS on 2026-11-01. A temporary listener created for this test was confirmed as the port's only listed process. Running ProofShot with that port and a replacement command that immediately exited terminated the test listener with signal 9; ProofShot then exited with an error because no replacement server started. The test did not launch a browser or use an existing application. This demonstrates one startup path, not every ProofShot workflow or platform.
+
+[Upstream PR #45](https://github.com/AmElmo/proofshot/pull/45) proposes refusing unrelated occupied ports and tracking owned processes; it was open when checked. Its own tests and claims belong to that PR, and I have not validated that change. Our cooperative example above illustrates a different, limited approach; it does not patch ProofShot or manage arbitrary servers.
+
 ## Where this ends
 
 This is **not** a general cleanup tool or an OS security boundary. A real server needs to implement a compatible shutdown protocol; an arbitrary existing process will not. A child may ignore the request, retain open connections, spawn detached descendants, or exit unexpectedly. If a controller loses its handle, this example does not identify or recover previously started processes. It does not prevent an agent with separate shell access from killing an unrelated process. Adapt, test, and enforce lifecycle controls in the actual host rather than treating this example as a guarantee.

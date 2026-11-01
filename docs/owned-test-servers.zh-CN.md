@@ -14,6 +14,14 @@ npm run demo:owned-servers
 
 控制器只通过创建子进程时获得的 IPC 通道发送退出请求，子进程自己关闭 HTTP 服务。示例不会按名称、端口、PID 或路径查找或发送结束信号；IPC 断开时子进程也会尝试关闭。操作对象仅限本次启动的两个合成测试服务。
 
+## 端口号不代表进程归属
+
+[ProofShot](https://github.com/AmElmo/proofshot) 用于收集浏览器录屏和日志，方便人工审阅。我从它的 [Hacker News 讨论](https://news.ycombinator.com/item?id=47499672)出发，核对了真实工具遇到端口占用时的行为。ProofShot 1.6.0 的 [`start --run` 会检查端口并尝试结束现有监听进程](https://github.com/AmElmo/proofshot/blob/963aa67949ad8e82810135e0a7cfce4827fd4686/src/server/start.ts#L59-L84)；在 Unix 上，[查找和结束分别使用 `lsof` 与 `kill -9`](https://github.com/AmElmo/proofshot/blob/963aa67949ad8e82810135e0a7cfce4827fd4686/src/utils/process.ts#L60-L84)。
+
+2026-11-01，我在 macOS 上用公开的 `proofshot@1.6.0` 做了一个隔离验证：先创建临时监听进程，确认它是该端口唯一列出的进程，再让 ProofShot 使用这个端口，并把替代服务设为立即退出的命令。临时监听进程收到 signal 9 后退出；由于替代服务没有启动，ProofShot 随后报错退出。测试没有启动浏览器，也没有操作已有应用。这只验证了一个启动路径，不能代表 ProofShot 的全部用法或所有平台。
+
+[上游 PR #45](https://github.com/AmElmo/proofshot/pull/45) 提出了拒绝占用端口及跟踪所属进程的方案，核查时仍在等待合并。PR 中的测试和结论来自其作者，我尚未验证该修改。上面的配合退出示例展示的是另一种有明确范围的方法；它不会修复 ProofShot，也不能管理任意服务。
+
 ## 使用范围
 
 这不是通用进程清理工具或操作系统安全边界。真实服务需要配合实现退出协议；任意已有进程不会自动支持。子进程可能忽略请求、保留连接、启动脱离管理的后代或意外退出。控制器失去句柄后，此示例无法重新识别和恢复此前的进程；它也无法阻止拥有独立 Shell 权限的 Agent 结束其他进程。真实宿主需要自行适配、测试和实施进程管理。
