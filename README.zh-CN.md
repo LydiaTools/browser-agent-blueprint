@@ -54,6 +54,8 @@ npx skills@1.7.4 add LydiaTools/browser-agent-blueprint --skill browser-task-rec
 
 多个 Agent 并行操作时，还需要问：**会话真的互相隔离了吗？** [本地会话隔离实验](docs/session-isolation.zh-CN.md)用合成数据展示同一上下文的两个标签页会共享什么，以及独立 Playwright 上下文的差别。
 
+如果使用 Chrome DevTools MCP，可以[运行两个真实 MCP 服务和临时浏览器配置](docs/chrome-devtools-isolation.zh-CN.md)，核对各自收到的 Cookie 和 localStorage。本地示例不使用真实账号；v0.2.6 ZIP 尚不包含它。
+
 **保存超时后，上下文又被压缩怎么办？** [运行合成检查点交接示例](docs/compact-handoff.zh-CN.md)：结合 wcf778 的 Codex Checkpoint 带回手动填写的提醒，再由本项目单独保存的操作记录阻止重复写入。它不运行真实 Codex 会话，也不证明 Agent 实际行为；v0.2.6 ZIP 早于此示例。
 
 如果你使用 agent-browser，可以[验证固定标签与共享存储的区别](docs/agent-browser-pinned-sessions.zh-CN.md)，再用同样的虚构数据[对照独立启动的会话](docs/agent-browser-pinned-sessions.zh-CN.md#independent-sessions)。独立会话示例在当前源码中，v0.2.5 ZIP 尚不包含。

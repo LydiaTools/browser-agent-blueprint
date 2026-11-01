@@ -22,6 +22,7 @@
     "demo:browser-kill": "node demo/browser-profile-kill.cjs",
     "demo:write-ahead": "node demo/write-ahead.cjs",
     "demo:session-isolation": "node demo/session-isolation.cjs",
+    "demo:devtools-isolation": "node demo/chrome-devtools-isolation.mjs",
     "demo:owned-servers": "node demo/owned-test-servers.cjs",
     "build:builder": "node scripts/build-builder.cjs",
     "test:builder": "node tests/builder-browser.cjs",
