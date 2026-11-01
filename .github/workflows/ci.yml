@@ -5,6 +5,24 @@ on:
 permissions:
   contents: read
 jobs:
+  devtools-isolation:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+          package-manager-cache: false
+      - name: Install pinned optional tools
+        run: npm install --prefix "$DEVTOOLS_DEPS_DIR" --ignore-scripts --no-audit --no-fund --save-exact chrome-devtools-mcp@1.12.0 @modelcontextprotocol/sdk@1.32.2
+        env:
+          DEVTOOLS_DEPS_DIR: ${{ runner.temp }}/blueprint-devtools-deps
+      - name: Exercise separate disposable Chrome profiles through MCP
+        run: DEVTOOLS_CHROME="$(command -v google-chrome)" npm run demo:devtools-isolation
+        env:
+          DEVTOOLS_DEPS_DIR: ${{ runner.temp }}/blueprint-devtools-deps
+          DEVTOOLS_TEST_DIR: ${{ runner.temp }}
   compact-handoff:
     runs-on: ubuntu-latest
     timeout-minutes: 5

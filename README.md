@@ -57,6 +57,8 @@ To use the simulation offline, extract the v0.2.6 preview ZIP and open `demo/los
 
 When several agents browse in parallel, there is another question: **are their sessions actually separate?** The [local session-isolation experiment](docs/session-isolation.md) shows what two tabs can share, and what a separate Playwright context changes, using only synthetic data.
 
+Using Chrome DevTools MCP? [Run two real MCP servers with disposable browser profiles](docs/chrome-devtools-isolation.md) and check which cookies and localStorage each receives. This local fixture uses no real accounts; the v0.2.6 ZIP predates the example.
+
 **What if context is compacted after a save times out?** [Run the synthetic checkpoint handoff](docs/compact-handoff.md) with wcf778's Codex Checkpoint: a manually supplied reminder returns, while this project's separate ledger blocks a duplicate. It does not run a real Codex session or prove agent behavior; the v0.2.6 ZIP predates this example.
 
 Using agent-browser? [Try pinned tabs against shared storage](docs/agent-browser-pinned-sessions.md), then [compare independently launched sessions](docs/agent-browser-pinned-sessions.md#independent-sessions) with the same synthetic data. The independent-session example is in current source; the v0.2.5 ZIP predates it.
