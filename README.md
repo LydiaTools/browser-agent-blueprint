@@ -75,8 +75,22 @@ A [real-tool port-conflict check](docs/owned-test-servers.md#a-port-number-is-no
 | A small loop becomes a large batch | Count cumulative writes across resumes |
 | A webpage tells the agent to change its task | Keep observations outside trusted authority |
 | A disabled control is bypassed through script | Use visible prerequisites or stop; do not alter page state |
+| An expired login looks like “no data” | Require a fresh signed-in marker and explicit empty-state before accepting zero rows |
+| The read tool is blank while the page has rows | Check the read path before reporting zero |
 | Every task loads a giant instruction dump | Assemble only the necessary modules |
 | Status messages fill with boilerplate | Apply a narration blacklist without altering user copy |
+
+**Zero rows is not a session check.** [Try the synthetic session-integrity
+demo](https://lydiatools.github.io/browser-agent-blueprint/demo/session-integrity.html)
+to compare an expired login, a verified empty report and a read channel that
+silently returns blank. It uses fictional page states only; the
+[data-validation contract](workflows/data_validation.txt) shows what to check
+in a real authorized workflow. The [state definitions and source reports](docs/session-integrity.md)
+explain why these outcomes stay separate.
+
+![Synthetic demo: the report visibly contains three rows while the extraction channel returns an empty string and its configured probe fails](assets/session-integrity-tool-en.png)
+
+*A real screenshot of this project's fictional demo state; no real account or browser session is used.*
 
 ## Watch the boundary, not a benchmark
 

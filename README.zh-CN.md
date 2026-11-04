@@ -44,6 +44,12 @@ npx skills@1.7.4 add LydiaTools/browser-agent-blueprint --skill browser-task-rec
 
 **如果第一次读回什么也没找到呢？** 原请求可能还在执行。[恢复指南](docs/write-ahead.zh-CN.md)解释了为什么此时的零条结果仍不确定；当前源码附有延迟写入的合成测试。固定的 v0.2.6 下载包早于这次补充；读回结果仍由宿主判断。
 
+**工具返回 0，不代表页面真的为空。** [打开登录态校验演示](https://lydiatools.github.io/browser-agent-blueprint/demo/session-integrity.html?lang=zh)，对照登录跳转、已登录的空报表、页面有数据但读取通道静默返回空值，以及无法确认的页面。演示只使用虚构状态；真实任务的条件见[数据校验工作流](workflows/data_validation.txt)，各状态的边界和来源见[完整说明](docs/session-integrity.zh-CN.md)。
+
+![中文合成演示：页面可见 3 条记录，但读取通道返回空字符串，已配置的探针检查失败](assets/session-integrity-tool-zh.png)
+
+*这是本项目虚构演示界面的实际截图，不连接真实账号或浏览器会话。*
+
 想先理解为什么要回读？[打开互动模拟](https://lydiatools.github.io/browser-agent-blueprint/demo/lost-reply.html?lang=zh)，不需要安装。它是虚构的网页演示，与上面的真实本地 CLI 对照实验分开。
 
 离线体验：解压 v0.2.6 预览 ZIP，用 Chrome 打开 `demo/lost-reply.html`，切换中文即可；这个页面不需要服务器或 Node。

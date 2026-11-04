@@ -3,6 +3,7 @@
 ## Unreleased — Synthetic checkpoint handoff
 
 - Adds an explicitly pinned, separately downloaded Codex Checkpoint hook example with a synthetic conversation and this project's separate action ledger. The reminder is not a guard; the example does not run Codex or a browser. The v0.2.6 ZIP predates it.
+- Adds an English/Chinese session-integrity simulator and strengthens the optional cloud-browser and data-validation workflows: an authenticated empty result requires both a fresh signed-in marker and an explicit empty state; a page/tool mismatch can surface a failed read path instead of false zero. The simulator uses no real account, browser profile or cookies; v0.2.6 fixed bundles remain unchanged.
 
 ## 0.2.6 — 2026-11-01
 

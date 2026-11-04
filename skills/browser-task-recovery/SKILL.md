@@ -31,7 +31,7 @@ For repeated or batch work, read [cumulative risk limits](references/prompts/04_
 Read only the matching workflow when it helps the task:
 
 - [Website content entry](references/workflows/content_entry.txt): field mapping and per-record readback.
-- [Page data validation](references/workflows/data_validation.txt): report discrepancies without silently changing data.
+- [Page data validation](references/workflows/data_validation.txt): distinguish empty reports, expired sessions and silent read-channel failures before reporting data.
 - [Social operations](references/workflows/social_ops.txt): distinguish drafts, schedules and actual publication.
 - [Cloud browser session](references/workflows/cloud_browser.txt): reconnect and session-reference boundaries.
 

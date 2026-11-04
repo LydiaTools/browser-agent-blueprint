@@ -3,6 +3,19 @@ Profile: validation.
 Goal: compare observed page data against an approved expected dataset.
 Inputs: source origins; record IDs; fields; expected values; normalization rules;
 capture time window; permitted collection scope.
+Before extraction, confirm a fresh page is in the expected account and report.
+Treat an explicit login redirect, access-denied state or expired-session notice
+as AUTH_REQUIRED. Ask the user to sign in through the normal site flow; do not
+automate the login or retry extraction against the same state.
+Accept zero rows as VERIFIED_EMPTY only when a configured, positive signed-in
+marker and the report's explicit empty-state message are both visible in the
+same fresh page state. If the page visibly contains records but the extraction
+response is blank, do not call the report empty. A failed configured, read-only
+known-answer probe is TOOL_UNHEALTHY; preserve the page state and stop or use an
+approved alternate read path. Without a safe probe, or when signals conflict,
+classify UNKNOWN. A visible row set is DATA_VERIFIED only after the same
+account, report, scope and capture-time checks pass. Never retry the same empty
+response as if it were new evidence.
 Use bounded extraction. Preserve original strings and record missing fields.
 Compare count, uniqueness, units, dates, locale, links and required statuses.
 Never replace an extraction failure with an empty value or invent missing rows.
