@@ -3,7 +3,18 @@ Profile: long. Add the host's verified browser adapter.
 Goal: perform a bounded task in an existing authorized cloud browser session.
 Inputs: task contract; account and origin; session reference; allowed actions;
 browser tool schemas; checkpoint store; scheduler capability.
-Validate current session/account, then read the target state.
+Validate current session/account before reading the target state. Use a fresh,
+site-specific signed-in marker and the expected protected-page landmark.
+If a login redirect, access-denied page or explicit expiry notice appears,
+classify AUTH_REQUIRED and stop for the user to sign in normally.
+Do not treat a blank page or zero extracted records as an authenticated empty
+result. Use VERIFIED_EMPTY only when both the signed-in marker and an explicit
+empty-state message are visible in the same fresh page state. If the page shows
+records but the extraction channel returns blank, classify TOOL_UNHEALTHY only
+after a configured read-only known-answer probe fails; preserve the page state
+and stop or use an approved alternate read path. Without that probe or when
+signals conflict, use UNKNOWN. Do not retry the same empty response as if it
+were new evidence.
 Do not restart, replace, log out or alter proxy/fingerprint settings to repair
 an unrelated failure. Do not infer a vendor or session API from this template.
 Track session expiry separately from model-context exhaustion.

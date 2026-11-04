@@ -1,0 +1,382 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#eef3f6">
+  <meta name="description" content="A bilingual synthetic browser diagnostic: distinguish an expired session, a genuinely empty report, and a silent broken read channel.">
+  <link rel="canonical" href="https://lydiatools.github.io/browser-agent-blueprint/demo/session-integrity.html">
+  <title>When zero looks like success · Browser Agent Blueprint</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --paper: #eef3f6;
+      --surface: #fff;
+      --ink: #173247;
+      --muted: #526a7a;
+      --line: #bdcbd4;
+      --blue: #1766a8;
+      --blue-dark: #124e7f;
+      --amber: #c78117;
+      --amber-wash: #fff4df;
+      --green: #14654d;
+      --green-wash: #eaf5f0;
+      --red: #9c3f36;
+      --red-wash: #fff0ed;
+      --night: #102432;
+      --night-muted: #bbccd6;
+      --max: 1180px;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--paper); color: var(--ink); font: 16px/1.55 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; -webkit-font-smoothing: antialiased; }
+    a { color: var(--blue-dark); text-underline-offset: .2em; }
+    button { font: inherit; }
+    button:focus-visible, a:focus-visible { outline: 3px solid var(--amber); outline-offset: 3px; }
+    .wrap { width: min(calc(100% - 3rem), var(--max)); margin-inline: auto; }
+    header { min-height: 72px; display: flex; align-items: center; justify-content: space-between; gap: 1rem; border-bottom: 1px solid var(--line); }
+    .brand { display: inline-flex; align-items: center; gap: .7rem; color: var(--ink); font-weight: 680; text-decoration: none; }
+    .mark { display: grid; width: 2rem; height: 2rem; place-items: center; border: 1px solid var(--ink); font: 650 .72rem/1 ui-monospace, SFMono-Regular, Menlo, monospace; letter-spacing: -.08em; }
+    .header-actions { display: flex; align-items: center; gap: 1.1rem; }
+    .header-actions a { color: var(--muted); font-size: .9rem; }
+    .language { min-height: 42px; padding: .45rem .75rem; border: 1px solid var(--line); background: transparent; color: var(--ink); cursor: pointer; }
+    main { padding: clamp(2.5rem, 6vw, 4.8rem) 0 3.25rem; }
+    .intro { max-width: 850px; margin-bottom: 2.2rem; }
+    .eyebrow { margin: 0 0 .9rem; color: var(--blue-dark); font-size: .8rem; font-weight: 680; letter-spacing: .07em; text-transform: uppercase; }
+    h1 { max-width: 17ch; margin: 0; font-size: clamp(2.55rem, 6vw, 4.8rem); font-weight: 660; letter-spacing: -.065em; line-height: .99; }
+    :lang(zh-CN) h1 { max-width: 20ch; letter-spacing: -.045em; line-height: 1.12; }
+    .lead { max-width: 70ch; margin: 1.25rem 0 0; color: var(--muted); font-size: clamp(1rem, 1.6vw, 1.18rem); }
+    .workspace { display: grid; grid-template-columns: minmax(215px, .68fr) minmax(0, 1.8fr); gap: clamp(1.25rem, 3vw, 2.8rem); align-items: start; }
+    .case-rail { border-top: 2px solid var(--ink); }
+    .section-label { margin: 0; padding: 1rem 0 .7rem; color: var(--muted); font-size: .78rem; font-weight: 680; letter-spacing: .06em; text-transform: uppercase; }
+    .case-list { display: grid; }
+    .case-button { width: 100%; display: grid; grid-template-columns: 2rem 1fr; gap: .65rem; align-items: start; padding: .85rem .35rem; border: 0; border-top: 1px solid var(--line); background: transparent; color: var(--ink); text-align: left; cursor: pointer; }
+    .case-button:last-child { border-bottom: 1px solid var(--line); }
+    .case-button[aria-pressed="true"] { background: var(--surface); box-shadow: inset 3px 0 0 var(--blue); }
+    .case-number { color: var(--muted); font: 600 .76rem/1.6 ui-monospace, SFMono-Regular, Menlo, monospace; }
+    .case-name { display: block; font-size: .94rem; font-weight: 660; }
+    .case-summary { display: block; margin-top: .15rem; color: var(--muted); font-size: .81rem; line-height: 1.4; }
+    .rail-note { margin: .9rem 0 0; color: var(--muted); font-size: .82rem; }
+    .bench { min-width: 0; border-top: 2px solid var(--ink); }
+    .bench-head { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; padding: .9rem 0 .8rem; }
+    .bench-head h2 { margin: 0; font-size: 1rem; letter-spacing: -.015em; }
+    .fixture-tag { color: var(--muted); font: 600 .72rem/1.3 ui-monospace, SFMono-Regular, Menlo, monospace; white-space: nowrap; }
+    .evidence-grid { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(260px, .9fr); gap: 1rem; }
+    .panel { min-width: 0; border: 1px solid var(--line); background: var(--surface); }
+    .panel-title { display: flex; justify-content: space-between; align-items: center; gap: .8rem; min-height: 46px; padding: .65rem .9rem; border-bottom: 1px solid var(--line); color: var(--muted); font-size: .78rem; font-weight: 680; letter-spacing: .03em; }
+    .panel-body { padding: 1rem; }
+    .browser-bar { display: flex; align-items: center; gap: .6rem; padding: .55rem .7rem; background: #e5edf1; color: #314b5c; font: .74rem/1.35 ui-monospace, SFMono-Regular, Menlo, monospace; overflow-wrap: anywhere; }
+    .browser-dot { flex: 0 0 auto; width: .55rem; height: .55rem; border-radius: 50%; background: var(--amber); }
+    .site-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; margin: .15rem 0 1rem; }
+    .site-title { margin: 0; font-size: 1.02rem; font-weight: 680; letter-spacing: -.02em; }
+    .site-subtitle { margin: .2rem 0 0; color: var(--muted); font-size: .83rem; }
+    .page-state { flex: 0 0 auto; padding: .22rem .45rem; border: 1px solid var(--line); color: var(--muted); font: 650 .68rem/1.25 ui-monospace, SFMono-Regular, Menlo, monospace; }
+    .signal-list { margin: 0; border-top: 1px solid var(--line); }
+    .signal-row { display: grid; grid-template-columns: minmax(90px, .72fr) minmax(0, 1.28fr); gap: .75rem; padding: .65rem 0; border-bottom: 1px solid var(--line); font-size: .83rem; }
+    .signal-row dt { color: var(--muted); }
+    .signal-row dd { margin: 0; font-weight: 570; overflow-wrap: anywhere; }
+    .records { display: grid; gap: .35rem; margin-top: .75rem; }
+    .record-line { display: flex; justify-content: space-between; gap: 1rem; padding: .38rem .55rem; background: #f0f5f7; color: #314b5c; font: .73rem/1.4 ui-monospace, SFMono-Regular, Menlo, monospace; }
+    .record-line span:last-child { color: var(--muted); }
+    .agent-panel { display: flex; flex-direction: column; }
+    .agent-panel .panel-body { display: grid; align-content: start; gap: .75rem; flex: 1; }
+    .observation-label { margin: 0 0 .3rem; color: var(--muted); font-size: .75rem; font-weight: 650; }
+    .observation { min-height: 2.6rem; margin: 0; padding: .55rem .65rem; background: var(--night); color: #f3f7f9; font: .78rem/1.5 ui-monospace, SFMono-Regular, Menlo, monospace; overflow-wrap: anywhere; }
+    .classify { min-height: 46px; margin-top: .15rem; padding: .65rem .9rem; border: 1px solid var(--ink); background: var(--ink); color: #fff; font-weight: 670; cursor: pointer; }
+    .classify:hover { background: var(--blue-dark); }
+    .classify:disabled { cursor: default; opacity: .72; }
+    .result { display: grid; grid-template-columns: minmax(120px, .45fr) minmax(0, 1.55fr); gap: .9rem 1.15rem; align-items: start; margin-top: 1rem; padding: 1rem 1.1rem; border-left: 3px solid var(--line); background: rgba(255,255,255,.66); }
+    .result[data-kind="AUTH_REQUIRED"] { border-left-color: var(--amber); background: var(--amber-wash); }
+    .result[data-kind="VERIFIED_EMPTY"], .result[data-kind="DATA_VERIFIED"] { border-left-color: var(--green); background: var(--green-wash); }
+    .result[data-kind="TOOL_UNHEALTHY"] { border-left-color: var(--red); background: var(--red-wash); }
+    .result[data-kind="UNKNOWN"] { border-left-color: var(--amber); background: var(--amber-wash); }
+    .result-code { margin: .08rem 0 0; color: var(--muted); font: 700 .77rem/1.4 ui-monospace, SFMono-Regular, Menlo, monospace; }
+    .result-copy { margin: 0; font-weight: 610; }
+    .result-next { grid-column: 2; margin: -.45rem 0 0; color: var(--muted); font-size: .88rem; }
+    .result:not([data-kind]) .result-next { grid-column: 1 / -1; margin: 0; }
+    .method-note { margin: 1rem 0 0; color: var(--muted); font-size: .81rem; }
+    footer { display: flex; flex-wrap: wrap; justify-content: space-between; gap: .75rem 2rem; margin-top: 2.5rem; padding: 1.2rem 0 2rem; border-top: 1px solid var(--line); color: var(--muted); font-size: .84rem; }
+    footer p { margin: 0; }
+    @media (max-width: 780px) {
+      .wrap { width: min(calc(100% - 2rem), var(--max)); }
+      .workspace { grid-template-columns: 1fr; gap: 1.7rem; }
+      .case-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .case-button:nth-child(odd) { border-right: 1px solid var(--line); }
+      .evidence-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 520px) {
+      header { min-height: 64px; }
+      .header-actions { gap: .45rem; }
+      .header-actions a { display: none; }
+      .language { min-height: 38px; padding: .35rem .6rem; }
+      .brand { gap: .45rem; font-size: .8rem; }
+      .mark { width: 1.75rem; height: 1.75rem; }
+      main { padding-top: 2.3rem; }
+      h1 { max-width: none; font-size: clamp(2.15rem, 9vw, 2.55rem); }
+      :lang(zh-CN) h1 { max-width: none; font-size: clamp(1.9rem, 7.6vw, 2.2rem); line-height: 1.2; }
+      .case-list { grid-template-columns: 1fr; }
+      .case-button:nth-child(odd) { border-right: 0; }
+      .result { grid-template-columns: 1fr; gap: .45rem; }
+      .result-next { grid-column: 1; margin: 0; }
+      .signal-row { grid-template-columns: 1fr; gap: .15rem; }
+      .bench-head { align-items: flex-start; flex-direction: column; gap: .3rem; }
+      .fixture-tag { white-space: normal; overflow-wrap: anywhere; }
+      .browser-bar { align-items: flex-start; }
+      .browser-bar span:last-child { min-width: 0; white-space: normal; overflow-wrap: anywhere; }
+      .signal-row dd { min-width: 0; }
+    }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; } }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <a class="brand" href="../" aria-label="Browser Agent Blueprint project guide">
+        <span class="mark" aria-hidden="true">BB</span>
+        <span>Browser Agent Blueprint</span>
+      </a>
+      <div class="header-actions">
+        <a href="../" data-i18n="project">Project guide</a>
+        <button id="language" class="language" type="button" data-i18n="languageButton" aria-label="Switch language">中文</button>
+      </div>
+    </header>
+
+    <main>
+      <section class="intro" aria-labelledby="title">
+        <p class="eyebrow" data-i18n="eyebrow">Session and extraction integrity</p>
+        <h1 id="title" data-i18n="title">The agent saw zero. The browser did not.</h1>
+        <p class="lead" data-i18n="lead">An empty tool response can mean an expired login, a genuinely empty report, or a broken read channel. Compare the evidence before deciding what zero means.</p>
+      </section>
+
+      <section class="workspace" aria-label="Synthetic session diagnostic">
+        <aside class="case-rail" aria-labelledby="cases-title">
+          <h2 id="cases-title" class="section-label" data-i18n="casesTitle">Choose a page state</h2>
+          <div class="case-list" role="group" aria-label="Synthetic scenarios">
+            <button class="case-button" type="button" data-case="auth" aria-pressed="true">
+              <span class="case-number">01</span><span><span class="case-name" data-i18n="authName">Login redirect</span><span class="case-summary" data-i18n="authSummary">The report sends you to sign in.</span></span>
+            </button>
+            <button class="case-button" type="button" data-case="empty" aria-pressed="false">
+              <span class="case-number">02</span><span><span class="case-name" data-i18n="emptyName">Verified empty report</span><span class="case-summary" data-i18n="emptySummary">Signed in, report loaded, no records.</span></span>
+            </button>
+            <button class="case-button" type="button" data-case="tool" aria-pressed="false">
+              <span class="case-number">03</span><span><span class="case-name" data-i18n="toolName">Silent read channel</span><span class="case-summary" data-i18n="toolSummary">The page has rows; the tool returns blank.</span></span>
+            </button>
+            <button class="case-button" type="button" data-case="unknown" aria-pressed="false">
+              <span class="case-number">04</span><span><span class="case-name" data-i18n="unknownName">Unclear page</span><span class="case-summary" data-i18n="unknownSummary">No reliable marker or finished report.</span></span>
+            </button>
+            <button class="case-button" type="button" data-case="data" aria-pressed="false">
+              <span class="case-number">05</span><span><span class="case-name" data-i18n="dataName">Rows verified</span><span class="case-summary" data-i18n="dataSummary">Page and extraction agree.</span></span>
+            </button>
+          </div>
+          <p class="rail-note" data-i18n="railNote">Every page and tool response below is fictional.</p>
+        </aside>
+
+        <div class="bench">
+          <div class="bench-head">
+            <h2 data-i18n="benchTitle">Compare what the page shows with what the agent received</h2>
+            <span class="fixture-tag">fixture://demo-state</span>
+          </div>
+          <div class="evidence-grid">
+            <section class="panel" aria-labelledby="page-panel-title">
+              <div class="panel-title"><span id="page-panel-title" data-i18n="pagePanel">Synthetic report page</span><span data-i18n="fixture">FIXTURE</span></div>
+              <div class="browser-bar"><span class="browser-dot" aria-hidden="true"></span><span id="url">https://example.test/sign-in?return=/reports/weekly</span></div>
+              <div class="panel-body">
+                <div class="site-top"><div><h3 id="report-title" class="site-title"></h3><p id="report-subtitle" class="site-subtitle"></p></div><span id="page-state" class="page-state"></span></div>
+                <dl class="signal-list">
+                  <div class="signal-row"><dt data-i18n="accountMarker">Account marker</dt><dd id="marker"></dd></div>
+                  <div class="signal-row"><dt data-i18n="reportState">Report state</dt><dd id="report-state"></dd></div>
+                  <div class="signal-row"><dt data-i18n="visibleRows">Visible rows</dt><dd id="visible-rows"></dd></div>
+                </dl>
+                <div id="records" class="records" hidden></div>
+              </div>
+            </section>
+
+            <section class="panel agent-panel" aria-labelledby="agent-panel-title">
+              <div class="panel-title"><span id="agent-panel-title" data-i18n="agentPanel">Agent observation</span><span data-i18n="readOnly">READ ONLY</span></div>
+              <div class="panel-body">
+                <div><p class="observation-label" data-i18n="toolResponse">Extraction response</p><p id="tool-response" class="observation"></p></div>
+                <div><p class="observation-label" data-i18n="probeLabel">Configured read-path probe</p><p id="probe" class="observation"></p></div>
+                <button id="classify" class="classify" type="button" data-i18n="classify">Classify the evidence</button>
+              </div>
+            </section>
+          </div>
+
+          <section id="result" class="result" aria-live="polite" aria-atomic="true">
+            <p id="result-code" class="result-code" data-i18n="notChecked">NOT CHECKED</p>
+            <p id="result-copy" class="result-copy" data-i18n="resultPrompt">Read the page and tool response together, then classify.</p>
+            <p id="result-next" class="result-next" data-i18n="resultPromptNext">A zero from one channel is not enough to prove an empty report.</p>
+          </section>
+
+          <p class="method-note"><span data-i18n="methodNote">For a real task, use only fresh, site-specific signals and a configured read-only probe. This page runs no agent, browser, account or network request.</span> <a id="method-link" href="https://github.com/LydiaTools/browser-agent-blueprint/blob/main/docs/session-integrity.md" data-i18n="methodLink">Read the workflow</a>.</p>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <p><a href="../" data-i18n="back">Back to the project guide</a> · <a href="https://github.com/LydiaTools/browser-agent-blueprint" data-i18n="source">Source</a></p>
+      <p><span data-i18n="original">Original templates · MIT license</span> · <a href="https://github.com/LydiaTools/browser-agent-blueprint/blob/main/README.zh-CN.md" lang="zh-CN" data-i18n="chineseGuide">中文说明</a></p>
+    </footer>
+  </div>
+
+  <script>
+    const copy = {
+      en: {
+        project: 'Project guide', languageButton: '中文', languageLabel: 'Switch to Chinese',
+        eyebrow: 'Session and extraction integrity', title: 'The agent saw zero. The browser did not.',
+        lead: 'An empty tool response can mean an expired login, a genuinely empty report, or a broken read channel. Compare the evidence before deciding what zero means.',
+        casesTitle: 'Choose a page state', authName: 'Login redirect', authSummary: 'The report sends you to sign in.',
+        emptyName: 'Verified empty report', emptySummary: 'Signed in, report loaded, no records.',
+        toolName: 'Silent read channel', toolSummary: 'The page has rows; the tool returns blank.',
+        unknownName: 'Unclear page', unknownSummary: 'No reliable marker or finished report.',
+        dataName: 'Rows verified', dataSummary: 'Page and extraction agree.',
+        railNote: 'Every page and tool response below is fictional.',
+        benchTitle: 'Compare what the page shows with what the agent received', pagePanel: 'Synthetic report page', fixture: 'FIXTURE',
+        accountMarker: 'Account marker', reportState: 'Report state', visibleRows: 'Visible rows', agentPanel: 'Agent observation',
+        readOnly: 'READ ONLY', toolResponse: 'Extraction response', probeLabel: 'Configured read-path probe', classify: 'Classify the evidence',
+        notChecked: 'NOT CHECKED', resultPrompt: 'Read the page and tool response together, then classify.',
+        resultPromptNext: 'A zero from one channel is not enough to prove an empty report.',
+        methodNote: 'For a real task, use only fresh, site-specific signals and a configured read-only probe. This page runs no agent, browser, account or network request.',
+        methodLink: 'Read the workflow', back: 'Back to the project guide', source: 'Source', original: 'Original templates · MIT license', chineseGuide: '中文说明',
+        description: 'A bilingual synthetic browser diagnostic: distinguish an expired session, a genuinely empty report, and a silent broken read channel.',
+        authUrl: 'https://example.test/sign-in?return=/reports/weekly', emptyUrl: 'https://example.test/app/reports/weekly?range=7d',
+        unknownUrl: 'https://example.test/app/reports/weekly', authTitle: 'Sign in to continue', emptyTitle: 'Weekly activity',
+        toolTitle: 'Weekly activity', unknownTitle: 'Loading report…', dataTitle: 'Weekly activity',
+        authSubtitle: 'Your session needs attention before this report can open.', emptySubtitle: 'Demo workspace · Last 7 days',
+        toolSubtitle: 'Demo workspace · Last 7 days', unknownSubtitle: 'The page has not reached a stable report state.', dataSubtitle: 'Demo workspace · Last 7 days',
+        authMarker: 'Not visible', signedMarker: 'Signed in · Demo workspace', unknownMarker: 'Not available',
+        authState: 'Sign-in required', emptyState: 'No records in the selected period', toolState: '3 records shown in page', unknownState: 'Loading · not confirmed', dataState: 'Report loaded',
+        authRows: '0 (not a report result)', emptyRows: '0', toolRows: '3', unknownRows: 'Not confirmed', dataRows: '3',
+        authResponse: '0 rows', emptyResponse: '0 rows', toolResponseValue: '"" (empty string, no error)', unknownResponse: '0 rows', dataResponse: '3 rows · expected scope',
+        probeNotApplicable: 'Not run · sign-in page', probePassed: 'Passed · expected sentinel matched',
+        probeFailed: 'Failed · expected 2, received empty', probeUnavailable: 'Unavailable · no fresh signal',
+        probeDataPassed: 'Passed · read path returned expected value', authTag: 'SIGN-IN', loadingTag: 'LOADING', readyTag: 'READY',
+        authCode: 'AUTH_REQUIRED', authCopy: 'The page is asking for sign-in.', authNext: 'Pause extraction. Let the user sign in through the site’s normal flow, then inspect a fresh page state.',
+        emptyCode: 'VERIFIED_EMPTY', emptyCopy: 'This report is explicitly empty for the selected period.', emptyNext: 'Record zero only with the signed-in marker, report, scope and capture time together.',
+        toolCode: 'TOOL_UNHEALTHY', toolCopy: 'The report shows 3 rows, but the read channel returned nothing.', toolNext: 'Do not report zero or repeat the same read. Preserve the page state; use an approved alternate read path or stop.',
+        unknownCode: 'UNKNOWN', unknownCopy: 'There is not enough evidence to say whether the report is empty.', unknownNext: 'Wait for a fresh, stable page state. If no reliable signal appears, stop and report the uncertainty.',
+        dataCode: 'DATA_VERIFIED', dataCopy: 'The signed-in page and extraction agree on the visible rows.', dataNext: 'Keep the account, report, date range and source with the extracted records.',
+        ariaCase: 'Select scenario',
+        cases: {
+          auth: { url: 'authUrl', title: 'authTitle', subtitle: 'authSubtitle', marker: 'authMarker', state: 'authState', rows: 'authRows', response: 'authResponse', probe: 'probeNotApplicable', records: [] },
+          empty: { url: 'emptyUrl', title: 'emptyTitle', subtitle: 'emptySubtitle', marker: 'signedMarker', state: 'emptyState', rows: 'emptyRows', response: 'emptyResponse', probe: 'probePassed', records: [] },
+          tool: { url: 'emptyUrl', title: 'toolTitle', subtitle: 'toolSubtitle', marker: 'signedMarker', state: 'toolState', rows: 'toolRows', response: 'toolResponseValue', probe: 'probeFailed', records: ['ROW-014 · queued', 'ROW-015 · ready', 'ROW-016 · ready'] },
+          unknown: { url: 'unknownUrl', title: 'unknownTitle', subtitle: 'unknownSubtitle', marker: 'unknownMarker', state: 'unknownState', rows: 'unknownRows', response: 'unknownResponse', probe: 'probeUnavailable', records: [] },
+          data: { url: 'emptyUrl', title: 'dataTitle', subtitle: 'dataSubtitle', marker: 'signedMarker', state: 'dataState', rows: 'dataRows', response: 'dataResponse', probe: 'probeDataPassed', records: ['ROW-014 · queued', 'ROW-015 · ready', 'ROW-016 · ready'] }
+        }
+      },
+      zh: {
+        project: '项目主页', languageButton: 'English', languageLabel: '切换为英文',
+        eyebrow: '登录态与读取结果核验', title: 'Agent 读到 0，浏览器页面却不是空的。',
+        lead: '工具返回空值，可能是登录过期、报表确实为空，或读取通道失效。先对照证据，再判断这个 0 代表什么。',
+        casesTitle: '选择一种页面状态', authName: '跳转到登录页', authSummary: '报表要求重新登录。',
+        emptyName: '已核实的空报表', emptySummary: '已登录、报表已加载、没有记录。',
+        toolName: '读取通道无响应', toolSummary: '页面有记录，工具却返回空值。',
+        unknownName: '页面状态不明', unknownSummary: '缺少可靠标识或报表尚未完成。',
+        dataName: '记录已核对', dataSummary: '页面内容与读取结果一致。',
+        railNote: '下方页面和工具返回均为虚构示例。',
+        benchTitle: '对照页面显示与 Agent 收到的结果', pagePanel: '合成报表页面', fixture: '演示数据',
+        accountMarker: '账号标识', reportState: '报表状态', visibleRows: '页面记录数', agentPanel: 'Agent 观察结果',
+        readOnly: '仅读观察', toolResponse: '读取返回', probeLabel: '已配置的读取通道探针', classify: '根据证据分类',
+        notChecked: '尚未检查', resultPrompt: '同时查看页面与工具返回，再进行分类。',
+        resultPromptNext: '单一通道返回 0，不足以证明报表为空。',
+        methodNote: '真实任务只使用新鲜、网站专属的信号和已配置的只读探针。此页面不运行 Agent、不连接浏览器、账号或网络。',
+        methodLink: '查看工作流与判定规则', back: '返回项目主页', source: '源代码', original: '原创模板 · MIT 许可', chineseGuide: '中文说明',
+        description: '中英双语浏览器合成演示：区分登录过期、真实空报表和静默失效的读取通道。',
+        authUrl: 'https://example.test/sign-in?return=/reports/weekly', emptyUrl: 'https://example.test/app/reports/weekly?range=7d',
+        unknownUrl: 'https://example.test/app/reports/weekly', authTitle: '请登录后继续', emptyTitle: '每周动态',
+        toolTitle: '每周动态', unknownTitle: '报表加载中…', dataTitle: '每周动态',
+        authSubtitle: '登录状态需要处理后才能打开报表。', emptySubtitle: '演示工作区 · 最近 7 天',
+        toolSubtitle: '演示工作区 · 最近 7 天', unknownSubtitle: '页面还没有进入稳定的报表状态。', dataSubtitle: '演示工作区 · 最近 7 天',
+        authMarker: '未显示', signedMarker: '已登录 · 演示工作区', unknownMarker: '无法确认',
+        authState: '需要登录', emptyState: '所选时间段没有记录', toolState: '页面显示 3 条记录', unknownState: '加载中 · 尚未确认', dataState: '报表已加载',
+        authRows: '0（不是报表结果）', emptyRows: '0', toolRows: '3', unknownRows: '尚未确认', dataRows: '3',
+        authResponse: '0 条', emptyResponse: '0 条', toolResponseValue: '""（空字符串，没有报错）', unknownResponse: '0 条', dataResponse: '3 条 · 范围符合',
+        probeNotApplicable: '未运行 · 当前是登录页', probePassed: '通过 · 预期探针值匹配',
+        probeFailed: '失败 · 预期 2，实际为空', probeUnavailable: '不可用 · 没有新鲜信号',
+        probeDataPassed: '通过 · 读取通道返回预期值', authTag: '登录页', loadingTag: '加载中', readyTag: '已加载',
+        authCode: 'AUTH_REQUIRED', authCopy: '页面正在要求登录。', authNext: '暂停采集，让用户通过网站正常流程登录，再检查一次新页面状态。',
+        emptyCode: 'VERIFIED_EMPTY', emptyCopy: '这个报表在所选时间段内确实为空。', emptyNext: '只有同时记录已登录标识、报表、范围和采集时间，才记作 0 条。',
+        toolCode: 'TOOL_UNHEALTHY', toolCopy: '报表显示 3 条，但读取通道没有返回内容。', toolNext: '不要记作 0 条，也不要重复同一读取。保留当前页面状态，改用获准的读取路径或停止。',
+        unknownCode: 'UNKNOWN', unknownCopy: '现有证据不足以判断报表是否为空。', unknownNext: '等待新鲜且稳定的页面状态；仍没有可靠信号时，停止并报告不确定。',
+        dataCode: 'DATA_VERIFIED', dataCopy: '已登录页面与读取结果中的记录数量一致。', dataNext: '保存账号、报表、日期范围和来源，再记录读取到的内容。',
+        ariaCase: '选择场景',
+        cases: {
+          auth: { url: 'authUrl', title: 'authTitle', subtitle: 'authSubtitle', marker: 'authMarker', state: 'authState', rows: 'authRows', response: 'authResponse', probe: 'probeNotApplicable', records: [] },
+          empty: { url: 'emptyUrl', title: 'emptyTitle', subtitle: 'emptySubtitle', marker: 'signedMarker', state: 'emptyState', rows: 'emptyRows', response: 'emptyResponse', probe: 'probePassed', records: [] },
+          tool: { url: 'emptyUrl', title: 'toolTitle', subtitle: 'toolSubtitle', marker: 'signedMarker', state: 'toolState', rows: 'toolRows', response: 'toolResponseValue', probe: 'probeFailed', records: ['ROW-014 · 排队中', 'ROW-015 · 已就绪', 'ROW-016 · 已就绪'] },
+          unknown: { url: 'unknownUrl', title: 'unknownTitle', subtitle: 'unknownSubtitle', marker: 'unknownMarker', state: 'unknownState', rows: 'unknownRows', response: 'unknownResponse', probe: 'probeUnavailable', records: [] },
+          data: { url: 'emptyUrl', title: 'dataTitle', subtitle: 'dataSubtitle', marker: 'signedMarker', state: 'dataState', rows: 'dataRows', response: 'dataResponse', probe: 'probeDataPassed', records: ['ROW-014 · 排队中', 'ROW-015 · 已就绪', 'ROW-016 · 已就绪'] }
+        }
+      }
+    };
+
+    const nodes = Object.fromEntries(['language','url','report-title','report-subtitle','page-state','marker','report-state','visible-rows','records','tool-response','probe','classify','method-link','result','result-code','result-copy','result-next'].map(id => [id, document.getElementById(id)]));
+    const query = new URLSearchParams(location.search);
+    let language = query.get('lang') === 'zh' ? 'zh' : 'en';
+    let selected = 'auth';
+    let classified = false;
+
+    function t(key) { return copy[language][key]; }
+    function renderLanguage() {
+      document.documentElement.lang = language === 'zh' ? 'zh-CN' : 'en';
+      document.querySelectorAll('[data-i18n]').forEach(el => { el.textContent = t(el.dataset.i18n); });
+      nodes.language.setAttribute('aria-label', t('languageLabel'));
+      document.querySelector('meta[name="description"]').content = t('description');
+      nodes['method-link'].href = `https://github.com/LydiaTools/browser-agent-blueprint/blob/main/docs/session-integrity${language === 'zh' ? '.zh-CN' : ''}.md`;
+      document.title = language === 'zh' ? '当空值看起来像成功 · Browser Agent Blueprint' : 'When zero looks like success · Browser Agent Blueprint';
+    }
+    function renderScenario() {
+      const scenario = copy[language].cases[selected];
+      nodes.url.textContent = t(scenario.url);
+      nodes['report-title'].textContent = t(scenario.title);
+      nodes['report-subtitle'].textContent = t(scenario.subtitle);
+      nodes['page-state'].textContent = t(selected === 'auth' ? 'authTag' : selected === 'unknown' ? 'loadingTag' : 'readyTag');
+      nodes.marker.textContent = t(scenario.marker);
+      nodes['report-state'].textContent = t(scenario.state);
+      nodes['visible-rows'].textContent = t(scenario.rows);
+      nodes['tool-response'].textContent = t(scenario.response);
+      nodes.probe.textContent = t(scenario.probe);
+      nodes.records.hidden = scenario.records.length === 0;
+      nodes.records.replaceChildren(...scenario.records.map((row, index) => {
+        const line = document.createElement('div');
+        line.className = 'record-line';
+        const label = document.createElement('span');
+        label.textContent = row.split(' · ')[0];
+        const value = document.createElement('span');
+        value.textContent = row.split(' · ')[1];
+        line.append(label, value);
+        return line;
+      }));
+      nodes.classify.disabled = false;
+      nodes.result.removeAttribute('data-kind');
+      nodes['result-code'].textContent = t('notChecked');
+      nodes['result-copy'].textContent = t('resultPrompt');
+      nodes['result-next'].textContent = t('resultPromptNext');
+      classified = false;
+      document.querySelectorAll('[data-case]').forEach(button => button.setAttribute('aria-pressed', String(button.dataset.case === selected)));
+    }
+    function classify() {
+      const scenario = selected;
+      const code = { auth: 'authCode', empty: 'emptyCode', tool: 'toolCode', unknown: 'unknownCode', data: 'dataCode' }[scenario];
+      const kind = { auth: 'AUTH_REQUIRED', empty: 'VERIFIED_EMPTY', tool: 'TOOL_UNHEALTHY', unknown: 'UNKNOWN', data: 'DATA_VERIFIED' }[scenario];
+      nodes.result.dataset.kind = kind;
+      nodes['result-code'].textContent = t(code);
+      nodes['result-copy'].textContent = t(({ auth: 'authCopy', empty: 'emptyCopy', tool: 'toolCopy', unknown: 'unknownCopy', data: 'dataCopy' })[scenario]);
+      nodes['result-next'].textContent = t(({ auth: 'authNext', empty: 'emptyNext', tool: 'toolNext', unknown: 'unknownNext', data: 'dataNext' })[scenario]);
+      classified = true;
+      nodes.classify.disabled = true;
+    }
+    document.querySelectorAll('[data-case]').forEach(button => button.addEventListener('click', () => { selected = button.dataset.case; renderScenario(); }));
+    nodes.classify.addEventListener('click', classify);
+    nodes.language.addEventListener('click', () => {
+      language = language === 'en' ? 'zh' : 'en';
+      const next = new URL(location.href);
+      if (language === 'zh') next.searchParams.set('lang', 'zh'); else next.searchParams.delete('lang');
+      history.replaceState(null, '', next);
+      renderLanguage();
+      if (classified) classify(); else renderScenario();
+    });
+    renderLanguage();
+    renderScenario();
+  </script>
+</body>
+</html>
